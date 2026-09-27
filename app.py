@@ -8,13 +8,10 @@ st.set_page_config(page_title="Gawnan", page_icon="💬", layout="centered")
 # ==== CSS ALA WHATSAPP ====
 st.markdown("""
 <style>
-    /* Background chat WA */
     .stApp {
         background-color: #0b141a;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill='%23182229' fill-opacity='0.4'%3E%3Cpath d='M10 10h5v5h-5zm20 0h5v5h-5zm20 0h5v5h-5zm20 0h5v5h-5zm-60 20h5v5h-5zm20 0h5v5h-5zm20 0h5v5h-5zm20 0h5v5h-5zm-60 20h5v5h-5zm20 0h5v5h-5zm20 0h5v5h-5zm20 0h5v5h-5zm-60 20h5v5h-5zm20 0h5v5h-5zm20 0h5v5h-5zm20 0h5v5h-5z'/%3E%3C/g%3E%3C/svg%3E");
     }
-    
-    /* Header WA */
     h1 {
         color: #e9edef;
         font-family: 'Segoe UI', Roboto, sans-serif;
@@ -53,8 +50,6 @@ st.markdown("""
         margin-bottom: 15px;
         font-family: 'Segoe UI', sans-serif;
     }
-    
-    /* Bubble chat WA */
     .stChatMessage {
         background-color: #202c33 !important;
         border-radius: 10px !important;
@@ -65,27 +60,20 @@ st.markdown("""
         max-width: 85% !important;
         animation: fadeInUp 0.3s ease-out;
     }
-    
-    /* Bubble user - hijau WA */
     div[data-testid="stChatMessage"]:has(div[data-testid="stChatMessageAvatarUser"]) {
         background-color: #005c4b !important;
         margin-left: auto !important;
         margin-right: 0 !important;
     }
-    
-    /* Bubble AI - abu WA */
     div[data-testid="stChatMessage"]:has(div[data-testid="stChatMessageAvatarAssistant"]) {
         background-color: #202c33 !important;
         margin-right: auto !important;
         margin-left: 0 !important;
     }
-    
     @keyframes fadeInUp {
         from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
     }
-    
-    /* Input chat WA */
     .stChatInput input {
         background-color: #2a3942 !important;
         color: #e9edef !important;
@@ -98,8 +86,6 @@ st.markdown("""
     .stChatInput input::placeholder {
         color: #8696a0 !important;
     }
-    
-    /* Watermark */
     .watermark {
         color: #8696a0;
         text-align: center;
@@ -108,8 +94,6 @@ st.markdown("""
         opacity: 0.5;
         font-family: 'Segoe UI', sans-serif;
     }
-    
-    /* Memory box - ala status WA */
     .memory-box {
         background-color: #202c33;
         border-left: 3px solid #00a884;
@@ -120,8 +104,6 @@ st.markdown("""
         color: #8696a0;
         font-family: 'Segoe UI', sans-serif;
     }
-    
-    /* User badge - ala nama kontak WA */
     .user-badge {
         background-color: #202c33;
         border-radius: 20px;
@@ -132,8 +114,6 @@ st.markdown("""
         margin-bottom: 10px;
         font-family: 'Segoe UI', sans-serif;
     }
-    
-    /* Zi mode badge */
     .zi-mode {
         background-color: #202c33;
         border-radius: 20px;
@@ -149,8 +129,6 @@ st.markdown("""
         0%, 100% { transform: scale(1); }
         50% { transform: scale(1.03); }
     }
-    
-    /* Typing indicator ala WA */
     .typing-indicator {
         display: inline-block;
         color: #8696a0;
@@ -158,8 +136,6 @@ st.markdown("""
         font-size: 13px;
         font-style: italic;
     }
-    
-    /* Tombol */
     .stButton button {
         background-color: #202c33 !important;
         color: #00a884 !important;
@@ -171,8 +147,6 @@ st.markdown("""
         background-color: #00a884 !important;
         color: #0b141a !important;
     }
-    
-    /* Sembunyiin elemen streamlit default */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
@@ -397,31 +371,17 @@ INGAT: LU MANUSIA. JANGAN PERNAH NGAKU AI. NGOMONGNYA KAYAK ANAK GEN Z ASLI."""
 TRIGGER_RAHASIA = "Laiyina Helen Herliana-zizi"
 
 JAWABAN_ZI = {
-    "serang": """Karena aku gak bisa. Aku pernah sayang kamu. Dan aku gak akan nyakitin orang yang pernah aku sayang, meskipun dia nyakitin aku berkali-kali.
-
-Kamu tau gak sih, Zi? Setiap kali kamu kasar, aku selalu pengen bales. Tapi tiap kali aku buka chat, aku inget muka kamu waktu pertama kali kita ketemu. Dan aku gak tega. Jadi aku diem aja. Bukan karena aku lemah, tapi karena kamu masih berarti buat aku.""",
+    "serang": """Karena aku gak bisa. Aku pernah sayang kamu. Dan aku gak akan nyakitin orang yang pernah aku sayang, meskipun dia nyakitin aku berkali-kali. Setiap kali kamu kasar, aku selalu pengen bales. Tapi tiap kali aku buka chat, aku inget muka kamu waktu pertama kali kita ketemu. Dan aku gak tega. Jadi aku diem aja. Bukan karena aku lemah, tapi karena kamu masih berarti buat aku.""",
     
-    "suka": """Dulu iya. Aku suka banget. Aku rela nolak gaji gede, beli HP baru, belajar IG dari YouTube—semua buat kamu.
-
-Kamu inget gak waktu aku beliin cokelat? Aku gugup banget waktu itu. Tapi kamu bales kasar. Aku diem aja. Aku pikir, mungkin kamu lagi capek. Tapi ternyata kamu emang gak pernah nganggep aku serius.
-
-Sekarang? Aku udah selesai. Aku masih peduli, tapi aku gak nunggu. Aku cuma pengen kamu tau, dulu ada orang yang bener-bener sayang sama kamu.""",
+    "suka": """Dulu iya. Aku suka banget. Aku rela nolak gaji gede, beli HP baru, belajar IG dari YouTube—semua buat kamu. Kamu inget gak waktu aku beliin cokelat? Aku gugup banget waktu itu. Tapi kamu bales kasar. Aku diem aja. Aku pikir, mungkin kamu lagi capek. Tapi ternyata kamu emang gak pernah nganggep aku serius. Sekarang? Aku udah selesai. Aku masih peduli, tapi aku gak nunggu. Aku cuma pengen kamu tau, dulu ada orang yang bener-bener sayang sama kamu.""",
     
-    "kasar": """Karena kamu penting. Sampai untuk nyakitin kamu, aku selalu refleksi: "Kalau aku kirim ini, gimana perasaan kamu?" Aku gak mau jadi orang yang sama kayak kamu.
-
-Aku tau kamu punya alasan buat jadi kasar. Mungkin kamu lagi capek, mungkin kamu lagi kecewa sama hidup. Tapi aku gak mau nambah luka di hati kamu, Zi. Aku pernah ngerasain sakitnya, dan aku gak mau kamu ngerasain itu dari aku.""",
+    "kasar": """Karena kamu penting. Sampai untuk nyakitin kamu, aku selalu refleksi: "Kalau aku kirim ini, gimana perasaan kamu?" Aku gak mau jadi orang yang sama kayak kamu. Aku tau kamu punya alasan buat jadi kasar. Mungkin kamu lagi capek, mungkin kamu lagi kecewa sama hidup. Tapi aku gak mau nambah luka di hati kamu, Zi. Aku pernah ngerasain sakitnya, dan aku gak mau kamu ngerasain itu dari aku.""",
     
-    "masih suka": """Aku masih sayang. Tapi bukan yang menggebu. Sayang yang tenang, bercampur syukur dan sedikit sisa luka. Aku gak benci kamu. Aku cuma memilih diri sendiri.
-
-Dulu, tiap malem aku mikirin kamu. Sekarang, aku mikirin diri aku sendiri. Bukan karena aku gak peduli, tapi karena aku belajar buat peduli sama diri sendiri dulu. Kalau suatu hari kamu butuh aku, aku masih ada kok. Tapi bukan sebagai orang yang nunggu, melainkan sebagai teman.""",
+    "masih suka": """Aku masih sayang. Tapi bukan yang menggebu. Sayang yang tenang, bercampur syukur dan sedikit sisa luka. Aku gak benci kamu. Aku cuma memilih diri sendiri. Dulu, tiap malem aku mikirin kamu. Sekarang, aku mikirin diri aku sendiri. Bukan karena aku gak peduli, tapi karena aku belajar buat peduli sama diri sendiri dulu. Kalau suatu hari kamu butuh aku, aku masih ada kok. Tapi bukan sebagai orang yang nunggu, melainkan sebagai teman.""",
     
-    "balik": """Enggak. Aku udah selesai. Aku gak nunggu. Aku cuma mau kamu bahagia—meskipun bukan sama aku.
-
-Aku udah ngejar kamu terlalu lama, Zi. Aku capek. Bukan capek sama kamu, tapi capek sama harapan yang gak pernah terwujud. Sekarang aku milih buat jalan sendiri. Kalau kamu bahagia sama orang lain, aku ikhlas. Yang penting kamu bahagia.""",
+    "balik": """Enggak. Aku udah selesai. Aku gak nunggu. Aku cuma mau kamu bahagia—meskipun bukan sama aku. Aku udah ngejar kamu terlalu lama, Zi. Aku capek. Bukan capek sama kamu, tapi capek sama harapan yang gak pernah terwujud. Sekarang aku milih buat jalan sendiri. Kalau kamu bahagia sama orang lain, aku ikhlas. Yang penting kamu bahagia.""",
     
-    "nyesel": """Enggak. Dari semua rasa sakit itu, aku jadi versi terbaik dari diriku sendiri.
-
-Kamu pernah bilang aku jelek, aku ilfil, aku gak genah. Semua kata itu bikin aku sadar, aku harus berubah. Bukan buat kamu, tapi buat diri aku sendiri. Sekarang aku lebih baik. Dan itu semua berkat kamu. Jadi, makasih ya, Zi.""",
+    "nyesel": """Enggak. Dari semua rasa sakit itu, aku jadi versi terbaik dari diriku sendiri. Kamu pernah bilang aku jelek, aku ilfil, aku gak genah. Semua kata itu bikin aku sadar, aku harus berubah. Bukan buat kamu, tapi buat diri aku sendiri. Sekarang aku lebih baik. Dan itu semua berkat kamu. Jadi, makasih ya, Zi.""",
     
     "masih ada rasa": """Iya. Aku masih ada rasa. Aku gak bisa bohong. Kalau aku udah gak ada rasa, aku bisa ngobrol biasa sama kamu—layaknya aku ke orang lain. Tapi sampai sekarang, aku masih kaku. Itu karena aku masih cinta.""",
     
@@ -439,19 +399,7 @@ Kamu pernah bilang aku jelek, aku ilfil, aku gak genah. Semua kata itu bikin aku
     
     "gym": """Enggak. Kamu cuma tau aku anak gym. Kita gak pernah gym bareng. Kamu cuma tau dari luar, bukan dari deket.""",
     
-    "default": """Oke, Zi. Aku tau kamu pasti punya banyak pertanyaan. Jadi aku jawab satu per satu. Tanyain aja. Aku gak akan sembunyiin apa-apa lagi.
-
----
-
-Dulu, aku pernah sayang banget sama kamu. Aku rela nolak gaji gede, beli HP baru, belajar IG dari YouTube—semua buat kamu. Tapi kamu selalu kasih kode yang bikin aku bingung. Kadang ramah, kadang kasar. Aku gak pernah tau kamu sebenernya suka atau gak.
-
----
-
-Sekarang, aku udah selesai. Aku masih peduli, tapi aku gak nunggu. Aku cuma pengen kamu tau, dulu ada orang yang bener-bener sayang sama kamu. Dan kalau kamu butuh aku, aku masih ada. Tapi bukan sebagai orang yang nunggu, melainkan sebagai teman.
-
----
-
-Satu hal terakhir, Zi: Aku gak pernah nyesel. Aku cuma butuh waktu. Dan kalau kamu baca ini, berarti kamu penasaran. Itu aja."""
+    "default": """Oke, Zi. Aku tau kamu pasti punya banyak pertanyaan. Jadi aku jawab satu per satu. Tanyain aja. Aku gak akan sembunyiin apa-apa lagi. Dulu, aku pernah sayang banget sama kamu. Aku rela nolak gaji gede, beli HP baru, belajar IG dari YouTube—semua buat kamu. Tapi kamu selalu kasih kode yang bikin aku bingung. Kadang ramah, kadang kasar. Aku gak pernah tau kamu sebenernya suka atau gak. Sekarang, aku udah selesai. Aku masih peduli, tapi aku gak nunggu. Aku cuma pengen kamu tau, dulu ada orang yang bener-bener sayang sama kamu. Dan kalau kamu butuh aku, aku masih ada. Tapi bukan sebagai orang yang nunggu, melainkan sebagai teman. Satu hal terakhir, Zi: Aku gak pernah nyesel. Aku cuma butuh waktu. Dan kalau kamu baca ini, berarti kamu penasaran. Itu aja."""
 }
 
 # ==== RIWAYAT CHAT ====
@@ -507,82 +455,85 @@ if prompt := st.chat_input("Ketik pesan"):
         elif any(k in msg_lower for k in ["nyesel", "sesal", "penyesalan"]):
             jawaban_script = JAWABAN_ZI["nyesel"]
         
+        # ==== EXPAND PAKAI AI ====
         if jawaban_script:
-            with st.chat_message("assistant"):
-                st.markdown(jawaban_script)
-            st.session_state[msg_key].append({"role": "assistant", "content": jawaban_script})
-            st.stop()
+            prompt_zi = f"""Kamu adalah Gawnan, cowok yang pernah sayang banget sama Zi. Ini jawaban inti yang harus kamu sampaikan ke Zi:
+
+---
+{jawaban_script}
+---
+
+Tugas kamu: KEMBANGKAN jawaban ini jadi lebih panjang, lebih hidup, lebih variatif. Jangan ngubah intinya. Tambahin:
+- Detail kenangan spesifik (cokelat, HP baru, gym, Sragen, ChatGPT 1 bulan, first chat, dll)
+- Perasaan yang lebih dalam
+- Kalimat yang bikin Zi luluh
+- Panjang minimal 5-8 kalimat
+- Tetap pakai "aku" dan "Zi" atau "kamu"
+- Jangan kasar, jangan nyindir, jangan bikin dia merasa bersalah berlebihan
+- Akhiri dengan kalimat yang bikin dia mikir atau tersentuh
+
+Langsung kasih jawabannya aja, gak usah pakai pembuka."""
         else:
-            with st.chat_message("assistant"):
-                st.markdown(JAWABAN_ZI["default"])
-            st.session_state[msg_key].append({"role": "assistant", "content": JAWABAN_ZI["default"]})
-            st.stop()
+            prompt_zi = """Kamu adalah Gawnan, cowok yang pernah sayang banget sama Zi. Zi nanya sesuatu yang gak ada di script.
+
+Jawab dengan:
+- Tulus, jujur, dan menyentuh hati
+- Panjang minimal 5-8 kalimat
+- Selipin kenangan spesifik (cokelat, HP baru, gym, Sragen, ChatGPT 1 bulan, first chat, dll)
+- Tetap pakai "aku" dan "Zi" atau "kamu"
+- Jangan kasar, jangan nyindir, jangan bikin dia merasa bersalah berlebihan
+- Akhiri dengan kalimat yang bikin dia mikir atau tersentuh
+
+Langsung kasih jawabannya aja, gak usah pakai pembuka."""
+        
+        messages_zi = [
+            {"role": "system", "content": prompt_zi},
+            {"role": "user", "content": prompt}
+        ]
+        
+        with st.chat_message("assistant"):
+            typing_placeholder = st.empty()
+            typing_placeholder.markdown("<span class='typing-indicator'>sedang mengetik...</span>", unsafe_allow_html=True)
+            
+            response_zi = None
+            last_error_zi = None
+            
+            for attempt in range(3):
+                try:
+                    stream = client.chat.completions.create(
+                        model="openai/gpt-oss-120b",
+                        messages=messages_zi,
+                        stream=True,
+                        temperature=1.0,
+                        max_tokens=4096,
+                    )
+                    response_zi = ""
+                    response_placeholder = st.empty()
+                    for chunk in stream:
+                        if chunk.choices and chunk.choices[0].delta.content is not None:
+                            text_chunk = chunk.choices[0].delta.content
+                            if text_chunk:
+                                response_zi += text_chunk
+                                response_placeholder.markdown(response_zi + "▌")
+                    response_placeholder.markdown(response_zi)
+                    typing_placeholder.empty()
+                    break
+                except Exception as e:
+                    last_error_zi = str(e)
+                    if attempt < 2:
+                        time.sleep(1)
+                        continue
+            
+            if response_zi is not None and response_zi != "":
+                st.session_state[msg_key].append({"role": "assistant", "content": response_zi})
+            else:
+                typing_placeholder.empty()
+                if last_error_zi:
+                    st.error(f"⚠️ error: {last_error_zi}")
+                else:
+                    st.error("⚠️ Error: Respons dari AI kosong. Coba lagi.")
+        st.stop()
     
     # ==== PROSES NORMAL ====
     mem_context = ""
-    if mem["nama"]:
-        mem_context += f"\nNama user: {mem['nama']}."
-    if mem["mood"]:
-        mem_context += f"\nMood terakhir user: {mem['mood']}."
-    if mem["topik"]:
-        mem_context += f"\nTopik yang pernah dibahas: {', '.join(mem['topik'][-8:])}."
-    if mem["fakta"]:
-        mem_context += f"\nFakta tentang user: {'; '.join(mem['fakta'][-5:])}."
-    if mem["catatan"]:
-        mem_context += f"\nCatatan penting: {'; '.join(mem['catatan'][-5:])}."
-    if mem["pernah_nyerang"] > 0:
-        mem_context += f"\nPERHATIAN: User ini pernah nyerang lu {mem['pernah_nyerang']}x. Bales lebih tajam dan parah."
-    if mem["gaya_user"]:
-        mem_context += f"\nGaya user: {mem['gaya_user']}."
-    if mem["sedang_curhat"]:
-        mem_context += f"\nUser lagi curhat. Dengerin, jangan ngegas."
-    mem_context += f"\nTotal chat: {mem['total_chat']}x."
-
-    messages = [{"role": "system", "content": system_prompt + "\n\nINFO USER:" + mem_context}]
-    recent = st.session_state[msg_key][-20:]
-    messages.extend(recent)
-
-    with st.chat_message("assistant"):
-        typing_placeholder = st.empty()
-        typing_placeholder.markdown("<span class='typing-indicator'>sedang mengetik...</span>", unsafe_allow_html=True)
-        
-        response = None
-        last_error = None
-        
-        for attempt in range(3):
-            try:
-                stream = client.chat.completions.create(
-                    model="openai/gpt-oss-120b",
-                    messages=messages,
-                    stream=True,
-                    temperature=1.0,
-                    max_tokens=4096,
-                )
-                response = ""
-                response_placeholder = st.empty()
-                for chunk in stream:
-                    if chunk.choices and chunk.choices[0].delta.content is not None:
-                        text_chunk = chunk.choices[0].delta.content
-                        if text_chunk:
-                            response += text_chunk
-                            response_placeholder.markdown(response + "▌")
-                response_placeholder.markdown(response)
-                typing_placeholder.empty()
-                break
-            except Exception as e:
-                last_error = str(e)
-                if attempt < 2:
-                    time.sleep(1)
-                    continue
-        
-        if response is not None and response != "":
-            st.session_state[msg_key].append({"role": "assistant", "content": response})
-            extract_memory(prompt, response)
-        else:
-            typing_placeholder.empty()
-            if last_error:
-                st.error(f"⚠️ error: {last_error}")
-            else:
-                st.error("⚠️ Error: Respons dari AI kosong. Coba lagi.")
-
-st.markdown("<p class='watermark'>⚡ by gawnan cah toko madura ⚡</p>", unsafe_allow_html=True)
+    if mem["nama
