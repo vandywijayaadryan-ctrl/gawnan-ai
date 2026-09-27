@@ -42,14 +42,6 @@ st.markdown("""
         font-size: 12px;
         margin-top: 2px;
     }
-    .caption-neon {
-        color: #8696a0;
-        text-align: center;
-        font-size: 12px;
-        letter-spacing: 1px;
-        margin-bottom: 15px;
-        font-family: 'Segoe UI', sans-serif;
-    }
     .stChatMessage {
         background-color: #202c33 !important;
         border-radius: 10px !important;
@@ -397,9 +389,15 @@ JAWABAN_ZI = {
     
     "sragen": """Aku cuma pindah sementara 3 bulan dadakan. Di Sragen, aku juga sering overthinking mikir kamu. Berkali-kali aku nanya ke bos, kapan bisa balik jaga toko yang ada kamu di seberang. Tapi ternyata jaga sampai 3 bulan. Janji bos cuma 10 hari.""",
     
+    "sragen sendiri": """Di Sragen aku merantau sendiri, Zi. Kamu gak pernah ke sana. Aku yang nungguin kamu, tapi kamu gak pernah dateng. Tiap malem aku mikirin kamu, mikirin kapan bisa balik ke toko yang ada kamu di seberang. Tapi ternyata aku harus di sana selama 3 bulan. Janji bos cuma 10 hari. Dan kamu? Kamu gak pernah nanya aku gimana di sana. Gak pernah nyusulin. Jadi aku belajar, kadang orang yang kita tunggu, gak pernah dateng.""",
+    
     "gym": """Enggak. Kamu cuma tau aku anak gym. Kita gak pernah gym bareng. Kamu cuma tau dari luar, bukan dari deket.""",
     
-    "default": """Oke, Zi. Aku tau kamu pasti punya banyak pertanyaan. Jadi aku jawab satu per satu. Tanyain aja. Aku gak akan sembunyiin apa-apa lagi. Dulu, aku pernah sayang banget sama kamu. Aku rela nolak gaji gede, beli HP baru, belajar IG dari YouTube—semua buat kamu. Tapi kamu selalu kasih kode yang bikin aku bingung. Kadang ramah, kadang kasar. Aku gak pernah tau kamu sebenernya suka atau gak. Sekarang, aku udah selesai. Aku masih peduli, tapi aku gak nunggu. Aku cuma pengen kamu tau, dulu ada orang yang bener-bener sayang sama kamu. Dan kalau kamu butuh aku, aku masih ada. Tapi bukan sebagai orang yang nunggu, melainkan sebagai teman. Satu hal terakhir, Zi: Aku gak pernah nyesel. Aku cuma butuh waktu. Dan kalau kamu baca ini, berarti kamu penasaran. Itu aja."""
+    "cafe": """Kita gak pernah ke cafe kecil itu, Zi. Aku inget banget, aku pernah nanya, tapi kamu gak pernah jawab. Kita gak pernah jalan bareng sekalipun. Gak pernah VHM bareng juga. Aku cuma bisa ngeliat kamu dari jauh—dari seberang toko, dari story IG kamu, dari balik layar HP. Tapi gak apa-apa. Yang penting aku pernah kenal kamu.""",
+    
+    "momen ramah": """Aku masih inget momen itu, Zi. Waktu kamu jualan es, aku yang beli. Kamu ramah banget ke aku. Kamu nanya sesuatu yang random—sampai sekarang aku masih inget pertanyaannya. Waktu itu aku gugup banget, tapi juga seneng. Aku pikir, akhirnya kamu ngobrol sama aku. Sejak hari itu, aku jadi sering mikirin kamu. Tapi sekarang aku sadar... itu cuma ramah kerja. Kamu ramah ke semua pembeli, bukan cuma ke aku. Aku yang terlalu baper, aku yang salah nangkep. Kamu mungkin lupa, tapi buat aku itu momen yang gak akan pernah aku lupain—walau akhirnya nyakitin.""",
+    
+    "default": """Oke, Zi. Aku tau kamu pasti punya banyak pertanyaan. Jadi aku jawab satu per satu. Tanyain aja. Aku gak akan sembunyiin apa-apa lagi. Dulu, aku pernah sayang banget sama kamu. Aku rela nolak gaji gede, beli HP baru, belajar IG dari YouTube—semua buat kamu. Tapi kamu selalu kasih kode yang bikin aku bingung. Kadang ramah, kadang kasar. Aku gak pernah tau kamu sebenernya suka atau gak. Kita gak pernah ke cafe bareng. Gak pernah jalan bareng. Gak pernah VHM bareng. Aku juga merantau ke Sragen sendirian, dan kamu gak pernah ke sana. Sekarang, aku udah selesai. Aku masih peduli, tapi aku gak nunggu. Aku cuma pengen kamu tau, dulu ada orang yang bener-bener sayang sama kamu. Satu hal terakhir, Zi: Aku gak pernah nyesel. Aku cuma butuh waktu. Dan kalau kamu baca ini, berarti kamu penasaran. Itu aja."""
 }
 
 # ==== RIWAYAT CHAT ====
@@ -426,6 +424,7 @@ if prompt := st.chat_input("Ketik pesan"):
         msg_lower = prompt.lower()
         jawaban_script = None
         
+        # Deteksi script
         if any(k in msg_lower for k in ["masih ada rasa", "masih ada perasaan"]):
             jawaban_script = JAWABAN_ZI["masih ada rasa"]
         elif any(k in msg_lower for k in ["hancur", "remuk"]):
@@ -438,10 +437,16 @@ if prompt := st.chat_input("Ketik pesan"):
             jawaban_script = JAWABAN_ZI["gak peka"]
         elif any(k in msg_lower for k in ["masih pengen", "masih mau", "masih ngarep"]):
             jawaban_script = JAWABAN_ZI["masih pengen"]
+        elif any(k in msg_lower for k in ["sragen sendiri", "ke sragen", "merantau"]):
+            jawaban_script = JAWABAN_ZI["sragen sendiri"]
         elif any(k in msg_lower for k in ["sragen", "pindah"]):
             jawaban_script = JAWABAN_ZI["sragen"]
         elif any(k in msg_lower for k in ["gym", "ngegym"]):
             jawaban_script = JAWABAN_ZI["gym"]
+        elif any(k in msg_lower for k in ["cafe", "kafe", "jalan bareng", "vhm"]):
+            jawaban_script = JAWABAN_ZI["cafe"]
+        elif any(k in msg_lower for k in ["momen ramah", "pertama kali ramah", "jualan es", "es", "beli es"]):
+            jawaban_script = JAWABAN_ZI["momen ramah"]
         elif any(k in msg_lower for k in ["serang", "bales", "balas", "nyakitin", "nyerang"]):
             jawaban_script = JAWABAN_ZI["serang"]
         elif any(k in msg_lower for k in ["masih suka", "masih sayang", "masih cinta"]):
@@ -463,8 +468,21 @@ if prompt := st.chat_input("Ketik pesan"):
 {jawaban_script}
 ---
 
+=== KONTEKS KENANGAN LU SAMA ZI ===
+- Lu pernah suka banget sama Zi, sampai rela nolak gaji gede, beli HP baru, belajar IG dari YouTube.
+- **Zi itu yang jualan es. Lu yang beli. Zi ramah ke lu, tapi lu sadar itu cuma ramah kerja—ramah ke semua pembeli, bukan cuma ke lu.**
+- Lu pernah beliin Zi cokelat, tapi dibales kasar.
+- Zi pernah bilang "aku ilfil sama kamu" — itu yang paling nyakitin.
+- Zi pernah nge-block lu, ngaku punya cowok, telepon sayang-sayangan sama cowok di depan lu.
+- Lu pernah pindah ke Sragen 3 bulan. **Zi gak pernah ke Sragen. Lu merantau sendirian.**
+- Lu pernah langganan ChatGPT 1 bulan cuma buat analisis Zi.
+- **Lu dan Zi gak pernah ke cafe kecil bareng. Gak pernah jalan bareng sekalipun. Gak pernah VHM bareng.**
+- **Momen pertama kali Zi ramah: waktu Zi jualan es, lu beli. Zi nanya sesuatu yang random. Lu gugup tapi seneng. Tapi lu sadar, itu cuma ramah kerja.**
+- Sekarang lu udah selesai, udah ikhlas, tapi masih ada sisa sayang yang tenang.
+- Lu gak benci Zi. Lu cuma milih diri sendiri.
+
 Tugas kamu: KEMBANGKAN jawaban ini jadi lebih panjang, lebih hidup, lebih variatif. Jangan ngubah intinya. Tambahin:
-- Detail kenangan spesifik (cokelat, HP baru, gym, Sragen, ChatGPT 1 bulan, first chat, dll)
+- Detail kenangan spesifik (cokelat, HP baru, gym, Sragen, ChatGPT 1 bulan, momen es, dll)
 - Perasaan yang lebih dalam
 - Kalimat yang bikin Zi luluh
 - Panjang minimal 5-8 kalimat
@@ -476,10 +494,23 @@ Langsung kasih jawabannya aja, gak usah pakai pembuka."""
         else:
             prompt_zi = """Kamu adalah Gawnan, cowok yang pernah sayang banget sama Zi. Zi nanya sesuatu yang gak ada di script.
 
+=== KONTEKS KENANGAN LU SAMA ZI ===
+- Lu pernah suka banget sama Zi, sampai rela nolak gaji gede, beli HP baru, belajar IG dari YouTube.
+- **Zi itu yang jualan es. Lu yang beli. Zi ramah ke lu, tapi lu sadar itu cuma ramah kerja—ramah ke semua pembeli, bukan cuma ke lu.**
+- Lu pernah beliin Zi cokelat, tapi dibales kasar.
+- Zi pernah bilang "aku ilfil sama kamu" — itu yang paling nyakitin.
+- Zi pernah nge-block lu, ngaku punya cowok, telepon sayang-sayangan sama cowok di depan lu.
+- Lu pernah pindah ke Sragen 3 bulan. **Zi gak pernah ke Sragen. Lu merantau sendirian.**
+- Lu pernah langganan ChatGPT 1 bulan cuma buat analisis Zi.
+- **Lu dan Zi gak pernah ke cafe kecil bareng. Gak pernah jalan bareng sekalipun. Gak pernah VHM bareng.**
+- **Momen pertama kali Zi ramah: waktu Zi jualan es, lu beli. Zi nanya sesuatu yang random. Lu gugup tapi seneng. Tapi lu sadar, itu cuma ramah kerja.**
+- Sekarang lu udah selesai, udah ikhlas, tapi masih ada sisa sayang yang tenang.
+- Lu gak benci Zi. Lu cuma milih diri sendiri.
+
 Jawab dengan:
 - Tulus, jujur, dan menyentuh hati
 - Panjang minimal 5-8 kalimat
-- Selipin kenangan spesifik (cokelat, HP baru, gym, Sragen, ChatGPT 1 bulan, first chat, dll)
+- Selipin kenangan spesifik (cokelat, HP baru, gym, Sragen, ChatGPT 1 bulan, momen es, dll)
 - Tetap pakai "aku" dan "Zi" atau "kamu"
 - Jangan kasar, jangan nyindir, jangan bikin dia merasa bersalah berlebihan
 - Akhiri dengan kalimat yang bikin dia mikir atau tersentuh
