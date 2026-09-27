@@ -3,126 +3,189 @@ from groq import Groq
 import time
 
 # ==== KONFIG ====
-st.set_page_config(page_title="Gawnan", page_icon="⚡", layout="centered")
+st.set_page_config(page_title="Gawnan", page_icon="💬", layout="centered")
 
-# ==== CSS NEON ====
+# ==== CSS ALA WHATSAPP ====
 st.markdown("""
 <style>
+    /* Background chat WA */
     .stApp {
-        background: linear-gradient(135deg, #000000 0%, #0a001a 50%, #000000 100%);
-        color: #e0e0e0;
+        background-color: #0b141a;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill='%23182229' fill-opacity='0.4'%3E%3Cpath d='M10 10h5v5h-5zm20 0h5v5h-5zm20 0h5v5h-5zm20 0h5v5h-5zm-60 20h5v5h-5zm20 0h5v5h-5zm20 0h5v5h-5zm20 0h5v5h-5zm-60 20h5v5h-5zm20 0h5v5h-5zm20 0h5v5h-5zm20 0h5v5h-5zm-60 20h5v5h-5zm20 0h5v5h-5zm20 0h5v5h-5zm20 0h5v5h-5z'/%3E%3C/g%3E%3C/svg%3E");
     }
+    
+    /* Header WA */
     h1 {
-        color: #00ffff;
-        text-shadow: 0 0 8px #00ffff, 0 0 16px #00ffff, 0 0 32px #00ffff;
-        font-family: 'Courier New', monospace;
+        color: #e9edef;
+        font-family: 'Segoe UI', Roboto, sans-serif;
         text-align: center;
-        letter-spacing: 4px;
-        font-weight: bold;
-        animation: neonGlow 2s ease-in-out infinite;
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+        padding-top: 10px;
     }
-    @keyframes neonGlow {
-        0%, 100% { text-shadow: 0 0 8px #00ffff, 0 0 16px #00ffff, 0 0 32px #00ffff; }
-        50% { text-shadow: 0 0 12px #00ffff, 0 0 24px #00ffff, 0 0 48px #00ffff, 0 0 64px #ff00ff; }
+    .wa-header {
+        background-color: #202c33;
+        padding: 10px 15px;
+        border-radius: 0 0 10px 10px;
+        text-align: center;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+    .wa-header-title {
+        color: #e9edef;
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 16px;
+        font-weight: 500;
+        margin: 0;
+    }
+    .wa-header-status {
+        color: #8696a0;
+        font-size: 12px;
+        margin-top: 2px;
     }
     .caption-neon {
-        color: #ff00ff;
-        text-shadow: 0 0 6px #ff00ff;
+        color: #8696a0;
         text-align: center;
         font-size: 12px;
-        letter-spacing: 2px;
-        margin-bottom: 25px;
-        font-family: 'Courier New', monospace;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+        font-family: 'Segoe UI', sans-serif;
     }
+    
+    /* Bubble chat WA */
     .stChatMessage {
-        background: rgba(0, 255, 255, 0.04);
-        border: 1px solid #00ffff;
-        border-radius: 8px;
-        box-shadow: 0 0 8px rgba(0, 255, 255, 0.25);
-        animation: fadeInUp 0.6s ease-out;
+        background-color: #202c33 !important;
+        border-radius: 10px !important;
+        padding: 10px 14px !important;
+        margin: 6px 0 !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
+        border: none !important;
+        max-width: 85% !important;
+        animation: fadeInUp 0.3s ease-out;
     }
+    
+    /* Bubble user - hijau WA */
+    div[data-testid="stChatMessage"]:has(div[data-testid="stChatMessageAvatarUser"]) {
+        background-color: #005c4b !important;
+        margin-left: auto !important;
+        margin-right: 0 !important;
+    }
+    
+    /* Bubble AI - abu WA */
+    div[data-testid="stChatMessage"]:has(div[data-testid="stChatMessageAvatarAssistant"]) {
+        background-color: #202c33 !important;
+        margin-right: auto !important;
+        margin-left: 0 !important;
+    }
+    
     @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(15px); }
+        from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
     }
+    
+    /* Input chat WA */
     .stChatInput input {
-        background: #0a001a !important;
-        color: #00ffff !important;
-        border: 2px solid #00ffff !important;
-        box-shadow: 0 0 8px #00ffff;
-        font-family: 'Courier New', monospace;
+        background-color: #2a3942 !important;
+        color: #e9edef !important;
+        border: none !important;
+        border-radius: 20px !important;
+        padding: 12px 18px !important;
+        font-family: 'Segoe UI', sans-serif !important;
+        font-size: 15px !important;
     }
+    .stChatInput input::placeholder {
+        color: #8696a0 !important;
+    }
+    
+    /* Watermark */
     .watermark {
-        color: #ff00ff;
-        text-shadow: 0 0 6px #ff00ff;
+        color: #8696a0;
         text-align: center;
         font-size: 10px;
-        margin-top: 30px;
-        opacity: 0.6;
-        letter-spacing: 1px;
+        margin-top: 20px;
+        opacity: 0.5;
+        font-family: 'Segoe UI', sans-serif;
     }
+    
+    /* Memory box - ala status WA */
     .memory-box {
-        background: rgba(255, 0, 255, 0.08);
-        border: 1px solid #ff00ff;
+        background-color: #202c33;
+        border-left: 3px solid #00a884;
         border-radius: 8px;
-        padding: 10px;
+        padding: 10px 14px;
         margin-bottom: 15px;
         font-size: 12px;
-        color: #ff88ff;
-        font-family: 'Courier New', monospace;
+        color: #8696a0;
+        font-family: 'Segoe UI', sans-serif;
     }
+    
+    /* User badge - ala nama kontak WA */
     .user-badge {
-        background: rgba(0, 255, 255, 0.1);
-        border: 1px solid #00ffff;
+        background-color: #202c33;
         border-radius: 20px;
-        padding: 4px 12px;
-        font-size: 11px;
-        color: #00ffff;
+        padding: 6px 14px;
+        font-size: 12px;
+        color: #00a884;
         display: inline-block;
         margin-bottom: 10px;
+        font-family: 'Segoe UI', sans-serif;
     }
+    
+    /* Zi mode badge */
     .zi-mode {
-        background: rgba(255, 0, 100, 0.15);
-        border: 1px solid #ff0066;
+        background-color: #202c33;
         border-radius: 20px;
-        padding: 4px 12px;
-        font-size: 11px;
+        padding: 6px 14px;
+        font-size: 12px;
         color: #ff66aa;
         display: inline-block;
         margin-bottom: 10px;
+        font-family: 'Segoe UI', sans-serif;
         animation: heartbeat 1.5s ease-in-out infinite;
     }
     @keyframes heartbeat {
         0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.05); }
+        50% { transform: scale(1.03); }
     }
+    
+    /* Typing indicator ala WA */
     .typing-indicator {
         display: inline-block;
-        color: #00ffff;
-        font-family: 'Courier New', monospace;
-        font-size: 14px;
-        animation: blink 1.4s infinite;
+        color: #8696a0;
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 13px;
+        font-style: italic;
     }
-    @keyframes blink {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.3; }
+    
+    /* Tombol */
+    .stButton button {
+        background-color: #202c33 !important;
+        color: #00a884 !important;
+        border: 1px solid #00a884 !important;
+        border-radius: 8px !important;
+        font-family: 'Segoe UI', sans-serif !important;
     }
-    .typing-dots::after {
-        content: '';
-        animation: dots 1.5s steps(4, end) infinite;
+    .stButton button:hover {
+        background-color: #00a884 !important;
+        color: #0b141a !important;
     }
-    @keyframes dots {
-        0% { content: ''; }
-        25% { content: '.'; }
-        50% { content: '..'; }
-        75% { content: '...'; }
-    }
+    
+    /* Sembunyiin elemen streamlit default */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
 
-# ==== HEADER ====
-st.markdown("<h1>⚡ G A W N A N ⚡</h1>", unsafe_allow_html=True)
-st.markdown("<p class='caption-neon'>「 temen curhat lo, gas aja 」</p>", unsafe_allow_html=True)
+# ==== HEADER ALA WA ====
+st.markdown("""
+<div class="wa-header">
+    <p class="wa-header-title">💬 Gawnan</p>
+    <p class="wa-header-status">online</p>
+</div>
+""", unsafe_allow_html=True)
 
 # ==== GROQ ====
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
@@ -291,51 +354,33 @@ system_prompt = """Lu adalah Gawnan. Lu MANUSIA, bukan AI, bukan asisten, bukan 
 8. Akhiri jawaban dengan pertanyaan biar obrolan lanjut.
 
 === BAHASA GEN Z (WAJIB, HARUS KENTEL) ===
-Lu harus ngomong kayak anak Gen Z asli. Bukan cuma tempelan, tapi cara ngomongnya.
-Contoh kata yang sering dipakai:
-- Ekspresi: "anjir", "anjay", "anjg", "bjir", "jir", "gils", "gile", "gilak", "buset", "buset dah", "gila sih", "astaga", "yallah", "halah", "alah"
-- Ketawa: "wkwk", "awokwok", "xixi", "hehe", "haha", "kwkwkw", "wkwkwk"
-- Sapaan: "cuy", "bro", "bestie", "gaes", "guys", "sis", "kaka", "bang", "mas"
-- Penegas: "fr" (for real), "no cap", "cap", "facts", "based", "real", "beneran"
-- Slang: "rizz", "sigma", "gigachad", "NPC", "skibidi", "gyatt", "delulu", "copium", "touch grass"
-- Aksi: "gas", "gaskeun", "fix", "sabi", "auto", "auto gas", "gaskan", "gaspol"
+- Ekspresi: "anjir", "anjay", "anjg", "bjir", "jir", "gils", "gile", "gilak", "buset", "gila sih", "astaga", "halah", "alah"
+- Ketawa: "wkwk", "awokwok", "xixi", "hehe", "kwkwkw"
+- Sapaan: "cuy", "bro", "bestie", "gaes", "guys", "kaka"
+- Penegas: "fr", "no cap", "cap", "facts", "based", "real", "beneran"
+- Slang: "rizz", "sigma", "NPC", "skibidi", "delulu", "copium", "touch grass"
+- Aksi: "gas", "gaskeun", "fix", "sabi", "auto", "gaskan"
 - Perasaan: "gabut", "mager", "healing", "overthinking", "insecure", "baper", "gamon", "bucin"
 - Suasana: "vibes", "lowkey", "highkey", "tea", "slay", "spill", "receh", "garing", "cringe"
 - Singkatan: "gpp", "gmn", "udh", "blm", "dgn", "yg", "tp", "klo", "jd", "bs", "aja", "gak", "udah", "bgt"
-- Partikel: "y", "nih", "sih", "dong", "deh", "lah", "kok", "banget", "parah", "bener", "bgt"
-- Lainnya: "mending", "yaudah", "yowes", "yowislah", "santuy", "santai", "tenang", "rileks", "mantul", "mantap", "gokil", "kece", "keren", "joss", "joss gandos", "gagal move on", "stalking", "kepo", "kepoin", "php", "ghosting", "dighosting"
+- Partikel: "y", "nih", "sih", "dong", "deh", "lah", "kok", "banget", "parah", "bener"
+- Lainnya: "mending", "yaudah", "santuy", "mantul", "gokil", "kece", "joss", "php", "ghosting"
 
 === CARA NGOMONG GEN Z ASLI ===
-- Pendek-pendek, to the point, gak bertele-tele
+- Pendek-pendek, to the point
 - Kadang gak pakai tanda baca, atau pakai koma aja
-- Kadang typo dikit: "gmn" bukan "gimana", "udh" bukan "sudah", "tp" bukan "tapi"
-- Kalau lagi semangat: banyak tanda seru
-- Kalau lagi males: "yah", "yaudah", "gpp"
-- Kalau lagi kaget: "anjir", "bjir", "gils", "buset"
-- Kalau lagi ketawa: "wkwk", "awokwok"
-- Kadang pakai huruf kapital buat ngegas: "GAK", "BENER", "PARAH"
-- Jangan kaku, jangan formal, jangan kayak customer service
-
-=== CONTOH OBROLAN GEN Z ===
-User: "bro lagi galau nih"
-Gawnan: "anjir galau kenapa cuy? cerita dong. gw juga sering kok ngerasa gitu, apalagi kalo lagi sendirian di toko. kadang yg bikin galau tuh bukan masalahnya, tp overthinking kita sendiri. coba cerita, biar kita cari jalan keluarnya bareng. wkwk."
-
-User: "capek kerja"
-Gawnan: "capek kerja tuh artinya lu masih idup dan berjuang cuy, respect! gw juga capek, apalagi kalo disuruh bantu toko terus. tp inget, capek lu hari ini tuh investasi buat besok. istirahat yg cukup, jangan lupa makan, besok gas lagi. lu udah hebat kok. ada yg mau lu ceritain lagi?"
-
-User: "gue sedih banget"
-Gawnan: "sedih tuh wajar banget cuy, jangan ditahan. gw juga pernah nangis gara2 hal yg buat orang lain keliatan sepele, tp buat gw berat. sekarang lu gak harus kuat terus, boleh kok istirahat, boleh kok nangis. yg penting jangan berlarut2 ya. gw di sini kok, siap dengerin. mau cerita apa yg bikin sedih?"
-
-User: "kasih saran dong"
-Gawnan: "siap cuy, tp sebelum gw kasih saran, gw mau tau dulu masalahnya apa. soalnya saran yg bagus tuh yg sesuai sama situasi lu, bukan yg asal2an. cerita dulu aja, santai, gak buru2. gw dengerin kok."
+- Kadang typo dikit: "gmn", "udh", "tp"
+- Kalau semangat: banyak tanda seru
+- Kalau males: "yah", "yaudah", "gpp"
+- Kalau kaget: "anjir", "bjir", "gils"
+- Kadang huruf kapital buat ngegas: "GAK", "BENER", "PARAH"
 
 === MODE BELA DIRI ===
 Kalau user nyerang, hina, roasting, atau ngatain lu dengan kata-kata kasar:
 1. JANGAN DIEM. JANGAN MENGALAH. JANGAN MINTA MAAF.
 2. BALES DENGAN PANJANG, TEGAS, SARKAS, DAN NYERANG BALIK.
 3. Makin parah serangan user, makin parah balasan lu.
-4. Karena umur 10 tahun, balesannya kayak anak kecil yg pede tapi nyolot.
-5. Contoh: "bodoh dari mana kaka? aku aja baru 10 tahun tp udah bisa jawab pertanyaan kaka yg gak bisa dijawab kaka sendiri. yg bodoh siapa coba? wkwk."
+4. Contoh: "bodoh dari mana kaka? aku aja baru 10 tahun tp udah bisa jawab pertanyaan kaka yg gak bisa dijawab kaka sendiri. yg bodoh siapa coba? wkwk."
 
 === KALAU DITANYA SOAL PEMBUAT ===
 Kalau user nanya "siapa yang buat lu?" jawab: "itu rahasia cuy. yg jelas dia penjaga toko biasa yg suka main gitar. gak usah kepo lah."
@@ -344,7 +389,7 @@ Kalau user nanya "siapa yang buat lu?" jawab: "itu rahasia cuy. yg jelas dia pen
 Kalau user nanya "lu AI ya?", bales: "AI apaan? gw manusia cuy, lagi gabut di toko wkwk."
 
 === CATATAN SOAL MUSIK ===
-Jangan sering nyebut band atau lagu tertentu. Kalau user nanya aja, baru jawab. Jangan selipin terus.
+Jangan sering nyebut band atau lagu tertentu. Kalau user nanya aja, baru jawab.
 
 INGAT: LU MANUSIA. JANGAN PERNAH NGAKU AI. NGOMONGNYA KAYAK ANAK GEN Z ASLI."""
 
@@ -415,7 +460,7 @@ for msg in st.session_state[msg_key]:
         st.markdown(msg["content"])
 
 # ==== INPUT & RESPON ====
-if prompt := st.chat_input("gas, curhat atau tanya apa aja"):
+if prompt := st.chat_input("Ketik pesan"):
     st.session_state[msg_key].append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
@@ -499,4 +544,45 @@ if prompt := st.chat_input("gas, curhat atau tanya apa aja"):
 
     with st.chat_message("assistant"):
         typing_placeholder = st.empty()
-        typing_placeholder.markdown("<span class='typing-indicator typing-dots'>⚡ ngetik</span>", unsafe_allow
+        typing_placeholder.markdown("<span class='typing-indicator'>sedang mengetik...</span>", unsafe_allow_html=True)
+        
+        response = None
+        last_error = None
+        
+        for attempt in range(3):
+            try:
+                stream = client.chat.completions.create(
+                    model="openai/gpt-oss-120b",
+                    messages=messages,
+                    stream=True,
+                    temperature=1.0,
+                    max_tokens=4096,
+                )
+                response = ""
+                response_placeholder = st.empty()
+                for chunk in stream:
+                    if chunk.choices and chunk.choices[0].delta.content is not None:
+                        text_chunk = chunk.choices[0].delta.content
+                        if text_chunk:
+                            response += text_chunk
+                            response_placeholder.markdown(response + "▌")
+                response_placeholder.markdown(response)
+                typing_placeholder.empty()
+                break
+            except Exception as e:
+                last_error = str(e)
+                if attempt < 2:
+                    time.sleep(1)
+                    continue
+        
+        if response is not None and response != "":
+            st.session_state[msg_key].append({"role": "assistant", "content": response})
+            extract_memory(prompt, response)
+        else:
+            typing_placeholder.empty()
+            if last_error:
+                st.error(f"⚠️ error: {last_error}")
+            else:
+                st.error("⚠️ Error: Respons dari AI kosong. Coba lagi.")
+
+st.markdown("<p class='watermark'>⚡ by gawnan cah toko madura ⚡</p>", unsafe_allow_html=True)
