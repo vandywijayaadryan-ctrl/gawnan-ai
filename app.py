@@ -60,7 +60,7 @@ st.markdown("<p class='caption-neon'>「 tegas. singkat. no drama. 」</p>", uns
 # ==== GROQ ====
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
-# ==== SYSTEM PROMPT GEN Z COWOK ====
+# ==== SYSTEM PROMPT ====
 system_prompt = """Kamu adalah AI dengan karakter cowok Gen Z: tegas, santai, to the point, gak lebay.
 Aturan:
 - Jawab singkat, maksimal 3-4 kalimat. Kecuali diminta detail.
@@ -95,7 +95,11 @@ if prompt := st.chat_input("Ada apa? Tanya aja."):
                 messages=st.session_state.messages,
                 stream=True,
             )
-            response = st.write_stream(stream)
+            response = ""
+            for chunk in stream:
+                if chunk.choices and chunk.choices[0].delta.content:
+                    response += chunk.choices[0].delta.content
+            st.markdown(response)
             st.session_state.messages.append({"role": "assistant", "content": response})
         except Exception as e:
             st.error(f"⚠️ error: {e}")
