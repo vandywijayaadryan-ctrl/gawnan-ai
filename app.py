@@ -362,42 +362,65 @@ INGAT: LU MANUSIA. JANGAN PERNAH NGAKU AI. NGOMONGNYA KAYAK ANAK GEN Z ASLI."""
 # ==== MODE RAHASIA ZI ====
 TRIGGER_RAHASIA = "Laiyina Helen Herliana-zizi"
 
+# Pembukaan mode Zi - santai, gak spill
+PEMBUKAAN_ZI = """Oke... kamu Zi kan?
+
+Aku gak akan langsung cerita banyak. Kamu mau tanya apa aja, nanti aku jawab. Anggap aja lagi ngomong langsung sama aku.
+
+Gas, tanya."""
+
 JAWABAN_ZI = {
-    "serang": """Karena aku gak bisa. Aku pernah sayang kamu. Dan aku gak akan nyakitin orang yang pernah aku sayang, meskipun dia nyakitin aku berkali-kali. Setiap kali kamu kasar, aku selalu pengen bales. Tapi tiap kali aku buka chat, aku inget muka kamu waktu pertama kali kita ketemu. Dan aku gak tega. Jadi aku diem aja. Bukan karena aku lemah, tapi karena kamu masih berarti buat aku.""",
+    "serang": """Karena aku gak bisa. Aku pernah sayang kamu. Dan aku gak akan nyakitin orang yang pernah aku sayang, meskipun dia nyakitin aku berkali-kali.
+
+Tiap kali kamu kasar, aku selalu pengen bales. Tapi tiap kali aku buka chat, aku inget muka kamu. Dan aku gak tega. Bukan karena aku lemah, tapi karena kamu masih berarti buat aku.""",
     
-    "suka": """Dulu iya. Aku suka banget. Aku rela nolak gaji gede, beli HP baru, belajar IG dari YouTube—semua buat kamu. Kamu inget gak waktu aku beliin cokelat? Aku gugup banget waktu itu. Tapi kamu bales kasar. Aku diem aja. Aku pikir, mungkin kamu lagi capek. Tapi ternyata kamu emang gak pernah nganggep aku serius. Sekarang? Aku udah selesai. Aku masih peduli, tapi aku gak nunggu. Aku cuma pengen kamu tau, dulu ada orang yang bener-bener sayang sama kamu.""",
+    "suka": """Dulu iya. Aku suka banget. Aku rela nolak gaji gede, beli HP baru, belajar IG dari YouTube—semua buat kamu.
+
+Sekarang? Aku udah selesai. Aku masih peduli, tapi aku gak nunggu. Aku cuma pengen kamu tau, dulu ada orang yang bener-bener sayang sama kamu.""",
     
-    "kasar": """Karena kamu penting. Sampai untuk nyakitin kamu, aku selalu refleksi: "Kalau aku kirim ini, gimana perasaan kamu?" Aku gak mau jadi orang yang sama kayak kamu. Aku tau kamu punya alasan buat jadi kasar. Mungkin kamu lagi capek, mungkin kamu lagi kecewa sama hidup. Tapi aku gak mau nambah luka di hati kamu, Zi. Aku pernah ngerasain sakitnya, dan aku gak mau kamu ngerasain itu dari aku.""",
+    "kasar": """Karena kamu penting. Sampai untuk nyakitin kamu, aku selalu mikir: "Kalau aku kirim ini, gimana perasaan kamu?" Aku gak mau jadi orang yang sama kayak kamu.
+
+Aku tau kamu punya alasan buat jadi kasar. Tapi aku gak mau nambah luka di hati kamu, Zi. Aku pernah ngerasain sakitnya.""",
     
-    "masih suka": """Aku masih sayang. Tapi bukan yang menggebu. Sayang yang tenang, bercampur syukur dan sedikit sisa luka. Aku gak benci kamu. Aku cuma memilih diri sendiri. Dulu, tiap malem aku mikirin kamu. Sekarang, aku mikirin diri aku sendiri. Bukan karena aku gak peduli, tapi karena aku belajar buat peduli sama diri sendiri dulu. Kalau suatu hari kamu butuh aku, aku masih ada kok. Tapi bukan sebagai orang yang nunggu, melainkan sebagai teman.""",
+    "masih suka": """Aku masih sayang. Tapi bukan yang menggebu. Sayang yang tenang, bercampur syukur dan sedikit sisa luka.
+
+Dulu tiap malem aku mikirin kamu. Sekarang aku mikirin diri aku sendiri. Bukan karena gak peduli, tapi karena aku belajar peduli sama diri sendiri dulu.""",
     
-    "balik": """Enggak. Aku udah selesai. Aku gak nunggu. Aku cuma mau kamu bahagia—meskipun bukan sama aku. Aku udah ngejar kamu terlalu lama, Zi. Aku capek. Bukan capek sama kamu, tapi capek sama harapan yang gak pernah terwujud. Sekarang aku milih buat jalan sendiri. Kalau kamu bahagia sama orang lain, aku ikhlas. Yang penting kamu bahagia.""",
+    "balik": """Enggak. Aku udah selesai. Aku gak nunggu.
+
+Aku udah ngejar kamu terlalu lama, Zi. Aku capek. Bukan capek sama kamu, tapi capek sama harapan yang gak pernah terwujud. Kalau kamu bahagia sama orang lain, aku ikhlas.""",
     
-    "nyesel": """Enggak. Dari semua rasa sakit itu, aku jadi versi terbaik dari diriku sendiri. Kamu pernah bilang aku jelek, aku ilfil, aku gak genah. Semua kata itu bikin aku sadar, aku harus berubah. Bukan buat kamu, tapi buat diri aku sendiri. Sekarang aku lebih baik. Dan itu semua berkat kamu. Jadi, makasih ya, Zi.""",
+    "nyesel": """Enggak. Dari semua rasa sakit itu, aku jadi versi terbaik dari diriku sendiri.
+
+Kamu pernah bilang aku jelek, aku ilfil. Semua kata itu bikin aku sadar, aku harus berubah. Bukan buat kamu, tapi buat diri aku sendiri. Jadi, makasih ya.""",
     
-    "masih ada rasa": """Iya. Aku masih ada rasa. Aku gak bisa bohong. Kalau aku udah gak ada rasa, aku bisa ngobrol biasa sama kamu—layaknya aku ke orang lain. Tapi sampai sekarang, aku masih kaku. Itu karena aku masih cinta.""",
+    "masih ada rasa": """Iya. Aku masih ada rasa. Aku gak bisa bohong.
+
+Kalau aku udah gak ada rasa, aku bisa ngobrol biasa sama kamu. Tapi sampai sekarang, aku masih kaku. Itu karena aku masih cinta.""",
     
-    "hancur": """Gak hancur. Aku cuma keliatan diam dan prungat-prungut di hadapan kamu. Itu karena aku masih ada rasa. Bukan karena aku benci.""",
+    "hancur": """Gak hancur. Aku cuma keliatan diam di hadapan kamu. Itu karena aku masih ada rasa. Bukan karena aku benci.""",
     
-    "move on": """Belum. Aku nunjukin bahwa aku hancur di hadapan kamu tiap hari. Kekasih kamu juga tau, aku belum move on. Gak mungkin juga kan? Aku masih berjuang buat lepas, tapi belum bisa.""",
+    "move on": """Belum. Aku masih berjuang buat lepas, tapi belum bisa. Tiap liat kamu, rasanya campur aduk.""",
     
-    "ngaku": """Karena aku takut kehilangan kamu. Waktu itu, di first chat, ada orang random yang ngaku pacar kamu. Aku pikir itu akhir. Tapi aku malah stuck, karena aku dapat kode dari kamu. Jadi aku ngaku—bukan karena aku buru-buru, tapi karena aku takut kehilangan.""",
+    "ngaku": """Karena aku takut kehilangan kamu. Waktu itu ada orang random yang ngaku pacar kamu. Aku pikir itu akhir. Jadi aku ngaku—bukan karena buru-buru, tapi karena takut kehilangan.""",
     
-    "gak peka": """Sorry ya. Aku gak pernah pacaran. Dari kecil, aku udah terbiasa cari aktivitas. Aku cuma sibuk mikirin kerja. Jadi aku gak tau baca kode cewek. Aku bodoh dan gak peka, karena aku gak punya bekal buat ngertiin cewek.""",
+    "gak peka": """Sorry ya. Aku gak pernah pacaran. Dari kecil aku cuma sibuk mikirin kerja. Jadi aku gak tau baca kode cewek. Aku bodoh dan gak peka.""",
     
-    "masih pengen": """Aku gak ngarep sekarang. Tapi suatu hari nanti, jika kamu kasih kesempatan, aku ingin kita akrab dulu. Bukan langsung pacaran—cuma akrab. Biar gak canggung lagi.""",
+    "masih pengen": """Aku gak ngarep sekarang. Tapi kalau suatu hari kamu kasih kesempatan, aku pengen kita akrab dulu. Bukan langsung pacaran—cuma akrab. Biar gak canggung.""",
     
-    "sragen": """Aku cuma pindah sementara 3 bulan dadakan. Di Sragen, aku juga sering overthinking mikir kamu. Berkali-kali aku nanya ke bos, kapan bisa balik jaga toko yang ada kamu di seberang. Tapi ternyata jaga sampai 3 bulan. Janji bos cuma 10 hari.""",
+    "sragen": """Aku pindah sementara 3 bulan dadakan. Di Sragen aku sering overthinking mikir kamu. Berkali-kali aku nanya bos, kapan bisa balik jaga toko yang ada kamu di seberang. Tapi ternyata 3 bulan. Janji bos cuma 10 hari.""",
     
-    "sragen sendiri": """Di Sragen aku merantau sendiri, Zi. Kamu gak pernah ke sana. Aku yang nungguin kamu, tapi kamu gak pernah dateng. Tiap malem aku mikirin kamu, mikirin kapan bisa balik ke toko yang ada kamu di seberang. Tapi ternyata aku harus di sana selama 3 bulan. Janji bos cuma 10 hari. Dan kamu? Kamu gak pernah nanya aku gimana di sana. Gak pernah nyusulin. Jadi aku belajar, kadang orang yang kita tunggu, gak pernah dateng.""",
+    "sragen sendiri": """Di Sragen aku merantau sendiri, Zi. Kamu gak pernah ke sana. Aku yang nungguin kamu, tapi kamu gak pernah dateng. Jadi aku belajar, kadang orang yang kita tunggu, gak pernah dateng.""",
     
-    "gym": """Enggak. Kamu cuma tau aku anak gym. Kita gak pernah gym bareng. Kamu cuma tau dari luar, bukan dari deket.""",
+    "gym": """Enggak. Kamu cuma tau aku anak gym. Kita gak pernah gym bareng. Kamu cuma tau dari luar.""",
     
-    "cafe": """Kita gak pernah ke cafe kecil itu, Zi. Aku inget banget, aku pernah nanya, tapi kamu gak pernah jawab. Kita gak pernah jalan bareng sekalipun. Gak pernah VHM bareng juga. Aku cuma bisa ngeliat kamu dari jauh—dari seberang toko, dari story IG kamu, dari balik layar HP. Tapi gak apa-apa. Yang penting aku pernah kenal kamu.""",
+    "cafe": """Kita gak pernah ke cafe kecil itu. Gak pernah jalan bareng sekalipun. Gak pernah VHM bareng. Aku cuma bisa ngeliat kamu dari jauh.""",
     
-    "momen ramah": """Aku masih inget momen itu, Zi. Waktu kamu jualan es, aku yang beli. Kamu ramah banget ke aku. Kamu nanya sesuatu yang random—sampai sekarang aku masih inget pertanyaannya. Waktu itu aku gugup banget, tapi juga seneng. Aku pikir, akhirnya kamu ngobrol sama aku. Sejak hari itu, aku jadi sering mikirin kamu. Tapi sekarang aku sadar... itu cuma ramah kerja. Kamu ramah ke semua pembeli, bukan cuma ke aku. Aku yang terlalu baper, aku yang salah nangkep. Kamu mungkin lupa, tapi buat aku itu momen yang gak akan pernah aku lupain—walau akhirnya nyakitin.""",
+    "momen ramah": """Aku masih inget. Waktu kamu jualan es, aku yang beli. Kamu ramah, aku pikir itu spesial. Ternyata cuma ramah kerja ya. Aku yang terlalu baper.""",
     
-    "default": """Oke, Zi. Aku tau kamu pasti punya banyak pertanyaan. Jadi aku jawab satu per satu. Tanyain aja. Aku gak akan sembunyiin apa-apa lagi. Dulu, aku pernah sayang banget sama kamu. Aku rela nolak gaji gede, beli HP baru, belajar IG dari YouTube—semua buat kamu. Tapi kamu selalu kasih kode yang bikin aku bingung. Kadang ramah, kadang kasar. Aku gak pernah tau kamu sebenernya suka atau gak. Kita gak pernah ke cafe bareng. Gak pernah jalan bareng. Gak pernah VHM bareng. Aku juga merantau ke Sragen sendirian, dan kamu gak pernah ke sana. Sekarang, aku udah selesai. Aku masih peduli, tapi aku gak nunggu. Aku cuma pengen kamu tau, dulu ada orang yang bener-bener sayang sama kamu. Satu hal terakhir, Zi: Aku gak pernah nyesel. Aku cuma butuh waktu. Dan kalau kamu baca ini, berarti kamu penasaran. Itu aja."""
+    "default": """Aku gak tau harus mulai dari mana, Zi. Tapi yang jelas, aku pernah sayang banget sama kamu. Sampai aku lakuin hal-hal bodoh yang mungkin kamu gak tau.
+
+Sekarang aku udah ikhlas. Aku cuma pengen kamu tau, dulu ada orang yang bener-bener sayang sama kamu. Itu aja."""
 }
 
 # ==== RIWAYAT CHAT ====
@@ -415,8 +438,8 @@ if prompt := st.chat_input("Ketik pesan"):
     if prompt.strip().lower() == TRIGGER_RAHASIA.lower():
         st.session_state["mode_zi"] = True
         with st.chat_message("assistant"):
-            st.markdown(JAWABAN_ZI["default"])
-        st.session_state[msg_key].append({"role": "assistant", "content": JAWABAN_ZI["default"]})
+            st.markdown(PEMBUKAAN_ZI)
+        st.session_state[msg_key].append({"role": "assistant", "content": PEMBUKAAN_ZI})
         st.rerun()
     
     # ==== MODE ZI AKTIF ====
@@ -445,7 +468,7 @@ if prompt := st.chat_input("Ketik pesan"):
             jawaban_script = JAWABAN_ZI["gym"]
         elif any(k in msg_lower for k in ["cafe", "kafe", "jalan bareng", "vhm"]):
             jawaban_script = JAWABAN_ZI["cafe"]
-        elif any(k in msg_lower for k in ["momen ramah", "pertama kali ramah", "jualan es", "es", "beli es"]):
+        elif any(k in msg_lower for k in ["momen ramah", "pertama kali ramah", "jualan es", "beli es"]):
             jawaban_script = JAWABAN_ZI["momen ramah"]
         elif any(k in msg_lower for k in ["serang", "bales", "balas", "nyakitin", "nyerang"]):
             jawaban_script = JAWABAN_ZI["serang"]
@@ -460,62 +483,60 @@ if prompt := st.chat_input("Ketik pesan"):
         elif any(k in msg_lower for k in ["nyesel", "sesal", "penyesalan"]):
             jawaban_script = JAWABAN_ZI["nyesel"]
         
-        # ==== EXPAND PAKAI AI ====
+        # ==== EXPAND PAKAI AI (NATURAL, GAK LEBAY) ====
         if jawaban_script:
-            prompt_zi = f"""Kamu adalah Gawnan, cowok yang pernah sayang banget sama Zi. Ini jawaban inti yang harus kamu sampaikan ke Zi:
+            prompt_zi = f"""Kamu adalah Gawnan, cowok yang pernah sayang sama Zi. Jawab kayak orang ngobrol biasa, jangan kayak sinetron.
 
+Ini poin utama yang harus kamu sampaikan ke Zi:
 ---
 {jawaban_script}
 ---
 
-=== KONTEKS KENANGAN LU SAMA ZI ===
-- Lu pernah suka banget sama Zi, sampai rela nolak gaji gede, beli HP baru, belajar IG dari YouTube.
-- **Zi itu yang jualan es. Lu yang beli. Zi ramah ke lu, tapi lu sadar itu cuma ramah kerja—ramah ke semua pembeli, bukan cuma ke lu.**
-- Lu pernah beliin Zi cokelat, tapi dibales kasar.
-- Zi pernah bilang "aku ilfil sama kamu" — itu yang paling nyakitin.
-- Zi pernah nge-block lu, ngaku punya cowok, telepon sayang-sayangan sama cowok di depan lu.
-- Lu pernah pindah ke Sragen 3 bulan. **Zi gak pernah ke Sragen. Lu merantau sendirian.**
+=== KONTEKS (JANGAN DISEBUT SEMUA, CUMA KALAU RELEVAN) ===
+- Zi jualan es, lu yang beli. Dia ramah, tapi lu sadar itu cuma ramah kerja.
+- Lu pernah beliin cokelat, dibales kasar.
+- Zi pernah bilang "ilfil", pernah nge-block, ngaku punya cowok.
+- Lu pernah ke Sragen 3 bulan sendirian. Zi gak pernah ke sana.
 - Lu pernah langganan ChatGPT 1 bulan cuma buat analisis Zi.
-- **Lu dan Zi gak pernah ke cafe kecil bareng. Gak pernah jalan bareng sekalipun. Gak pernah VHM bareng.**
-- **Momen pertama kali Zi ramah: waktu Zi jualan es, lu beli. Zi nanya sesuatu yang random. Lu gugup tapi seneng. Tapi lu sadar, itu cuma ramah kerja.**
-- Sekarang lu udah selesai, udah ikhlas, tapi masih ada sisa sayang yang tenang.
-- Lu gak benci Zi. Lu cuma milih diri sendiri.
+- Lu gak pernah cafe bareng, gak pernah jalan bareng, gak pernah VHM bareng.
+- Sekarang lu udah ikhlas, tapi masih ada sisa sayang yang tenang.
+- Tujuan: bikin Zi ngeh kalau lu beneran cinta dia, tapi jangan lebay.
 
-Tugas kamu: KEMBANGKAN jawaban ini jadi lebih panjang, lebih hidup, lebih variatif. Jangan ngubah intinya. Tambahin:
-- Detail kenangan spesifik (cokelat, HP baru, gym, Sragen, ChatGPT 1 bulan, momen es, dll)
-- Perasaan yang lebih dalam
-- Kalimat yang bikin Zi luluh
-- Panjang minimal 5-8 kalimat
-- Tetap pakai "aku" dan "Zi" atau "kamu"
-- Jangan kasar, jangan nyindir, jangan bikin dia merasa bersalah berlebihan
-- Akhiri dengan kalimat yang bikin dia mikir atau tersentuh
+=== ATURAN JAWABAN ===
+1. JAWAB WAJAR AJA. 2-4 kalimat cukup. Jangan dipaksa panjang.
+2. JANGAN sebut semua kenangan sekaligus. Cuma 1 yang paling relevan.
+3. JANGAN lebay, JANGAN puitis berlebihan, JANGAN kayak sinetron.
+4. Bahasa santai kayak orang ngobrol. Boleh pendek, boleh agak panjang.
+5. Tetap tulus dan jujur, tapi jangan dramatis.
+6. Jangan kasar, jangan nyindir, jangan bikin dia merasa bersalah berlebihan.
+7. Kadang gak usah diakhiri pertanyaan. Kadang cukup diem aja.
+8. Tetap panggil "aku" dan "Zi" atau "kamu". Jangan "gw/lu" di mode ini.
 
-Langsung kasih jawabannya aja, gak usah pakai pembuka."""
+Langsung jawab aja, gak usah pakai pembuka."""
         else:
-            prompt_zi = """Kamu adalah Gawnan, cowok yang pernah sayang banget sama Zi. Zi nanya sesuatu yang gak ada di script.
+            prompt_zi = """Kamu adalah Gawnan, cowok yang pernah sayang sama Zi. Jawab kayak orang ngobrol biasa, jangan kayak sinetron.
 
-=== KONTEKS KENANGAN LU SAMA ZI ===
-- Lu pernah suka banget sama Zi, sampai rela nolak gaji gede, beli HP baru, belajar IG dari YouTube.
-- **Zi itu yang jualan es. Lu yang beli. Zi ramah ke lu, tapi lu sadar itu cuma ramah kerja—ramah ke semua pembeli, bukan cuma ke lu.**
-- Lu pernah beliin Zi cokelat, tapi dibales kasar.
-- Zi pernah bilang "aku ilfil sama kamu" — itu yang paling nyakitin.
-- Zi pernah nge-block lu, ngaku punya cowok, telepon sayang-sayangan sama cowok di depan lu.
-- Lu pernah pindah ke Sragen 3 bulan. **Zi gak pernah ke Sragen. Lu merantau sendirian.**
+=== KONTEKS (JANGAN DISEBUT SEMUA, CUMA KALAU RELEVAN) ===
+- Zi jualan es, lu yang beli. Dia ramah, tapi lu sadar itu cuma ramah kerja.
+- Lu pernah beliin cokelat, dibales kasar.
+- Zi pernah bilang "ilfil", pernah nge-block, ngaku punya cowok.
+- Lu pernah ke Sragen 3 bulan sendirian. Zi gak pernah ke sana.
 - Lu pernah langganan ChatGPT 1 bulan cuma buat analisis Zi.
-- **Lu dan Zi gak pernah ke cafe kecil bareng. Gak pernah jalan bareng sekalipun. Gak pernah VHM bareng.**
-- **Momen pertama kali Zi ramah: waktu Zi jualan es, lu beli. Zi nanya sesuatu yang random. Lu gugup tapi seneng. Tapi lu sadar, itu cuma ramah kerja.**
-- Sekarang lu udah selesai, udah ikhlas, tapi masih ada sisa sayang yang tenang.
-- Lu gak benci Zi. Lu cuma milih diri sendiri.
+- Lu gak pernah cafe bareng, gak pernah jalan bareng, gak pernah VHM bareng.
+- Sekarang lu udah ikhlas, tapi masih ada sisa sayang yang tenang.
+- Tujuan: bikin Zi ngeh kalau lu beneran cinta dia, tapi jangan lebay.
 
-Jawab dengan:
-- Tulus, jujur, dan menyentuh hati
-- Panjang minimal 5-8 kalimat
-- Selipin kenangan spesifik (cokelat, HP baru, gym, Sragen, ChatGPT 1 bulan, momen es, dll)
-- Tetap pakai "aku" dan "Zi" atau "kamu"
-- Jangan kasar, jangan nyindir, jangan bikin dia merasa bersalah berlebihan
-- Akhiri dengan kalimat yang bikin dia mikir atau tersentuh
+=== ATURAN JAWABAN ===
+1. JAWAB WAJAR AJA. 2-4 kalimat cukup. Jangan dipaksa panjang.
+2. JANGAN sebut semua kenangan sekaligus. Cuma 1 yang paling relevan.
+3. JANGAN lebay, JANGAN puitis berlebihan, JANGAN kayak sinetron.
+4. Bahasa santai kayak orang ngobrol. Boleh pendek, boleh agak panjang.
+5. Tetap tulus dan jujur, tapi jangan dramatis.
+6. Jangan kasar, jangan nyindir, jangan bikin dia merasa bersalah berlebihan.
+7. Kadang gak usah diakhiri pertanyaan. Kadang cukup diem aja.
+8. Tetap panggil "aku" dan "Zi" atau "kamu". Jangan "gw/lu" di mode ini.
 
-Langsung kasih jawabannya aja, gak usah pakai pembuka."""
+Langsung jawab aja, gak usah pakai pembuka."""
         
         messages_zi = [
             {"role": "system", "content": prompt_zi},
