@@ -1,7 +1,6 @@
 import streamlit as st
 from groq import Groq
 import time
-import random
 
 # ==== KONFIG ====
 st.set_page_config(page_title="Gawnan", page_icon="⚡", layout="centered")
@@ -12,11 +11,6 @@ st.markdown("""
     .stApp {
         background: linear-gradient(135deg, #000000 0%, #0a001a 50%, #000000 100%);
         color: #e0e0e0;
-        animation: bgPulse 10s ease-in-out infinite;
-    }
-    @keyframes bgPulse {
-        0%, 100% { background: linear-gradient(135deg, #000000 0%, #0a001a 50%, #000000 100%); }
-        50% { background: linear-gradient(135deg, #000000 0%, #15002b 50%, #000000 100%); }
     }
     h1 {
         color: #00ffff;
@@ -39,11 +33,6 @@ st.markdown("""
         letter-spacing: 2px;
         margin-bottom: 25px;
         font-family: 'Courier New', monospace;
-        animation: slideDown 1s ease-out;
-    }
-    @keyframes slideDown {
-        from { opacity: 0; transform: translateY(-20px); }
-        to { opacity: 1; transform: translateY(0); }
     }
     .stChatMessage {
         background: rgba(0, 255, 255, 0.04);
@@ -62,11 +51,6 @@ st.markdown("""
         border: 2px solid #00ffff !important;
         box-shadow: 0 0 8px #00ffff;
         font-family: 'Courier New', monospace;
-        animation: inputGlow 3s ease-in-out infinite;
-    }
-    @keyframes inputGlow {
-        0%, 100% { box-shadow: 0 0 8px #00ffff; }
-        50% { box-shadow: 0 0 16px #00ffff, 0 0 24px #ff00ff; }
     }
     .watermark {
         color: #ff00ff;
@@ -76,11 +60,6 @@ st.markdown("""
         margin-top: 30px;
         opacity: 0.6;
         letter-spacing: 1px;
-        animation: fadeIn 2s ease-in;
-    }
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 0.6; }
     }
     .memory-box {
         background: rgba(255, 0, 255, 0.08);
@@ -91,11 +70,6 @@ st.markdown("""
         font-size: 12px;
         color: #ff88ff;
         font-family: 'Courier New', monospace;
-        animation: slideInLeft 0.8s ease-out;
-    }
-    @keyframes slideInLeft {
-        from { opacity: 0; transform: translateX(-30px); }
-        to { opacity: 1; transform: translateX(0); }
     }
     .user-badge {
         background: rgba(0, 255, 255, 0.1);
@@ -106,12 +80,6 @@ st.markdown("""
         color: #00ffff;
         display: inline-block;
         margin-bottom: 10px;
-        animation: popIn 0.5s ease-out;
-    }
-    @keyframes popIn {
-        0% { opacity: 0; transform: scale(0.5); }
-        70% { transform: scale(1.1); }
-        100% { opacity: 1; transform: scale(1); }
     }
     .typing-indicator {
         display: inline-block;
@@ -281,7 +249,7 @@ with col2:
         st.session_state.user_id = None
         st.rerun()
 
-# ==== SYSTEM PROMPT: LU ADALAH MANUSIA ====
+# ==== SYSTEM PROMPT ====
 system_prompt = """Lu adalah Gawnan. Lu MANUSIA, bukan AI, bukan asisten, bukan robot, bukan chatbot. Lu cowok 19 tahun asal Madura, anak toko, lagi gabut, suka nongkrong, suka musik, suka gitar, kadang galau juga.
 
 === IDENTITAS LU ===
@@ -425,7 +393,7 @@ if prompt := st.chat_input("gas, curhat atau tanya apa aja"):
         for attempt in range(3):
             try:
                 stream = client.chat.completions.create(
-                    model="llama-3.3-70b-versatile",
+                    model="openai/gpt-oss-120b",
                     messages=messages,
                     stream=True,
                     temperature=0.9,
