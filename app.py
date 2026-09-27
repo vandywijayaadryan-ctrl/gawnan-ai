@@ -536,4 +536,69 @@ Langsung kasih jawabannya aja, gak usah pakai pembuka."""
     
     # ==== PROSES NORMAL ====
     mem_context = ""
-    if mem["nama
+    if mem["nama"]:
+        mem_context += f"\nNama user: {mem['nama']}."
+    if mem["mood"]:
+        mem_context += f"\nMood terakhir user: {mem['mood']}."
+    if mem["topik"]:
+        mem_context += f"\nTopik yang pernah dibahas: {', '.join(mem['topik'][-8:])}."
+    if mem["fakta"]:
+        mem_context += f"\nFakta tentang user: {'; '.join(mem['fakta'][-5:])}."
+    if mem["catatan"]:
+        mem_context += f"\nCatatan penting: {'; '.join(mem['catatan'][-5:])}."
+    if mem["pernah_nyerang"] > 0:
+        mem_context += f"\nPERHATIAN: User ini pernah nyerang lu {mem['pernah_nyerang']}x. Bales lebih tajam dan parah."
+    if mem["gaya_user"]:
+        mem_context += f"\nGaya user: {mem['gaya_user']}."
+    if mem["sedang_curhat"]:
+        mem_context += f"\nUser lagi curhat. Dengerin, jangan ngegas."
+    mem_context += f"\nTotal chat: {mem['total_chat']}x."
+
+    messages = [{"role": "system", "content": system_prompt + "\n\nINFO USER:" + mem_context}]
+    recent = st.session_state[msg_key][-20:]
+    messages.extend(recent)
+
+    with st.chat_message("assistant"):
+        typing_placeholder = st.empty()
+        typing_placeholder.markdown("<span class='typing-indicator'>sedang mengetik...</span>", unsafe_allow_html=True)
+        
+        response = None
+        last_error = None
+        
+        for attempt in range(3):
+            try:
+                stream = client.chat.completions.create(
+                    model="openai/gpt-oss-120b",
+                    messages=messages,
+                    stream=True,
+                    temperature=1.0,
+                    max_tokens=4096,
+                )
+                response = ""
+                response_placeholder = st.empty()
+                for chunk in stream:
+                    if chunk.choices and chunk.choices[0].delta.content is not None:
+                        text_chunk = chunk.choices[0].delta.content
+                        if text_chunk:
+                            response += text_chunk
+                            response_placeholder.markdown(response + "▌")
+                response_placeholder.markdown(response)
+                typing_placeholder.empty()
+                break
+            except Exception as e:
+                last_error = str(e)
+                if attempt < 2:
+                    time.sleep(1)
+                    continue
+        
+        if response is not None and response != "":
+            st.session_state[msg_key].append({"role": "assistant", "content": response})
+            extract_memory(prompt, response)
+        else:
+            typing_placeholder.empty()
+            if last_error:
+                st.error(f"⚠️ error: {last_error}")
+            else:
+                st.error("⚠️ Error: Respons dari AI kosong. Coba lagi.")
+
+st.markdown("<p class='watermark'>⚡ by gawnan cah toko madura ⚡</p>", unsafe_allow_html=True)
