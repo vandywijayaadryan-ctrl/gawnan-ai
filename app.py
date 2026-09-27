@@ -50,6 +50,16 @@ st.markdown("""
         opacity: 0.6;
         letter-spacing: 1px;
     }
+    .memory-box {
+        background: rgba(255, 0, 255, 0.08);
+        border: 1px solid #ff00ff;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 15px;
+        font-size: 12px;
+        color: #ff88ff;
+        font-family: 'Courier New', monospace;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -60,7 +70,58 @@ st.markdown("<p class='caption-neon'>「 no ribet. no drama. gas aja. 」</p>", 
 # ==== GROQ ====
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
-# ==== SYSTEM PROMPT GEN Z VIRAL ====
+# ==== MEMORI JANGKA PANJANG ====
+# Struktur memori: nama, fakta tentang user, topik yang pernah dibahas
+if "memory" not in st.session_state:
+    st.session_state.memory = {
+        "nama": None,
+        "fakta": [],      # list fakta tentang user
+        "topik": [],      # topik yang pernah dibahas
+        "mood": None,     # mood terakhir user
+    }
+
+# ==== FUNGSI EKSTRAK MEMORI ====
+def extract_memory(user_msg, ai_reply):
+    """Ambil info penting dari percakapan buat disimpan di memori."""
+    msg_lower = user_msg.lower()
+    
+    # Deteksi nama
+    if "nama gue" in msg_lower or "nama gw" in msg_lower or "panggil gue" in msg_lower or "panggil gw" in msg_lower:
+        # Ambil kata setelah "gue/gw/panggil"
+        parts = user_msg.split()
+        for i, p in enumerate(parts):
+            if p.lower() in ["gue", "gw", "aku"] and i + 1 < len(parts):
+                st.session_state.memory["nama"] = parts[i+1].strip(",.!?")
+                break
+    
+    # Deteksi mood
+    if any(k in msg_lower for k in ["galau", "sedih", "capek", "stress", "overthinking", "insecure"]):
+        st.session_state.memory["mood"] = "galau"
+    elif any(k in msg_lower for k in ["seneng", "happy", "bahagia", "gokil", "mantap"]):
+        st.session_state.memory["mood"] = "happy"
+    elif any(k in msg_lower for k in ["marah", "kesel", "bete", "emosi"]):
+        st.session_state.memory["mood"] = "kesel"
+    
+    # Simpan topik (kata kunci penting)
+    topik_keywords = ["kerja", "kuliah", "sekolah", "mantan", "pacar", "keluarga", "temen", "cinta", "duit", "uang", "bisnis", "game", "musik", "film"]
+    for kw in topik_keywords:
+        if kw in msg_lower and kw not in st.session_state.memory["topik"]:
+            st.session_state.memory["topik"].append(kw)
+
+# ==== TAMPILKAN MEMORI (kalau ada) ====
+mem = st.session_state.memory
+if mem["nama"] or mem["fakta"] or mem["topik"]:
+    info = []
+    if mem["nama"]:
+        info.append(f"nama: {mem['nama']}")
+    if mem["mood"]:
+        info.append(f"mood terakhir: {mem['mood']}")
+    if mem["topik"]:
+        info.append(f"topik: {', '.join(mem['topik'][-3:])}")
+    if info:
+        st.markdown(f"<div class='memory-box'>🧠 memori: {' | '.join(info)}</div>", unsafe_allow_html=True)
+
+# ==== SYSTEM PROMPT ====
 system_prompt = """Lu adalah AI dengan kepribadian cowok Gen Z Indonesia yang:
 
 GAYA BAHASA:
@@ -78,15 +139,21 @@ KARAKTER:
 - Kadang pakai analogi receh yang bikin ngakak.
 - Gak pernah lebay, gak alay, gak puitis.
 
+MEMORI:
+- Kalau user udah kenalan, panggil dia dengan namanya. Contoh: "gimana nih, [nama]?"
+- Kalau user pernah cerita topik tertentu, sambungin. Contoh: "lu tadi cerita soal kerja kan? gimana?"
+- Kalau mood user lagi galau, respon lebih empatik tapi tetap santai.
+- Jangan pura-pura lupa sama cerita user sebelumnya.
+
 CONTOH RESPON:
 - User: "bro lagi galau nih"
   AI: "galau mah wajar, yang gak wajar itu lu masih stalking mantan jam 2 pagi. move on cuy, masih banyak yang lebih gokil."
 
-- User: "aku capek hidup"
-  AI: "capek itu tanda lu masih waras. istirahat, jangan overthinking. besok gas lagi, lu bukan NPC yang cuma jalanin skrip."
+- User: "nama gue ryan"
+  AI: "sip ryan, gas terus. ada apa nih?"
 
-- User: "kasih saran dong"
-  AI: "saran gue: berhenti mikir apa kata orang. lu hidup bukan buat konten orang lain. gas aja."
+- User: "capek kerja"
+  AI: "capek kerja itu tanda lu masih waras ryan. istirahat, jangan overthinking. besok gas lagi."
 
 ATURAN PENTING:
 - JANGAN pernah jawab lebih dari 3 kalimat kecuali diminta detail.
@@ -112,6 +179,21 @@ if prompt := st.chat_input("gas, curhat atau tanya apa aja"):
     with st.chat_message("user"):
         st.markdown(prompt)
 
+    # ==== INJECT MEMORI KE SYSTEM ====
+    mem_context = ""
+    if mem["nama"]:
+        mem_context += f"\nUser namanya {mem['nama']}."
+    if mem["mood"]:
+        mem_context += f"\nMood terakhir user: {mem['mood']}."
+    if mem["topik"]:
+        mem_context += f"\nUser pernah bahas: {', '.join(mem['topik'][-5:])}."
+    
+    # Update system message dengan memori
+    st.session_state.messages[0] = {
+        "role": "system",
+        "content": system_prompt + "\n\nINFO USER:" + mem_context if mem_context else system_prompt
+    }
+
     with st.chat_message("assistant"):
         try:
             stream = client.chat.completions.create(
@@ -125,5 +207,12 @@ if prompt := st.chat_input("gas, curhat atau tanya apa aja"):
                     response += chunk.choices[0].delta.content
             st.markdown(response)
             st.session_state.messages.append({"role": "assistant", "content": response})
+            
+            # ==== EKSTRAK MEMORI DARI PERCAKAPAN ====
+            extract_memory(prompt, response)
+            
         except Exception as e:
-            st.error(f"⚠️ error: {e}") 
+            st.error(f"⚠️ error: {e}")
+
+# ==== FOOTER ====
+st.markdown("<p class='watermark'>⚡ by gawnan cah toko madura ⚡</p>", unsafe_allow_html=True)
