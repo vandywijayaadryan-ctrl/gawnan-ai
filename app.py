@@ -424,7 +424,7 @@ if prompt := st.chat_input("gas, curhat atau tanya apa aja"):
         
         for attempt in range(3):
             try:
-                model_choice = "llama-3.3-70b-versatile" if attempt == 0 else "llama-3.1-8b-instant"
+                model_choice = "openai/gpt-oss-120b" if attempt == 0 else "openai/gpt-oss-20b"
                 stream = client.chat.completions.create(
                     model=model_choice,
                     messages=messages,
