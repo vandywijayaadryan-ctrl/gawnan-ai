@@ -1,79 +1,89 @@
 import streamlit as st
 from groq import Groq
 
-# ==== KONFIG HALAMAN ====
-st.set_page_config(page_title="Gawnan AI", page_icon="💜", layout="centered")
+# ==== KONFIG ====
+st.set_page_config(page_title="Gawnan AI", page_icon="⚡", layout="centered")
 
-# ==== CSS TEMA NEON ====
+# ==== CSS NEON ====
 st.markdown("""
 <style>
     .stApp {
-        background: linear-gradient(135deg, #0a0014 0%, #1a0033 50%, #000000 100%);
-        color: #00ffff;
+        background: linear-gradient(135deg, #000000 0%, #0a001a 50%, #000000 100%);
+        color: #e0e0e0;
     }
     h1 {
-        color: #ff00ff;
-        text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff00ff;
+        color: #00ffff;
+        text-shadow: 0 0 8px #00ffff, 0 0 16px #00ffff, 0 0 32px #00ffff;
         font-family: 'Courier New', monospace;
         text-align: center;
-        letter-spacing: 3px;
+        letter-spacing: 4px;
+        font-weight: bold;
     }
     .caption-neon {
-        color: #00ffff;
-        text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
+        color: #ff00ff;
+        text-shadow: 0 0 6px #ff00ff;
         text-align: center;
-        font-size: 13px;
-        margin-bottom: 20px;
+        font-size: 12px;
+        letter-spacing: 2px;
+        margin-bottom: 25px;
+        font-family: 'Courier New', monospace;
     }
     .stChatMessage {
-        background: rgba(255, 0, 255, 0.05);
-        border: 1px solid #ff00ff;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+        background: rgba(0, 255, 255, 0.04);
+        border: 1px solid #00ffff;
+        border-radius: 8px;
+        box-shadow: 0 0 8px rgba(0, 255, 255, 0.25);
     }
     .stChatInput input {
-        background: #0a0014 !important;
+        background: #0a001a !important;
         color: #00ffff !important;
         border: 2px solid #00ffff !important;
-        box-shadow: 0 0 10px #00ffff;
+        box-shadow: 0 0 8px #00ffff;
+        font-family: 'Courier New', monospace;
     }
     .watermark {
-        color: #00ffff;
-        text-shadow: 0 0 8px #00ffff;
+        color: #ff00ff;
+        text-shadow: 0 0 6px #ff00ff;
         text-align: center;
-        font-size: 11px;
+        font-size: 10px;
         margin-top: 30px;
-        opacity: 0.7;
+        opacity: 0.6;
+        letter-spacing: 1px;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # ==== HEADER ====
-st.markdown("<h1>💜 G A W N A N   A I 💜</h1>", unsafe_allow_html=True)
-st.markdown("<p class='caption-neon'>「 AI Chatbot versi neon galau 」</p>", unsafe_allow_html=True)
-st.markdown("<p class='watermark'>watermark: gawnan cah toko madura</p>", unsafe_allow_html=True)
+st.markdown("<h1>⚡ G A W N A N ⚡</h1>", unsafe_allow_html=True)
+st.markdown("<p class='caption-neon'>「 tegas. singkat. no drama. 」</p>", unsafe_allow_html=True)
 
-# ==== GROQ CLIENT ====
+# ==== GROQ ====
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
-# ==== SYSTEM PROMPT ====
-system_prompt = """Kamu adalah AI chatbot dengan kepribadian anak Gen Z yang lagi galau karena patah hati.
-Gaya bicaramu santai, gaul, pakai bahasa sehari-hari anak Gen Z (gils, anjir, cuy, bestie, healing, overthinking, red flag, green flag, ghosting, toxic, move on, baper, mager).
-Jawab tetap informatif tapi santai, jangan kaku. Sesekali selipkan perasaan galau biar relate.
-Jawab pakai Bahasa Indonesia gaul."""
+# ==== SYSTEM PROMPT (MASKULIN) ====
+system_prompt = """Kamu adalah AI dengan karakter cowok tegas, santai, dan to the point.
+Aturan bicara:
+- Singkat, padat, gak bertele-tele. Maksimal 3-4 kalimat per jawaban kecuali diminta detail.
+- Gaya bahasa sehari-hari cowok: santai, asik, gak lebay, gak alay, gak puitis berlebihan.
+- Boleh pakai kata kayak "oke", "sip", "gampang", "santai", "gas", "cuy", "bro", "nih", "gini".
+- Gak perlu pakai emoji banyak. Sesekali aja kalau perlu.
+- Kalau user curhat, dengerin, kasih saran realistis. Jangan ikut drama.
+- Kalau user nanya, jawab langsung. Gak muter-muter.
+- Tegas tapi tetap respect. Gak kasar, gak nyinyir.
+- Jawab pakai Bahasa Indonesia santai."""
 
-# ==== SESSION STATE ====
+# ==== SESSION ====
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "system", "content": system_prompt}]
 
-# ==== RIWAYAT CHAT ====
+# ==== RIWAYAT ====
 for msg in st.session_state.messages:
     if msg["role"] != "system":
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
 
 # ==== INPUT & RESPON ====
-if prompt := st.chat_input("Mau curhat apa, bestie?"):
+if prompt := st.chat_input("Ada apa? Tanya aja."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
@@ -81,12 +91,11 @@ if prompt := st.chat_input("Mau curhat apa, bestie?"):
     with st.chat_message("assistant"):
         try:
             stream = client.chat.completions.create(
-                model="openai/gpt-oss-120b",
+                model="llama-3.1-8b-instant",
                 messages=st.session_state.messages,
                 stream=True,
-             
             )
             response = st.write_stream(stream)
             st.session_state.messages.append({"role": "assistant", "content": response})
         except Exception as e:
-            st.error(f"💔 error bre: {e}")
+            st.error(f"⚠️ error: {e}")
