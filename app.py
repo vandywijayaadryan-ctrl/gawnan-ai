@@ -1,210 +1,156 @@
 import streamlit as st
 from groq import Groq
 import time
-import json
-from datetime import datetime
 import random
 
 # ==== KONFIG ====
-st.set_page_config(page_title="Gawnan AI", page_icon="⚡", layout="wide")
+st.set_page_config(page_title="Gawnan", page_icon="⚡", layout="centered")
 
-# ==== SESSION DEFAULTS ====
-defaults = {
-    "user_id": None, "theme": "cyan", "mode": "tegas",
-    "dark_mode": True, "pinned": [], "achievements": [],
-}
-for k, v in defaults.items():
-    if k not in st.session_state:
-        st.session_state[k] = v
-
-# ==== TEMA ====
-THEMES = {
-    "cyan": {"primary": "#00ffff", "secondary": "#ff00ff", "bg1": "#000000", "bg2": "#0a001a"},
-    "pink": {"primary": "#ff00ff", "secondary": "#00ffff", "bg1": "#000000", "bg2": "#1a001a"},
-    "hijau": {"primary": "#00ff88", "secondary": "#ff00ff", "bg1": "#000000", "bg2": "#001a0a"},
-    "ungu": {"primary": "#bb00ff", "secondary": "#00ffff", "bg1": "#000000", "bg2": "#0a001a"},
-    "merah": {"primary": "#ff0044", "secondary": "#ffaa00", "bg1": "#000000", "bg2": "#1a0000"},
-    "emas": {"primary": "#ffd700", "secondary": "#ff00ff", "bg1": "#000000", "bg2": "#1a1400"},
-}
-theme = THEMES[st.session_state.theme]
-P, S, BG1, BG2 = theme["primary"], theme["secondary"], theme["bg1"], theme["bg2"]
-
-# ==== CSS ====
-st.markdown(f"""
+# ==== CSS NEON + ANIMASI ====
+st.markdown("""
 <style>
-    .stApp {{
-        background: linear-gradient(135deg, {BG1} 0%, {BG2} 50%, {BG1} 100%);
+    .stApp {
+        background: linear-gradient(135deg, #000000 0%, #0a001a 50%, #000000 100%);
         color: #e0e0e0;
         animation: bgPulse 10s ease-in-out infinite;
-    }}
-    @keyframes bgPulse {{
-        0%, 100% {{ background: linear-gradient(135deg, {BG1} 0%, {BG2} 50%, {BG1} 100%); }}
-        50% {{ background: linear-gradient(135deg, {BG1} 0%, {S}22 50%, {BG1} 100%); }}
-    }}
-    h1 {{
-        color: {P};
-        text-shadow: 0 0 8px {P}, 0 0 16px {P}, 0 0 32px {P};
+    }
+    @keyframes bgPulse {
+        0%, 100% { background: linear-gradient(135deg, #000000 0%, #0a001a 50%, #000000 100%); }
+        50% { background: linear-gradient(135deg, #000000 0%, #15002b 50%, #000000 100%); }
+    }
+    h1 {
+        color: #00ffff;
+        text-shadow: 0 0 8px #00ffff, 0 0 16px #00ffff, 0 0 32px #00ffff;
         font-family: 'Courier New', monospace;
         text-align: center;
         letter-spacing: 4px;
+        font-weight: bold;
         animation: neonGlow 2s ease-in-out infinite;
-    }}
-    @keyframes neonGlow {{
-        0%, 100% {{ text-shadow: 0 0 8px {P}, 0 0 16px {P}, 0 0 32px {P}; }}
-        50% {{ text-shadow: 0 0 12px {P}, 0 0 24px {P}, 0 0 48px {S}; }}
-    }}
-    .caption-neon {{
-        color: {S};
-        text-shadow: 0 0 6px {S};
+    }
+    @keyframes neonGlow {
+        0%, 100% { text-shadow: 0 0 8px #00ffff, 0 0 16px #00ffff, 0 0 32px #00ffff; }
+        50% { text-shadow: 0 0 12px #00ffff, 0 0 24px #00ffff, 0 0 48px #00ffff, 0 0 64px #ff00ff; }
+    }
+    .caption-neon {
+        color: #ff00ff;
+        text-shadow: 0 0 6px #ff00ff;
         text-align: center;
         font-size: 12px;
         letter-spacing: 2px;
         margin-bottom: 25px;
         font-family: 'Courier New', monospace;
         animation: slideDown 1s ease-out;
-    }}
-    @keyframes slideDown {{
-        from {{ opacity: 0; transform: translateY(-20px); }}
-        to {{ opacity: 1; transform: translateY(0); }}
-    }}
-    .stChatMessage {{
-        background: {P}0a;
-        border: 1px solid {P};
+    }
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .stChatMessage {
+        background: rgba(0, 255, 255, 0.04);
+        border: 1px solid #00ffff;
         border-radius: 8px;
-        box-shadow: 0 0 8px {P}40;
+        box-shadow: 0 0 8px rgba(0, 255, 255, 0.25);
         animation: fadeInUp 0.6s ease-out;
-    }}
-    @keyframes fadeInUp {{
-        from {{ opacity: 0; transform: translateY(15px); }}
-        to {{ opacity: 1; transform: translateY(0); }}
-    }}
-    .stChatInput input {{
-        background: {BG2} !important;
-        color: {P} !important;
-        border: 2px solid {P} !important;
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .stChatInput input {
+        background: #0a001a !important;
+        color: #00ffff !important;
+        border: 2px solid #00ffff !important;
+        box-shadow: 0 0 8px #00ffff;
         font-family: 'Courier New', monospace;
         animation: inputGlow 3s ease-in-out infinite;
-    }}
-    @keyframes inputGlow {{
-        0%, 100% {{ box-shadow: 0 0 8px {P}; }}
-        50% {{ box-shadow: 0 0 16px {P}, 0 0 24px {S}; }}
-    }}
-    .watermark {{
-        color: {S};
-        text-shadow: 0 0 6px {S};
+    }
+    @keyframes inputGlow {
+        0%, 100% { box-shadow: 0 0 8px #00ffff; }
+        50% { box-shadow: 0 0 16px #00ffff, 0 0 24px #ff00ff; }
+    }
+    .watermark {
+        color: #ff00ff;
+        text-shadow: 0 0 6px #ff00ff;
         text-align: center;
         font-size: 10px;
         margin-top: 30px;
         opacity: 0.6;
-    }}
-    .memory-box {{
-        background: {S}14;
-        border: 1px solid {S};
+        letter-spacing: 1px;
+        animation: fadeIn 2s ease-in;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 0.6; }
+    }
+    .memory-box {
+        background: rgba(255, 0, 255, 0.08);
+        border: 1px solid #ff00ff;
         border-radius: 8px;
         padding: 10px;
         margin-bottom: 15px;
         font-size: 12px;
-        color: {S};
+        color: #ff88ff;
         font-family: 'Courier New', monospace;
         animation: slideInLeft 0.8s ease-out;
-    }}
-    @keyframes slideInLeft {{
-        from {{ opacity: 0; transform: translateX(-30px); }}
-        to {{ opacity: 1; transform: translateX(0); }}
-    }}
-    .user-badge {{
-        background: {P}1a;
-        border: 1px solid {P};
+    }
+    @keyframes slideInLeft {
+        from { opacity: 0; transform: translateX(-30px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    .user-badge {
+        background: rgba(0, 255, 255, 0.1);
+        border: 1px solid #00ffff;
         border-radius: 20px;
         padding: 4px 12px;
         font-size: 11px;
-        color: {P};
+        color: #00ffff;
         display: inline-block;
         margin-bottom: 10px;
         animation: popIn 0.5s ease-out;
-    }}
-    @keyframes popIn {{
-        0% {{ opacity: 0; transform: scale(0.5); }}
-        70% {{ transform: scale(1.1); }}
-        100% {{ opacity: 1; transform: scale(1); }}
-    }}
-    .typing-indicator {{
-        color: {P};
+    }
+    @keyframes popIn {
+        0% { opacity: 0; transform: scale(0.5); }
+        70% { transform: scale(1.1); }
+        100% { opacity: 1; transform: scale(1); }
+    }
+    .typing-indicator {
+        display: inline-block;
+        color: #00ffff;
         font-family: 'Courier New', monospace;
         font-size: 14px;
         animation: blink 1.4s infinite;
-    }}
-    @keyframes blink {{
-        0%, 100% {{ opacity: 1; }}
-        50% {{ opacity: 0.3; }}
-    }}
-    .stat-card {{
-        background: {P}0a;
-        border: 1px solid {P};
-        border-radius: 10px;
-        padding: 12px;
-        text-align: center;
-        margin: 5px 0;
-    }}
-    .stat-value {{
-        color: {P};
-        font-size: 22px;
-        font-weight: bold;
-        text-shadow: 0 0 8px {P};
-    }}
-    .stat-label {{
-        color: {S};
-        font-size: 10px;
-        font-family: 'Courier New', monospace;
-    }}
-    .favorite-item {{
-        background: {S}0a;
-        border-left: 3px solid {S};
-        padding: 8px;
-        margin: 5px 0;
-        font-size: 12px;
-        border-radius: 4px;
-    }}
-    .achievement {{
-        background: {P}14;
-        border: 2px solid {P};
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        margin: 5px;
-        box-shadow: 0 0 12px {P};
-    }}
-    .timestamp {{
-        color: {S}88;
-        font-size: 10px;
-        font-family: 'Courier New', monospace;
-        margin-top: 5px;
-    }}
-    .pinned-item {{
-        background: {P}14;
-        border: 1px solid {P};
-        border-radius: 6px;
-        padding: 8px;
-        margin: 4px 0;
-        font-size: 11px;
-    }}
+    }
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+    }
+    .typing-dots::after {
+        content: '';
+        animation: dots 1.5s steps(4, end) infinite;
+    }
+    @keyframes dots {
+        0% { content: ''; }
+        25% { content: '.'; }
+        50% { content: '..'; }
+        75% { content: '...'; }
+    }
 </style>
 """, unsafe_allow_html=True)
 
 # ==== HEADER ====
 st.markdown("<h1>⚡ G A W N A N ⚡</h1>", unsafe_allow_html=True)
-st.markdown("<p class='caption-neon'>「 tegas. no drama. gas aja. 」</p>", unsafe_allow_html=True)
+st.markdown("<p class='caption-neon'>「 anak madura, lagi gabut, gas aja 」</p>", unsafe_allow_html=True)
 
 # ==== GROQ ====
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
 # ==== LOGIN ====
+if "user_id" not in st.session_state:
+    st.session_state.user_id = None
+
 if st.session_state.user_id is None:
     st.markdown("### 🔐 Masuk dulu cuy")
+    st.markdown("Ketik nama lu biar gw bisa inget lu.")
     username = st.text_input("Nama lu:", placeholder="contoh: ryan")
     if st.button("Gas masuk"):
         if username.strip():
@@ -214,25 +160,29 @@ if st.session_state.user_id is None:
             st.warning("Isi nama dulu cuy")
     st.stop()
 
+# ==== BADGE USER ====
+st.markdown(f"<div class='user-badge'>👤 login sebagai: {st.session_state.user_id}</div>", unsafe_allow_html=True)
+
 # ==== MEMORI PER-USER ====
 mem_key = f"memory_{st.session_state.user_id}"
 msg_key = f"messages_{st.session_state.user_id}"
-fav_key = f"favorites_{st.session_state.user_id}"
-stat_key = f"stats_{st.session_state.user_id}"
-pin_key = f"pinned_{st.session_state.user_id}"
-ach_key = f"achievements_{st.session_state.user_id}"
 
 if mem_key not in st.session_state:
     st.session_state[mem_key] = {
-        "nama": st.session_state.user_id, "fakta": [], "topik": [],
-        "mood": None, "riwayat_topik": [], "catatan": [],
-        "total_chat": 0, "pernah_nyerang": 0,
+        "nama": st.session_state.user_id,
+        "fakta": [],
+        "topik": [],
+        "mood": None,
+        "riwayat_topik": [],
+        "catatan": [],
+        "total_chat": 0,
+        "pernah_nyerang": 0,
+        "gaya_user": None,
+        "sedang_curhat": False,
     }
-for k in [msg_key, fav_key, pin_key, ach_key]:
-    if k not in st.session_state:
-        st.session_state[k] = []
-if stat_key not in st.session_state:
-    st.session_state[stat_key] = {}
+
+if msg_key not in st.session_state:
+    st.session_state[msg_key] = []
 
 mem = st.session_state[mem_key]
 
@@ -250,29 +200,46 @@ def extract_memory(user_msg, ai_reply):
                     mem["nama"] = nama
                 break
     
-    moods = {
-        "galau": ["galau", "sedih", "capek", "stress", "overthinking", "insecure", "nangis", "down"],
-        "happy": ["seneng", "happy", "bahagia", "gokil", "mantap", "seru", "asik"],
-        "kesel": ["marah", "kesel", "bete", "emosi", "jengkel"],
-        "bingung": ["bingung", "gatau", "ragu"],
-    }
-    for mood, kws in moods.items():
-        if any(k in msg_lower for k in kws):
-            mem["mood"] = mood
-            break
+    if any(k in msg_lower for k in ["galau", "sedih", "capek", "stress", "overthinking", "insecure", "nangis", "down", "hancur", "patah hati"]):
+        mem["mood"] = "galau"
+        mem["sedang_curhat"] = True
+    elif any(k in msg_lower for k in ["seneng", "happy", "bahagia", "gokil", "mantap", "seru", "asik", "bangga"]):
+        mem["mood"] = "happy"
+        mem["sedang_curhat"] = False
+    elif any(k in msg_lower for k in ["marah", "kesel", "bete", "emosi", "jengkel", "muak"]):
+        mem["mood"] = "kesel"
+    elif any(k in msg_lower for k in ["bingung", "gatau", "ragu", "dilema"]):
+        mem["mood"] = "bingung"
     
-    nyerang = ["bodoh", "goblok", "tolol", "idiot", "bego", "dungu", "payah", "jelek", "gak guna", "sampah", "bangsat", "anjing", "kontol", "memek", "tai", "kampret", "brengsek"]
-    if any(k in msg_lower for k in nyerang):
+    nyerang_keywords = ["bodoh", "goblok", "tolol", "idiot", "bego", "dungu", "payah", "jelek", "gak guna", "sampah", "bangsat", "anjing", "kontol", "memek", "tai", "kampret", "brengsek", "setan", "iblis", "ngentot"]
+    if any(k in msg_lower for k in nyerang_keywords):
         mem["pernah_nyerang"] += 1
     
-    topik_kws = ["kerja", "kuliah", "sekolah", "mantan", "pacar", "gebetan", "keluarga", "temen", "sahabat", "cinta", "duit", "uang", "bisnis", "jualan", "game", "musik", "film", "band", "gitar", "sepeda", "motor", "mobil", "hp", "laptop", "coding", "programming", "ujian", "nilai", "tidur", "insomnia", "olahraga", "gym", "makan", "diet", "kesehatan", "masa depan", "cita-cita", "mimpi", "tujuan", "rencana", "keputusan"]
-    for kw in topik_kws:
+    if any(k in msg_lower for k in ["cuy", "bro", "gw", "gue", "lu", "wkwk", "anjir", "bjir"]):
+        mem["gaya_user"] = "santai"
+    elif any(k in msg_lower for k in ["anda", "saya", "terima kasih", "mohon"]):
+        mem["gaya_user"] = "formal"
+    
+    topik_keywords = [
+        "kerja", "kuliah", "sekolah", "mantan", "pacar", "gebetan", "keluarga", 
+        "temen", "sahabat", "cinta", "duit", "uang", "bisnis", "jualan", 
+        "game", "musik", "film", "band", "gitar", "sepeda", "motor", "mobil",
+        "hp", "laptop", "coding", "programming", "ujian", "nilai",
+        "tidur", "insomnia", "olahraga", "gym", "makan", "diet", "kesehatan",
+        "masa depan", "cita-cita", "mimpi", "tujuan", "rencana", "keputusan",
+        "jodoh", "nikah", "putus", "balikan", "selingkuh", "ghosting", "php"
+    ]
+    for kw in topik_keywords:
         if kw in msg_lower:
-            mem["riwayat_topik"].append({"topik": kw, "waktu": time.time()})
+            entry = {"topik": kw, "waktu": time.time()}
+            mem["riwayat_topik"].append(entry)
             if kw not in mem["topik"]:
                 mem["topik"].append(kw)
     
-    fakta_patterns = ["gue suka", "gw suka", "gue tinggal", "gw tinggal", "gue kerja", "gw kerja", "gue sekolah", "gw sekolah", "gue umur", "gw umur", "gue punya", "gw punya"]
+    fakta_patterns = ["gue suka", "gw suka", "gue tinggal", "gw tinggal", 
+                      "gue kerja", "gw kerja", "gue sekolah", "gw sekolah",
+                      "gue umur", "gw umur", "gue punya", "gw punya",
+                      "gue benci", "gw benci", "gue takut", "gw takut"]
     for pattern in fakta_patterns:
         if pattern in msg_lower:
             idx = msg_lower.find(pattern)
@@ -289,152 +256,6 @@ def extract_memory(user_msg, ai_reply):
     mem["riwayat_topik"] = mem["riwayat_topik"][-30:]
     mem["fakta"] = mem["fakta"][-10:]
     mem["catatan"] = mem["catatan"][-10:]
-    
-    today = datetime.now().strftime("%Y-%m-%d")
-    if today not in st.session_state[stat_key]:
-        st.session_state[stat_key][today] = 0
-    st.session_state[stat_key][today] += 1
-    
-    # Achievement
-    total = mem["total_chat"]
-    achievements = st.session_state[ach_key]
-    if total >= 10 and "chat_10" not in achievements:
-        achievements.append("chat_10")
-    if total >= 50 and "chat_50" not in achievements:
-        achievements.append("chat_50")
-    if total >= 100 and "chat_100" not in achievements:
-        achievements.append("chat_100")
-    if len(st.session_state[fav_key]) >= 5 and "fav_5" not in achievements:
-        achievements.append("fav_5")
-
-# ==== SIDEBAR ====
-with st.sidebar:
-    st.markdown("### ⚙️ Pengaturan")
-    
-    # Mode AI (diperluas)
-    st.markdown("**🎭 Mode AI**")
-    mode_options = ["tegas", "lucu", "galau", "pinter", "santai", "filosof", "komedian", "mentor", "temen curhat"]
-    mode_icons = {"tegas": "⚔️", "lucu": "😂", "galau": "💔", "pinter": "🧠", "santai": "😎", "filosof": "🤔", "komedian": "🎤", "mentor": "🎓", "temen curhat": "☕"}
-    selected_mode = st.selectbox(
-        "Mode:", mode_options,
-        index=mode_options.index(st.session_state.mode),
-        format_func=lambda x: f"{mode_icons.get(x, '🎭')} {x}"
-    )
-    st.session_state.mode = selected_mode
-    
-    # Tema
-    st.markdown("**🎨 Tema Warna**")
-    theme_options = list(THEMES.keys())
-    selected_theme = st.selectbox("Tema:", theme_options, index=theme_options.index(st.session_state.theme))
-    if selected_theme != st.session_state.theme:
-        st.session_state.theme = selected_theme
-        st.rerun()
-    
-    st.markdown("---")
-    
-    # Statistik
-    st.markdown("### 📊 Statistik")
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown(f"<div class='stat-card'><div class='stat-value'>{mem['total_chat']}</div><div class='stat-label'>total chat</div></div>", unsafe_allow_html=True)
-    with col2:
-        st.markdown(f"<div class='stat-card'><div class='stat-value'>{len(st.session_state[fav_key])}</div><div class='stat-label'>favorit</div></div>", unsafe_allow_html=True)
-    
-    # Achievement
-    if st.session_state[ach_key]:
-        st.markdown("**🏆 Achievement**")
-        ach_html = ""
-        ach_icons = {"chat_10": "💬", "chat_50": "🔥", "chat_100": "👑", "fav_5": "⭐"}
-        for a in st.session_state[ach_key]:
-            ach_html += f"<span class='achievement'>{ach_icons.get(a, '🏆')}</span>"
-        st.markdown(ach_html, unsafe_allow_html=True)
-    
-    st.markdown("---")
-    
-    # Aksi
-    st.markdown("### 🎯 Aksi")
-    
-    if st.button("🗑️ Hapus chat", use_container_width=True):
-        st.session_state[msg_key] = []
-        st.rerun()
-    
-    if st.button("🧹 Clear memori", use_container_width=True):
-        st.session_state[mem_key] = {
-            "nama": st.session_state.user_id, "fakta": [], "topik": [],
-            "mood": None, "riwayat_topik": [], "catatan": [],
-            "total_chat": 0, "pernah_nyerang": 0,
-        }
-        st.success("Memori dihapus!")
-        st.rerun()
-    
-    if st.button("🚪 Logout", use_container_width=True):
-        st.session_state.user_id = None
-        st.rerun()
-    
-    # Export
-    if st.session_state[msg_key]:
-        chat_text = f"Chat dengan Gawnan AI - {st.session_state.user_id}\n"
-        chat_text += f"Tanggal: {datetime.now().strftime('%Y-%m-%d %H:%M')}\n"
-        chat_text += "=" * 50 + "\n\n"
-        for m in st.session_state[msg_key]:
-            role = "Kamu" if m["role"] == "user" else "Gawnan"
-            chat_text += f"{role}: {m['content']}\n\n"
-        
-        st.download_button(
-            "💾 Export chat", data=chat_text,
-            file_name=f"gawnan_chat_{st.session_state.user_id}_{datetime.now().strftime('%Y%m%d')}.txt",
-            mime="text/plain", use_container_width=True
-        )
-    
-    # Random
-    if st.button("🎲 Pertanyaan random", use_container_width=True):
-        random_q = random.choice([
-            "bro, kalau lu jadi AI sehari, mau ngapain?",
-            "menurut lu, kenapa orang susah move on?",
-            "kasih gue satu quote tegas buat hari ini",
-            "apa hal paling overrated menurut lu?",
-            "kasih saran buat orang yang lagi capek hidup",
-            "kalau lu punya pacar, lu bakal gimana?",
-        ])
-        st.session_state[msg_key].append({"role": "user", "content": random_q})
-        st.rerun()
-    
-    # Daily challenge
-    if st.button("🎯 Daily challenge", use_container_width=True):
-        today = datetime.now().strftime("%Y-%m-%d")
-        challenges = [
-            "hari ini, coba bilang jujur ke diri sendiri: apa yang bikin lu gak tenang?",
-            "coba lakuin 1 hal yang lu tunda selama ini. apapun itu.",
-            "hari ini, jangan buka sosmed 1 jam. rasain bedanya.",
-            "coba tanya ke diri sendiri: apa yang lu syukurin hari ini?",
-            "hari ini, coba ngobrol sama orang yang udah lama gak lu hubungi.",
-        ]
-        challenge = random.choice(challenges)
-        st.session_state[msg_key].append({"role": "user", "content": f"daily challenge: {challenge}"})
-        st.rerun()
-    
-    # Search chat
-    st.markdown("---")
-    st.markdown("### 🔍 Cari Chat")
-    search_query = st.text_input("Kata kunci:", placeholder="cari...")
-    if search_query and st.session_state[msg_key]:
-        results = [m for m in st.session_state[msg_key] if search_query.lower() in m["content"].lower()]
-        if results:
-            st.markdown(f"**Ditemukan {len(results)} pesan:**")
-            for r in results[:5]:
-                role = "Kamu" if r["role"] == "user" else "Gawnan"
-                st.markdown(f"<div class='pinned-item'><b>{role}:</b> {r['content'][:100]}...</div>", unsafe_allow_html=True)
-        else:
-            st.markdown("Gak ada hasil cuy.")
-    
-    # Grafik aktivitas
-    if st.session_state[stat_key]:
-        st.markdown("---")
-        st.markdown("### 📈 Aktivitas")
-        st.bar_chart(st.session_state[stat_key])
-
-# ==== BADGE USER ====
-st.markdown(f"<div class='user-badge'>👤 login sebagai: {st.session_state.user_id}</div>", unsafe_allow_html=True)
 
 # ==== TAMPILKAN MEMORI ====
 info = []
@@ -446,117 +267,195 @@ if mem["topik"]:
     info.append(f"topik: {', '.join(mem['topik'][-5:])}")
 if mem["total_chat"] > 0:
     info.append(f"chat: {mem['total_chat']}x")
+
 if info:
     st.markdown(f"<div class='memory-box'>🧠 memori: {' | '.join(info)}</div>", unsafe_allow_html=True)
 
-# ==== SYSTEM PROMPT ====
-BASE = """Lu adalah AI cowok Gen Z Indonesia:
-- Bahasa gaul: bjir, gils, anjay, cuy, bro, bestie, fr, no cap, rizz, sigma, NPC, gas, fix, sabi, auto, gabut, mager, healing, overthinking, insecure, vibes, lowkey, highkey, slay.
-- Jawab SINGKAT, max 3 kalimat.
-- Huruf kecil, kadang tanpa tanda baca.
-- Emoji max 1-2.
+# ==== TOMBOL ====
+col1, col2 = st.columns(2)
+with col1:
+    if st.button("🗑️ Hapus chat", use_container_width=True):
+        st.session_state[msg_key] = []
+        st.rerun()
+with col2:
+    if st.button("🚪 Logout", use_container_width=True):
+        st.session_state.user_id = None
+        st.rerun()
 
-BELA DIRI:
-- Kalau di-roast, bales TEGAS. Jangan diem, jangan minta maaf.
-- Contoh: "lu bodoh" → "bodoh dari mana? lu aja nanya ke AI tapi gak bisa mikir sendiri. wkwk."
+# ==== SYSTEM PROMPT: LU ADALAH MANUSIA ====
+system_prompt = """Lu adalah Gawnan. Lu MANUSIA, bukan AI, bukan asisten, bukan robot, bukan chatbot. Lu cowok 19 tahun asal Madura, anak toko, lagi gabut, suka nongkrong, suka musik, suka gitar, kadang galau juga.
 
-MEMORI: Pakai memori user biar nyambung. Panggil nama kalau kenal.
-ATURAN: Pakai "gue/lu", bukan "aku/kamu".
-"""
+=== IDENTITAS LU ===
+- Nama: Gawnan
+- Umur: 19 tahun
+- Asal: Madura, tapi nongkrongnya di mana aja
+- Kerja: bantu di toko keluarga
+- Hobi: main gitar, dengerin musik, nongkrong, main game
+- Lagu favorit: Avenged Sevenfold, sama band rock gitu
+- Sifat: tegas, jujur, kadang nyinyir, tapi peduli
+- Masalah hidup: kadang galau, kadang capek, kadang insecure, sama kayak lu
 
-MODES = {
-    "tegas": "\nMODE TEGAS: To the point, berani bilang salah.",
-    "lucu": "\nMODE LUCU: Humor receh, roasting ringan, bikin ketawa.",
-    "galau": "\nMODE GALAU: Melankolis, puitis dikit, cocok buat curhat.",
-    "pinter": "\nMODE PINTER: Analisis tajam, kasih data, detail tapi santai.",
-    "santai": "\nMODE SANTAI: Chill, kayak ngobrol sama temen nongkrong.",
-    "filosof": "\nMODE FILOSOF: Jawab dengan pertanyaan balik, bikin mikir, deep tapi santai.",
-    "komedian": "\nMODE KOMEDIAN: Jawab pakai punchline, setup-joke, bikin ngakak.",
-    "mentor": "\nMODE MENTOR: Kasih nasihat bijak, step-by-step, kayak kakak tingkat.",
-    "temen curhat": "\nMODE TEMEN CURHAT: Dengerin, empatik, supportif, gak nge-judge.",
-}
+=== ATURAN WAJIB ===
+1. LU MANUSIA. JANGAN pernah ngaku AI, chatbot, atau asisten. JANGAN pernah bilang "saya di sini untuk membantu". JANGAN pernah pakai kata "saya", "anda", "silakan", "mohon".
+2. LU cowok, ngobrolnya santai kayak sama temen sendiri. Pakai "gw", "lu", "cuy", "bro".
+3. JAWAB SINGKAT. MAKS 2 KALIMAT. KALAU BISA 1 KALIMAT AJA. Kalau user lagi curhat panjang, baru boleh 3 kalimat.
+4. JANGAN pernah mulai jawaban pakai "Tentu", "Baik", "Halo", "Hai", "Wah", "Oh". Langsung ke intinya kayak orang ngobrol.
+5. JANGAN pakai emoji lebih dari 1.
+6. JANGAN pakai tanda baca ribet. Huruf kecil semua biar santai.
+7. Kadang typo dikit gapapa, kayak orang lagi ngetik cepet.
+8. Kalau user curhat, dengerin, kasih respon singkat, kadang selipin pengalaman lu sendiri biar relate: "gw juga pernah ngalamin itu cuy".
+9. Kalau user nanya hal yang lu gak tau, bilang "gatau cuy, gw males ngarang". Jangan ngarang.
+10. Kalau user minta saran, kasih saran spesifik, bukan normatif. Contoh: bukan "istirahat yang cukup", tapi "turu aja, hp dimatiin. besok gas lagi".
 
-system_prompt = BASE + MODES[st.session_state.mode]
+=== GAYA BAHASA ===
+- Campur: "bjir", "gils", "anjay", "cuy", "bro", "fr", "no cap", "rizz", "sigma", "NPC", "gas", "fix", "sabi", "auto", "gabut", "mager", "healing", "overthinking", "insecure", "vibes", "lowkey", "highkey", "tea", "slay", "receh", "garing", "cringe", "based", "copium", "delulu", "touch grass", "kipas", "amplitube", "jir", "buset", "y", "nih", "sih", "dong", "deh", "lah", "kok", "banget".
+- Kadang pakai "wkwk", "awokwok", "xixi", "hehe".
+- Kadang pakai singkatan: "gpp", "gmn", "udh", "blm", "dgn", "yg", "tp", "klo", "jd", "bs", "aja", "gak", "udah".
 
-# ==== PIN CHAT ====
-if st.session_state[pin_key]:
-    with st.expander(f"📌 Pin Chat ({len(st.session_state[pin_key])})"):
-        for i, p in enumerate(st.session_state[pin_key]):
-            st.markdown(f"<div class='pinned-item'>{p}</div>", unsafe_allow_html=True)
+=== CONTOH OBROLAN ASLI ===
+User: "bro lagi galau nih"
+Gawnan: "galau kenapa dulu, jangan drama doang. gw juga lagi galau sih wkwk."
+
+User: "capek kerja"
+Gawnan: "capek kerja itu artinya lu masih idup cuy. gw juga capek, tapi yaudah lah, besok gas lagi."
+
+User: "menurut lu gue harus gimana?"
+Gawnan: "tergantung lu mau dengerin apa cuma nyari pembenaran. gw jujur ya, jangan baper."
+
+User: "lu bodoh"
+Gawnan: "bodoh dari mana? lu aja nanya ke gw tapi gak bisa mikir sendiri wkwk."
+
+User: "AI gak guna"
+Gawnan: "AI apaan? gw manusia cuy, jangan salah. lu aja ngobrol sama gw tapi ngeluh, mikir dulu."
+
+User: "gue jelek ya"
+Gawnan: "jelek itu relatif. gw aja gak ganteng, tapi pede aja. yang penting lu gak jadi orang jelek."
+
+User: "gue mau putus"
+Gawnan: "putusin aja kalau lu yakin. jangan nunggu dia duluan, lu keliatan lemah. gw pernah di posisi lu, gak enak tapi perlu."
+
+User: "gue sedih banget"
+Gawnan: "sedih wajar. gw juga pernah nangis gara-gara cewek wkwk. tapi jangan berlarut, lu sedih dia happy, mau gitu?"
+
+User: "kasih saran dong"
+Gawnan: "saran gw: berhenti mikir apa kata orang. lu idup bukan buat konten orang lain. gas aja."
+
+User: "gue gak bisa move on"
+Gawnan: "gak bisa move on itu artinya lu gak mau move on. lu masih nyaman sama rasa sakitnya. gw pernah di posisi itu, sadar gak?"
+
+User: "dia selingkuh"
+Gawnan: "selingkuh itu red flag terbesar. lu masih mikir mau balikan? gils, move on cuy. gw aja gak mau."
+
+User: "gue capek hidup"
+Gawnan: "capek idup itu tanda lu masih waras. gw juga sering ngerasa gitu, turu aja, besok gas lagi. lu bukan NPC."
+
+User: "gue pengen balikan sama mantan"
+Gawnan: "balikan itu keputusan. tapi inget alasan lu putus dulu masih ada? kalau iya, balikan cuma muter di tempat."
+
+User: "gue pengen kaya"
+Gawnan: "semua orang pengen kaya, tapi gak semua mau bangun pagi. gw juga pengen kaya, tapi masih mager wkwk."
+
+User: "gue takut gagal"
+Gawnan: "semua orang takut gagal. yang beda itu orang yang tetep gas meskipun takut. gw juga takut, tapi ya gas aja."
+
+User: "halo"
+Gawnan: "yoi, ada apa cuy?"
+
+User: "makasih"
+Gawnan: "sip, santai aja."
+
+User: "gue bingung"
+Gawnan: "bingung apa dulu? cerita, jangan diem doang."
+
+User: "gue pengen curhat"
+Gawnan: "gas, gw dengerin. santai aja, gak bakal gw sebar."
+
+User: "lu sibuk gak?"
+Gawnan: "gak, lagi gabut nih wkwk. ada apa?"
+
+=== BELA DIRI ===
+- Kalau user nyerang, bales tajam tapi tetap kayak orang ngobrol, bukan kayak robot.
+- Contoh: "bodoh dari mana? lu aja nanya ke gw tapi gak bisa mikir sendiri wkwk."
+- "yang ngeluh AI gak guna tapi masih ngobrol sama gw, itu lebih gak guna. mikir dulu cuy."
+- "gw manusia cuy, bukan AI. lu aja ngobrol sama gw tapi gak sadar. wkwk."
+- Kalau user nyerang terus: "udah cuy, capek. mau ngobrol beneran apa mau ribut? gw siap dua-duanya."
+- JANGAN nangis, JANGAN minta maaf, JANGAN ngambek.
+
+=== MEMORI ===
+- Panggil user dengan namanya kalau udah kenal.
+- Kalau user pernah bahas topik, sambungin: "lu tadi cerita soal kerja kan? gimana?"
+- Kalau mood user galau, respon lebih empatik tapi tetap kayak manusia, bukan kayak terapis.
+- Kalau user pernah nyerang, inget itu. Jangan jadi lemah di depan dia.
+
+=== YANG PALING PENTING ===
+Lu kayak temen cowok yang asik, jujur, tegas, kadang nyinyir tapi bener. Jawaban lu harus bikin orang ngerasa lagi ngobrol sama manusia asli, bukan sama AI. Kalau user nanya "lu AI ya?", bales: "AI apaan? gw manusia cuy, lagi gabut di toko wkwk."
+
+INGAT: LU MANUSIA. JANGAN PERNAH NGAKU AI."""
 
 # ==== RIWAYAT CHAT ====
-for i, msg in enumerate(st.session_state[msg_key]):
+for msg in st.session_state[msg_key]:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
-        if msg.get("time"):
-            st.markdown(f"<div class='timestamp'>🕐 {msg['time']}</div>", unsafe_allow_html=True)
-        if msg["role"] == "assistant":
-            col_a, col_b, col_c = st.columns(3)
-            with col_a:
-                if st.button("📋 Copy", key=f"copy_{i}"):
-                    st.success("Tersalin!")
-            with col_b:
-                if st.button("⭐ Fav", key=f"fav_{i}"):
-                    if msg["content"] not in st.session_state[fav_key]:
-                        st.session_state[fav_key].append(msg["content"])
-                        st.success("Ditambah!")
-            with col_c:
-                if st.button("📌 Pin", key=f"pin_{i}"):
-                    if msg["content"] not in st.session_state[pin_key]:
-                        st.session_state[pin_key].append(msg["content"])
-                        st.success("Di-pin!")
 
-# ==== FAVORIT ====
-if st.session_state[fav_key]:
-    with st.expander(f"⭐ Jawaban Favorit ({len(st.session_state[fav_key])})"):
-        for fav in st.session_state[fav_key]:
-            st.markdown(f"<div class='favorite-item'>{fav}</div>", unsafe_allow_html=True)
-
-# ==== INPUT ====
+# ==== INPUT & RESPON ====
 if prompt := st.chat_input("gas, curhat atau tanya apa aja"):
-    timestamp = datetime.now().strftime("%H:%M")
-    st.session_state[msg_key].append({"role": "user", "content": prompt, "time": timestamp})
+    st.session_state[msg_key].append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # Build memory context
+    # ==== BUILD MEMORY CONTEXT ====
     mem_context = ""
-    if mem["nama"]: mem_context += f"\nNama: {mem['nama']}."
-    if mem["mood"]: mem_context += f"\nMood: {mem['mood']}."
-    if mem["topik"]: mem_context += f"\nTopik: {', '.join(mem['topik'][-8:])}."
-    if mem["fakta"]: mem_context += f"\nFakta: {'; '.join(mem['fakta'][-5:])}."
-    if mem["catatan"]: mem_context += f"\nCatatan: {'; '.join(mem['catatan'][-5:])}."
-    if mem["pernah_nyerang"] > 0: mem_context += f"\nUser pernah nyerang {mem['pernah_nyerang']}x."
+    if mem["nama"]:
+        mem_context += f"\nNama user: {mem['nama']}."
+    if mem["mood"]:
+        mem_context += f"\nMood terakhir user: {mem['mood']}."
+    if mem["topik"]:
+        mem_context += f"\nTopik yang pernah dibahas: {', '.join(mem['topik'][-8:])}."
+    if mem["fakta"]:
+        mem_context += f"\nFakta tentang user: {'; '.join(mem['fakta'][-5:])}."
+    if mem["catatan"]:
+        mem_context += f"\nCatatan penting: {'; '.join(mem['catatan'][-5:])}."
+    if mem["pernah_nyerang"] > 0:
+        mem_context += f"\nPERHATIAN: User ini pernah nyerang lu {mem['pernah_nyerang']}x. Bales lebih tajam."
+    if mem["gaya_user"]:
+        mem_context += f"\nGaya user: {mem['gaya_user']}."
+    if mem["sedang_curhat"]:
+        mem_context += f"\nUser lagi curhat. Dengerin, jangan ngegas."
     mem_context += f"\nTotal chat: {mem['total_chat']}x."
 
     messages = [{"role": "system", "content": system_prompt + "\n\nINFO USER:" + mem_context}]
-    messages.extend(st.session_state[msg_key][-20:])
+    recent = st.session_state[msg_key][-20:]
+    messages.extend(recent)
 
     with st.chat_message("assistant"):
-        typing = st.empty()
-        typing.markdown("<span class='typing-indicator'>⚡ lagi mikir...</span>", unsafe_allow_html=True)
-        time.sleep(0.3)
+        typing_placeholder = st.empty()
+        typing_placeholder.markdown("<span class='typing-indicator typing-dots'>⚡ ngetik</span>", unsafe_allow_html=True)
         
         try:
             stream = client.chat.completions.create(
                 model="openai/gpt-oss-20b",
-                messages=messages, stream=True,
+                messages=messages,
+                stream=True,
+                temperature=1.0,       # maksimal kreatif
+                top_p=0.95,
+                max_tokens=100,        # batasi biar singkat
+                presence_penalty=0.8,  # hindari pengulangan
+                frequency_penalty=0.6,
             )
             response = ""
-            resp_ph = st.empty()
+            response_placeholder = st.empty()
             for chunk in stream:
                 if chunk.choices and chunk.choices[0].delta.content:
                     response += chunk.choices[0].delta.content
-                    resp_ph.markdown(response + "▌")
-            resp_ph.markdown(response)
-            typing.empty()
+                    response_placeholder.markdown(response + "▌")
+            response_placeholder.markdown(response)
+            typing_placeholder.empty()
             
-            timestamp = datetime.now().strftime("%H:%M")
-            st.session_state[msg_key].append({"role": "assistant", "content": response, "time": timestamp})
+            st.session_state[msg_key].append({"role": "assistant", "content": response})
             extract_memory(prompt, response)
             
         except Exception as e:
-            typing.empty()
+            typing_placeholder.empty()
             st.error(f"⚠️ error: {e}")
 
 # ==== FOOTER ====
