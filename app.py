@@ -5,7 +5,7 @@ import time
 # ==== KONFIG ====
 st.set_page_config(page_title="Gawnan", page_icon="⚡", layout="centered")
 
-# ==== CSS NEON + ANIMASI ====
+# ==== CSS NEON ====
 st.markdown("""
 <style>
     .stApp {
@@ -409,16 +409,19 @@ if prompt := st.chat_input("gas, curhat atau tanya apa aja"):
                 typing_placeholder.empty()
                 break
             except Exception as e:
-                last_error = e
+                last_error = str(e)
                 if attempt < 2:
                     time.sleep(1)
                     continue
         
-        if response:
+        if response is not None and response != "":
             st.session_state[msg_key].append({"role": "assistant", "content": response})
             extract_memory(prompt, response)
         else:
             typing_placeholder.empty()
-            st.error(f"⚠️ error: {last_error}")
+            if last_error:
+                st.error(f"⚠️ error: {last_error}")
+            else:
+                st.error("⚠️ Error: Respons dari AI kosong. Coba lagi, mungkin server Groq sedang sibuk.")
 
 st.markdown("<p class='watermark'>⚡ by gawnan cah toko madura ⚡</p>", unsafe_allow_html=True)
