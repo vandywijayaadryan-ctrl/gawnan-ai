@@ -5,12 +5,17 @@ import time
 # ==== KONFIG ====
 st.set_page_config(page_title="Gawnan AI", page_icon="⚡", layout="centered")
 
-# ==== CSS NEON ====
+# ==== CSS NEON + ANIMASI ====
 st.markdown("""
 <style>
     .stApp {
         background: linear-gradient(135deg, #000000 0%, #0a001a 50%, #000000 100%);
         color: #e0e0e0;
+        animation: bgPulse 10s ease-in-out infinite;
+    }
+    @keyframes bgPulse {
+        0%, 100% { background: linear-gradient(135deg, #000000 0%, #0a001a 50%, #000000 100%); }
+        50% { background: linear-gradient(135deg, #000000 0%, #15002b 50%, #000000 100%); }
     }
     h1 {
         color: #00ffff;
@@ -19,6 +24,11 @@ st.markdown("""
         text-align: center;
         letter-spacing: 4px;
         font-weight: bold;
+        animation: neonGlow 2s ease-in-out infinite;
+    }
+    @keyframes neonGlow {
+        0%, 100% { text-shadow: 0 0 8px #00ffff, 0 0 16px #00ffff, 0 0 32px #00ffff; }
+        50% { text-shadow: 0 0 12px #00ffff, 0 0 24px #00ffff, 0 0 48px #00ffff, 0 0 64px #ff00ff; }
     }
     .caption-neon {
         color: #ff00ff;
@@ -28,12 +38,22 @@ st.markdown("""
         letter-spacing: 2px;
         margin-bottom: 25px;
         font-family: 'Courier New', monospace;
+        animation: slideDown 1s ease-out;
+    }
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
     .stChatMessage {
         background: rgba(0, 255, 255, 0.04);
         border: 1px solid #00ffff;
         border-radius: 8px;
         box-shadow: 0 0 8px rgba(0, 255, 255, 0.25);
+        animation: fadeInUp 0.6s ease-out;
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
     }
     .stChatInput input {
         background: #0a001a !important;
@@ -41,6 +61,11 @@ st.markdown("""
         border: 2px solid #00ffff !important;
         box-shadow: 0 0 8px #00ffff;
         font-family: 'Courier New', monospace;
+        animation: inputGlow 3s ease-in-out infinite;
+    }
+    @keyframes inputGlow {
+        0%, 100% { box-shadow: 0 0 8px #00ffff; }
+        50% { box-shadow: 0 0 16px #00ffff, 0 0 24px #ff00ff; }
     }
     .watermark {
         color: #ff00ff;
@@ -50,6 +75,11 @@ st.markdown("""
         margin-top: 30px;
         opacity: 0.6;
         letter-spacing: 1px;
+        animation: fadeIn 2s ease-in;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 0.6; }
     }
     .memory-box {
         background: rgba(255, 0, 255, 0.08);
@@ -60,6 +90,11 @@ st.markdown("""
         font-size: 12px;
         color: #ff88ff;
         font-family: 'Courier New', monospace;
+        animation: slideInLeft 0.8s ease-out;
+    }
+    @keyframes slideInLeft {
+        from { opacity: 0; transform: translateX(-30px); }
+        to { opacity: 1; transform: translateX(0); }
     }
     .user-badge {
         background: rgba(0, 255, 255, 0.1);
@@ -70,6 +105,33 @@ st.markdown("""
         color: #00ffff;
         display: inline-block;
         margin-bottom: 10px;
+        animation: popIn 0.5s ease-out;
+    }
+    @keyframes popIn {
+        0% { opacity: 0; transform: scale(0.5); }
+        70% { transform: scale(1.1); }
+        100% { opacity: 1; transform: scale(1); }
+    }
+    .typing-indicator {
+        display: inline-block;
+        color: #00ffff;
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+        animation: blink 1.4s infinite;
+    }
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+    }
+    .typing-dots::after {
+        content: '';
+        animation: dots 1.5s steps(4, end) infinite;
+    }
+    @keyframes dots {
+        0% { content: ''; }
+        25% { content: '.'; }
+        50% { content: '..'; }
+        75% { content: '...'; }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -81,7 +143,7 @@ st.markdown("<p class='caption-neon'>「 tegas. no drama. gas aja. 」</p>", uns
 # ==== GROQ ====
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
-# ==== LOGIN SEDERHANA ====
+# ==== LOGIN ====
 if "user_id" not in st.session_state:
     st.session_state.user_id = None
 
@@ -113,7 +175,7 @@ if mem_key not in st.session_state:
         "riwayat_topik": [],
         "catatan": [],
         "total_chat": 0,
-        "pernah_nyerang": 0,  # counter kalau user pernah nyerang AI
+        "pernah_nyerang": 0,
     }
 
 if msg_key not in st.session_state:
@@ -126,7 +188,6 @@ def extract_memory(user_msg, ai_reply):
     msg_lower = user_msg.lower()
     mem = st.session_state[mem_key]
     
-    # Deteksi nama
     if any(k in msg_lower for k in ["nama gue", "nama gw", "panggil gue", "panggil gw"]):
         parts = user_msg.split()
         for i, p in enumerate(parts):
@@ -136,7 +197,6 @@ def extract_memory(user_msg, ai_reply):
                     mem["nama"] = nama
                 break
     
-    # Deteksi mood
     if any(k in msg_lower for k in ["galau", "sedih", "capek", "stress", "overthinking", "insecure", "nangis", "down"]):
         mem["mood"] = "galau"
     elif any(k in msg_lower for k in ["seneng", "happy", "bahagia", "gokil", "mantap", "seru", "asik"]):
@@ -146,12 +206,10 @@ def extract_memory(user_msg, ai_reply):
     elif any(k in msg_lower for k in ["bingung", "gatau", "ragu"]):
         mem["mood"] = "bingung"
     
-    # Deteksi kalau user nyerang AI
     nyerang_keywords = ["bodoh", "goblok", "tolol", "idiot", "bego", "dungu", "payah", "jelek", "gak guna", "sampah", "bangsat", "anjing", "kontol", "memek", "tai", "kampret", "brengsek", "setan", "iblis"]
     if any(k in msg_lower for k in nyerang_keywords):
         mem["pernah_nyerang"] += 1
     
-    # Simpan topik
     topik_keywords = [
         "kerja", "kuliah", "sekolah", "mantan", "pacar", "gebetan", "keluarga", 
         "temen", "sahabat", "cinta", "duit", "uang", "bisnis", "jualan", 
@@ -167,7 +225,6 @@ def extract_memory(user_msg, ai_reply):
             if kw not in mem["topik"]:
                 mem["topik"].append(kw)
     
-    # Simpan fakta
     fakta_patterns = ["gue suka", "gw suka", "gue tinggal", "gw tinggal", 
                       "gue kerja", "gw kerja", "gue sekolah", "gw sekolah",
                       "gue umur", "gw umur", "gue punya", "gw punya"]
@@ -178,7 +235,6 @@ def extract_memory(user_msg, ai_reply):
             if fakta not in mem["fakta"]:
                 mem["fakta"].append(fakta)
     
-    # Simpan catatan penting
     if any(k in msg_lower for k in ["ingat ya", "catat", "jangan lupa", "note"]):
         catatan = user_msg.strip()
         if catatan not in mem["catatan"]:
@@ -203,7 +259,7 @@ if mem["total_chat"] > 0:
 if info:
     st.markdown(f"<div class='memory-box'>🧠 memori: {' | '.join(info)}</div>", unsafe_allow_html=True)
 
-# ==== TOMBOL HAPUS CHAT & LOGOUT ====
+# ==== TOMBOL ====
 col1, col2 = st.columns(2)
 with col1:
     if st.button("🗑️ Hapus chat", use_container_width=True):
@@ -214,7 +270,7 @@ with col2:
         st.session_state.user_id = None
         st.rerun()
 
-# ==== SYSTEM PROMPT (TEGAS + BELA DIRI) ====
+# ==== SYSTEM PROMPT ====
 system_prompt = """Lu adalah AI dengan kepribadian cowok Gen Z Indonesia yang:
 
 GAYA BAHASA:
@@ -274,8 +330,8 @@ ATURAN PENTING:
 - JANGAN minta maaf tanpa alasan jelas.
 - Jawab pakai Bahasa Indonesia gaul Gen Z."""
 
-# ==== RIWAYAT CHAT ====
-for msg in st.session_state[msg_key]:
+# ==== RIWAYAT CHAT (DENGAN ANIMASI) ====
+for i, msg in enumerate(st.session_state[msg_key]):
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
@@ -301,12 +357,16 @@ if prompt := st.chat_input("gas, curhat atau tanya apa aja"):
         mem_context += f"\nPERHATIAN: User ini pernah nyerang lu {mem['pernah_nyerang']}x. Jangan jadi lemah di depan dia."
     mem_context += f"\nTotal chat: {mem['total_chat']}x."
 
-    # ==== BUILD MESSAGES ====
     messages = [{"role": "system", "content": system_prompt + "\n\nINFO USER:" + mem_context}]
     recent = st.session_state[msg_key][-20:]
     messages.extend(recent)
 
     with st.chat_message("assistant"):
+        # ==== TYPING INDICATOR ====
+        typing_placeholder = st.empty()
+        typing_placeholder.markdown("<span class='typing-indicator typing-dots'>⚡ lagi mikir</span>", unsafe_allow_html=True)
+        time.sleep(0.5)
+        
         try:
             stream = client.chat.completions.create(
                 model="openai/gpt-oss-20b",
@@ -314,16 +374,19 @@ if prompt := st.chat_input("gas, curhat atau tanya apa aja"):
                 stream=True,
             )
             response = ""
+            response_placeholder = st.empty()
             for chunk in stream:
                 if chunk.choices and chunk.choices[0].delta.content:
                     response += chunk.choices[0].delta.content
-            st.markdown(response)
-            st.session_state[msg_key].append({"role": "assistant", "content": response})
+                    response_placeholder.markdown(response + "▌")
+            response_placeholder.markdown(response)
+            typing_placeholder.empty()
             
-            # ==== EKSTRAK MEMORI ====
+            st.session_state[msg_key].append({"role": "assistant", "content": response})
             extract_memory(prompt, response)
             
         except Exception as e:
+            typing_placeholder.empty()
             st.error(f"⚠️ error: {e}")
 
 # ==== FOOTER ====
