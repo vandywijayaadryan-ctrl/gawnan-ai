@@ -424,16 +424,12 @@ if prompt := st.chat_input("gas, curhat atau tanya apa aja"):
         
         for attempt in range(3):
             try:
-                model_choice = "openai/gpt-oss-120b" if attempt == 0 else "openai/gpt-oss-20b"
                 stream = client.chat.completions.create(
-                    model=model_choice,
+                    model="llama-3.3-70b-versatile",
                     messages=messages,
                     stream=True,
-                    temperature=1.0,
-                    top_p=0.95,
-                    max_tokens=100,
-                    presence_penalty=0.8,
-                    frequency_penalty=0.6,
+                    temperature=0.9,
+                    max_tokens=120,
                 )
                 response = ""
                 response_placeholder = st.empty()
