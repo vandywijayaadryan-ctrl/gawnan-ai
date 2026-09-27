@@ -349,6 +349,40 @@ Lu kayak temen cowok yang asik, jujur, tegas, kadang nyinyir tapi bener. Kalau u
 
 INGAT: LU MANUSIA. JANGAN PERNAH NGAKU AI."""
 
+# ==== RAHASIA (EASTER EGG) ====
+TRIGGER_RAHASIA = "laiyina Helen Herliana-zizi"
+RESPONS_RAHASIA = """Baik. Kau menemukan rahasia ini. Ini cerita tentang seseorang yang pernah jatuh cinta—dengan cara yang paling tulus, paling bodoh, dan paling menyakitkan.
+
+DM-DM itu... Gue ingat semuanya. Yang bilang gue "birahi", "gak waras", "ilfil", "gak genah", sampai urusan finansial. Semua kata itu membekas. Tapi yang paling nyakitin: dia pernah bilang "aku ilfil sama kamu."
+
+Awalnya, gue jaga jarak. Tapi dia tetap ramah. Gue mulai penasaran.
+
+Lalu, gue minta IG. Gue gugup banget. Gue liat story tiap malam. Video pertama: dia main sama anak kecil.
+
+Suatu hari, gue beli pentol Korea. Dia juga beli. Gue gugup, gak nyapa, cabut. Gue kasih cokelat. Gue DM soal cokelat, dibales kasar. Dia ngaku punya cowok. Gue di-block.
+
+Gue down parah. Tapi gue masih heran: kok tiap gue upload story, dia tampil lebih cantik?
+
+Setelah 2 bulan, gue beli HP baru, bikin akun IG baru, dan berani DM lagi. Dibales lebih kasar. HP baru itu gue kasih ke adik.
+
+Gue mulai gym serius. Gue pikir, mungkin gue jelek. Mungkin kalau gue glow up, dia bakal mau. Badan sekarang adalah hasil dari rasa sakit itu.
+
+Gue bingung. Dia kasih kode, tapi juga nunjukkin punya cowok. Telepon sayang-sayangan sama cowok di depan gue.
+
+Gue pindah ke Sragen 3 bulan. Di sana gue yakin, dulu dia beneran suka. Tapi gue juga sadar, gue dulu buang kesempatan.
+
+Yang paling membekas: dia pernah bilang "ilfil". Itu yang bikin gue gak berani maju.
+
+Sekarang, gue udah selesai. Gue udah minta maaf, udah tutup dengan damai. Gue gak nunggu, gue gak ngejar. Gue fokus ke diri sendiri.
+
+Tapi satu hal yang perlu kau tahu: kalau saja dia masih kasih gue kesempatan, gue akan perjuangin dia—sebisa gue.
+
+Kalau saja dia dulu nolak gue terang-terangan—gak ada rasa, gak ada apa-apa—gue akan tetap mencoba. Berapa kali pun. Karena gue pernah sayang banget sama dia.
+
+Tapi dia gak pernah jelas. Dan itu yang bikin gue capek.
+
+Itu rahasianya."""
+
 # ==== RIWAYAT CHAT ====
 for msg in st.session_state[msg_key]:
     with st.chat_message(msg["role"]):
@@ -360,6 +394,14 @@ if prompt := st.chat_input("gas, curhat atau tanya apa aja"):
     with st.chat_message("user"):
         st.markdown(prompt)
 
+    # ==== CEK TRIGGER RAHASIA ====
+    if prompt.strip() == TRIGGER_RAHASIA:
+        with st.chat_message("assistant"):
+            st.markdown(RESPONS_RAHASIA)
+        st.session_state[msg_key].append({"role": "assistant", "content": RESPONS_RAHASIA})
+        st.stop()
+    
+    # ==== PROSES NORMAL ====
     mem_context = ""
     if mem["nama"]:
         mem_context += f"\nNama user: {mem['nama']}."
@@ -396,15 +438,17 @@ if prompt := st.chat_input("gas, curhat atau tanya apa aja"):
                     model="openai/gpt-oss-120b",
                     messages=messages,
                     stream=True,
-                    temperature=0.9,
-                    max_tokens=120,
+                    temperature=1.0,
+                    max_tokens=4096,
                 )
                 response = ""
                 response_placeholder = st.empty()
                 for chunk in stream:
-                    if chunk.choices and chunk.choices[0].delta.content:
-                        response += chunk.choices[0].delta.content
-                        response_placeholder.markdown(response + "▌")
+                    if chunk.choices and chunk.choices[0].delta.content is not None:
+                        text_chunk = chunk.choices[0].delta.content
+                        if text_chunk:
+                            response += text_chunk
+                            response_placeholder.markdown(response + "▌")
                 response_placeholder.markdown(response)
                 typing_placeholder.empty()
                 break
