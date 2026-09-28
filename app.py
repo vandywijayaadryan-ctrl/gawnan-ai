@@ -1,7 +1,5 @@
 import streamlit as st
 from groq import Groq
-import google.generativeai as genai
-from PIL import Image
 import time
 
 # ==== KONFIG ====
@@ -236,11 +234,6 @@ st.markdown("""
 # ==== GROQ ====
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
-# ==== GEMINI UNTUK VISION ====
-GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY", "")
-if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
-
 # ==== LOGIN ====
 if "user_id" not in st.session_state:
     st.session_state.user_id = None
@@ -325,14 +318,6 @@ if st.button("🎲 Kasih aku pertanyaan random", use_container_width=True):
     st.session_state.random_question = True
     st.rerun()
 
-# ==== UPLOAD FOTO ====
-with st.expander("📸 Upload foto buat dianalisis"):
-    uploaded_file = st.file_uploader("Pilih foto", type=["jpg", "jpeg", "png", "webp"])
-    if uploaded_file is not None:
-        st.image(uploaded_file, caption="Foto yang diupload", use_container_width=True)
-        if st.button("🔍 Analisis foto ini", use_container_width=True):
-            st.session_state.analisis_foto = True
-
 # ==== MEMORI PER-USER ====
 mem_key = f"memory_{st.session_state.user_id}"
 msg_key = f"messages_{st.session_state.user_id}"
@@ -367,8 +352,6 @@ if "regenerate" not in st.session_state:
     st.session_state.regenerate = False
 if "random_question" not in st.session_state:
     st.session_state.random_question = False
-if "analisis_foto" not in st.session_state:
-    st.session_state.analisis_foto = False
 
 mem = st.session_state[mem_key]
 
@@ -902,44 +885,6 @@ if st.session_state.get("random_question", False):
         
         if response_random:
             st.session_state[msg_key].append({"role": "assistant", "content": response_random})
-    
-    st.rerun()
-
-# ==== ANALISIS FOTO PAKAI GEMINI ====
-if st.session_state.get("analisis_foto", False) and uploaded_file is not None:
-    st.session_state.analisis_foto = False
-    
-    with st.chat_message("user"):
-        st.markdown("📸 *[Upload foto]*")
-        st.image(uploaded_file, width=200)
-    
-    st.session_state[msg_key].append({"role": "user", "content": "[Upload foto]"})
-    
-    with st.chat_message("assistant"):
-        typing_placeholder = st.empty()
-        typing_placeholder.markdown("<span class='typing-indicator'>sedang analisis foto...</span>", unsafe_allow_html=True)
-        
-        try:
-            if GEMINI_API_KEY:
-                img = Image.open(uploaded_file)
-                model_gemini = genai.GenerativeModel('gemini-2.5-flash')
-                
-                prompt_foto = """Analisis foto ini dengan santai. Kasih komentar apa aja yang kamu lihat, dengan gaya Gen Z yang asik. Kalau ada orang, komentarin. Kalau ada tempat, komentarin. Kalau ada benda, komentarin. Jawab dengan bahasa Indonesia gaul. Panjang aja, gak usah pendek-pendek."""
-                
-                response_gemini = model_gemini.generate_content([prompt_foto, img])
-                hasil_analisis = response_gemini.text
-                
-                st.markdown(hasil_analisis)
-                typing_placeholder.empty()
-                st.session_state[msg_key].append({"role": "assistant", "content": hasil_analisis})
-            else:
-                typing_placeholder.empty()
-                st.error("⚠️ GEMINI_API_KEY belum di-set. Tambahin di Streamlit Secrets.")
-                st.info("💡 Cara: share.streamlit.io → Manage app → Settings → Secrets → tambahin GEMINI_API_KEY = 'AIza...'")
-            
-        except Exception as e:
-            typing_placeholder.empty()
-            st.error(f"⚠️ Error analisis foto: {e}")
     
     st.rerun()
 
