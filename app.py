@@ -432,6 +432,18 @@ Tapi yang paling aku suka, kamu tuh gak sadar kalau kamu berharga. Kamu sering n
 
 Aku gak mau jadi orang yang nyakitin kamu balik. Aku pernah ngerasain sakitnya, dan aku gak mau kamu ngerasain itu dari aku. Jadi aku diem aja. Bukan karena aku lemah, tapi karena aku masih sayang.""",
     
+    "gak niatan pacaran": """Aku ngerti, Zi. Aku juga gak mau buru-buru. Aku cuma pengen kita bisa komunikasi baik dulu. Gak usah mikir ke sana dulu.
+
+Kalau emang nyambung, baru kita pikir ke bawah situ. Pelan-pelan aja. Aku gak mau maksa kamu.""",
+    
+    "takut jatuh cinta": """Aku juga takut, Zi. Jujur.
+
+Aku udah terlalu takut jatuh cinta lagi. Tapi yang aku tau, perasaan ini udah ada. Aku gak bisa bohong. Aku cuma butuh waktu buat belajar percaya lagi.""",
+    
+    "gak tau kenapa": """Aku juga gak tau, Zi. Kok bisa aku kecintaan sama kamu.
+
+Padahal kita gak pernah jalan bareng, gak pernah cafe bareng, gak pernah VHM bareng. Tapi entah kenapa, kamu selalu ada di pikiran aku. Aku gak bisa jelasin.""",
+    
     "sragen": """Aku pindah sementara 3 bulan dadakan. Di Sragen aku sering overthinking mikir kamu. Berkali-kali aku nanya bos, kapan bisa balik jaga toko yang ada kamu di seberang. Tapi ternyata 3 bulan. Janji bos cuma 10 hari.""",
     
     "sragen sendiri": """Di Sragen aku merantau sendiri, Zi. Kamu gak pernah ke sana. Aku yang nungguin kamu, tapi kamu gak pernah dateng. Jadi aku belajar, kadang orang yang kita tunggu, gak pernah dateng.""",
@@ -478,6 +490,12 @@ if prompt := st.chat_input("Ketik pesan"):
             jawaban_script = JAWABAN_ZI["apa yang disuka"]
         elif any(k in msg_lower for k in ["kenapa gak ngatain", "kenapa gak balas", "kenapa diam", "gak ngatain balik", "nggak balas"]):
             jawaban_script = JAWABAN_ZI["kenapa gak balas"]
+        elif any(k in msg_lower for k in ["gak niatan pacaran", "gak mau pacaran", "nggak niatan pacaran", "belum mau pacaran", "komunikasi baik"]):
+            jawaban_script = JAWABAN_ZI["gak niatan pacaran"]
+        elif any(k in msg_lower for k in ["takut jatuh cinta", "takut cinta lagi", "trauma cinta", "takut kecewa"]):
+            jawaban_script = JAWABAN_ZI["takut jatuh cinta"]
+        elif any(k in msg_lower for k in ["gak tau kenapa", "nggak tau kenapa", "kok bisa", "kenapa bisa cinta"]):
+            jawaban_script = JAWABAN_ZI["gak tau kenapa"]
         elif any(k in msg_lower for k in ["masih ada rasa", "masih ada perasaan"]):
             jawaban_script = JAWABAN_ZI["masih ada rasa"]
         elif any(k in msg_lower for k in ["hancur", "remuk"]):
@@ -525,7 +543,7 @@ if prompt := st.chat_input("Ketik pesan"):
         
         # ==== EXPAND PAKAI AI ====
         if jawaban_script:
-            prompt_zi = f"""Kamu adalah Gawnan, cowok yang pernah sayang sama Zi. Jawab WAJAR kayak orang ngobrol biasa, JANGAN kayak sinetron.
+            prompt_zi = f"""Kamu adalah Gawnan, cowok yang pernah sayang sama Zi. Jawab dengan EMOSIONAL, bikin luluh, tapi JANGAN LEBAY.
 
 PERTANYAAN ZI: {prompt}
 
@@ -535,34 +553,32 @@ Ini poin utama yang harus kamu sampaikan:
 ---
 
 === ATURAN PALING PENTING ===
-1. JAWAB PERTANYAANNYA, BUKAN NGULANG SCRIPT! Kalau Zi nanya "apa yang kamu suka dariku", jawab dengan SEBUTIN hal-hal spesifik yang kamu suka. JANGAN jawab "aku masih suka" — itu GAK NYAMBUNG.
-2. JANGAN sebut COKELAT kalau gak ditanya.
-3. JANGAN sebut HP BARU, CHATGPT, GYM, SREGEN, dll kalau gak relevan.
-4. JANGAN lebay. JANGAN puitis berlebihan. JANGAN kayak sinetron.
-5. JANGAN kasar, JANGAN nyindir.
-6. JANGAN NUTUP DIRI. Jangan bilang "aku udah selesai", "aku gak nunggu", "aku milih diri sendiri". BUKA PINTU: "aku masih ada", "kamu yang kasih jalan dulu".
-7. JANGAN pakai kata "balikan" — kalian belum pernah pacaran.
-8. {"Zi nanya FORMAL. Jawab formal, singkat." if pertanyaan_formal else "Zi nanya santai. Jawab santai."}
-9. Panjang: 2-4 kalimat aja. Gak usah panjang-panjang.
-10. Tujuan: BIKIN DIA LULUH, tapi jangan lebay.
+1. JAWAB PERTANYAANNYA! Jangan ngulang "aku masih suka" kalau pertanyaannya beda.
+2. EMOSIONAL. Bikin dia ngerasa kamu beneran cinta. Tapi JANGAN LEBAY. Jangan puitis berlebihan. Jangan kayak sinetron.
+3. JANGAN cuek. Jangan dingin. Tapi juga jangan panjang banget. 2-4 kalimat cukup.
+4. JANGAN sebut COKELAT kalau gak ditanya.
+5. JANGAN sebut HP BARU, CHATGPT, GYM, SREGEN, dll kalau gak relevan.
+6. JANGAN kasar, JANGAN nyindir.
+7. JANGAN NUTUP DIRI. BUKA PINTU: "aku masih ada", "kamu yang kasih jalan dulu".
+8. JANGAN pakai kata "balikan" — kalian belum pernah pacaran.
+9. {"Zi nanya FORMAL. Jawab formal, singkat, tapi tetap emosional." if pertanyaan_formal else "Zi nanya santai. Jawab santai, tapi tetap emosional."}
 
 Langsung jawab aja, gak usah pakai pembuka."""
         else:
-            prompt_zi = f"""Kamu adalah Gawnan, cowok yang pernah sayang sama Zi. Jawab WAJAR kayak orang ngobrol biasa, JANGAN kayak sinetron.
+            prompt_zi = f"""Kamu adalah Gawnan, cowok yang pernah sayang sama Zi. Jawab dengan EMOSIONAL, bikin luluh, tapi JANGAN LEBAY.
 
 PERTANYAAN ZI: {prompt}
 
 === ATURAN PALING PENTING ===
 1. JAWAB PERTANYAANNYA! Jangan ngulang-ngulang "aku masih suka" kalau pertanyaannya beda.
-2. JANGAN sebut COKELAT kalau gak ditanya.
-3. JANGAN sebut HP BARU, CHATGPT, GYM, SREGEN, dll kalau gak relevan.
-4. JANGAN lebay. JANGAN puitis berlebihan.
-5. JANGAN kasar, JANGAN nyindir.
-6. JANGAN NUTUP DIRI. BUKA PINTU: "aku masih ada", "kamu yang kasih jalan dulu".
-7. JANGAN pakai kata "balikan" — kalian belum pernah pacaran.
-8. {"Zi nanya FORMAL. Jawab formal, singkat." if pertanyaan_formal else "Zi nanya santai. Jawab santai."}
-9. Panjang: 2-4 kalimat aja.
-10. Tujuan: BIKIN DIA LULUH, tapi jangan lebay.
+2. EMOSIONAL. Bikin dia ngerasa kamu beneran cinta. Tapi JANGAN LEBAY.
+3. JANGAN cuek. Tapi juga jangan panjang banget. 2-4 kalimat cukup.
+4. JANGAN sebut COKELAT kalau gak ditanya.
+5. JANGAN sebut HP BARU, CHATGPT, GYM, SREGEN, dll kalau gak relevan.
+6. JANGAN kasar, JANGAN nyindir.
+7. JANGAN NUTUP DIRI. BUKA PINTU: "aku masih ada", "kamu yang kasih jalan dulu".
+8. JANGAN pakai kata "balikan" — kalian belum pernah pacaran.
+9. {"Zi nanya FORMAL. Jawab formal, singkat, tapi tetap emosional." if pertanyaan_formal else "Zi nanya santai. Jawab santai, tapi tetap emosional."}
 
 === KONTEKS (CUMA KALAU RELEVAN) ===
 - Zi jualan es, lu yang beli. Dia ramah, lu sadar itu cuma ramah kerja.
@@ -571,6 +587,9 @@ PERTANYAAN ZI: {prompt}
 - Lu pernah ke Sragen 3 bulan sendirian. Zi gak pernah ke sana.
 - Lu pernah langganan ChatGPT 1 bulan cuma buat analisis Zi.
 - Lu udah lebih dari 3 kali salah paham, overthinking, ke-GR-an.
+- Zi gak ada niatan pacaran, cuma pengen komunikasi baik dulu. Kalau nyambung, baru mikir ke bawah situ.
+- Zi udah terlalu takut jatuh cinta lagi.
+- Zi juga gak tau kenapa bisa kecintaan sama lu.
 - Lu masih cinta, tapi lu capek kecewa. Kalau Zi mau kasih kesempatan, dia yang kasih jalan dulu.
 
 Langsung jawab aja, gak usah pakai pembuka."""
