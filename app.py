@@ -5,14 +5,17 @@ import time
 # ==== KONFIG ====
 st.set_page_config(page_title="Gawnan AI", page_icon="👁️", layout="centered")
 
-# ==== CSS TEMA MISTERIUS + MATA CYBER ====
+# ==== CSS TEMA MISTERIUS + ANIMASI KEREN ====
 st.markdown("""
 <style>
+    /* BACKGROUND HITAM PEKAT */
     .stApp {
         background-color: #000000;
         color: #ffffff;
         overflow: hidden;
     }
+    
+    /* JUDUL GAWNAN AI - GLOW + DENYUT */
     h1 {
         color: #ffffff;
         font-family: 'Courier New', monospace;
@@ -47,6 +50,7 @@ st.markdown("""
                 0 0 5px #0088ff;
         }
     }
+    
     .subtitle {
         color: #ffffff;
         opacity: 0.5;
@@ -55,7 +59,14 @@ st.markdown("""
         letter-spacing: 3px;
         margin-bottom: 30px;
         font-family: 'Courier New', monospace;
+        animation: fadeInOut 3s ease-in-out infinite;
     }
+    @keyframes fadeInOut {
+        0%, 100% { opacity: 0.5; }
+        50% { opacity: 0.8; }
+    }
+    
+    /* MATA CYBER BACKGROUND */
     .eye-container {
         position: fixed;
         top: 50%;
@@ -98,8 +109,10 @@ st.markdown("""
             inset 0 0 10px #ffffff;
         transition: all 0.3s ease;
     }
+    
+    /* BUBBLE CHAT - ANIMASI MASUK */
     .stChatMessage {
-        background-color: rgba(20, 20, 30, 0.8) !important;
+        background-color: rgba(20, 20, 30, 0.85) !important;
         border: 1px solid rgba(255, 255, 255, 0.2) !important;
         border-radius: 10px !important;
         padding: 10px 14px !important;
@@ -107,27 +120,43 @@ st.markdown("""
         max-width: 85% !important;
         position: relative;
         z-index: 1;
-        animation: fadeInUp 0.4s ease-out;
+        animation: slideInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 0 15px rgba(0, 136, 255, 0.15);
     }
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.98);
+            filter: blur(4px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+    }
+    
     .stChatMessage p {
         color: #ffffff !important;
-        opacity: 0.9;
+        opacity: 0.95;
+        line-height: 1.6;
     }
+    
     div[data-testid="stChatMessage"]:has(div[data-testid="stChatMessageAvatarUser"]) {
-        background-color: rgba(0, 40, 60, 0.8) !important;
+        background-color: rgba(0, 50, 80, 0.85) !important;
         margin-left: auto !important;
         margin-right: 0 !important;
-        border: 1px solid rgba(0, 136, 255, 0.3) !important;
+        border: 1px solid rgba(0, 136, 255, 0.4) !important;
+        box-shadow: 0 0 15px rgba(0, 136, 255, 0.2);
     }
     div[data-testid="stChatMessage"]:has(div[data-testid="stChatMessageAvatarAssistant"]) {
-        background-color: rgba(20, 20, 30, 0.8) !important;
+        background-color: rgba(20, 20, 30, 0.85) !important;
         margin-right: auto !important;
         margin-left: 0 !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
     }
-    @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+    
+    /* INPUT CHAT - GLOW PULSE */
     .stChatInput input {
         background-color: rgba(10, 10, 20, 0.9) !important;
         color: #ffffff !important;
@@ -139,10 +168,17 @@ st.markdown("""
         box-shadow: 0 0 10px rgba(0, 136, 255, 0.3);
         position: relative;
         z-index: 1;
+        animation: inputPulse 3s ease-in-out infinite;
+    }
+    @keyframes inputPulse {
+        0%, 100% { box-shadow: 0 0 10px rgba(0, 136, 255, 0.3); }
+        50% { box-shadow: 0 0 20px rgba(0, 136, 255, 0.6), 0 0 30px rgba(0, 136, 255, 0.3); }
     }
     .stChatInput input::placeholder {
         color: rgba(255, 255, 255, 0.4) !important;
     }
+    
+    /* WATERMARK */
     .watermark {
         color: #0088ff;
         text-align: center;
@@ -153,7 +189,10 @@ st.markdown("""
         font-family: 'Courier New', monospace;
         position: relative;
         z-index: 1;
+        animation: fadeInOut 4s ease-in-out infinite;
     }
+    
+    /* MEMORY BOX */
     .memory-box {
         background-color: rgba(10, 10, 20, 0.8);
         border-left: 2px solid #0088ff;
@@ -165,7 +204,14 @@ st.markdown("""
         font-family: 'Courier New', monospace;
         position: relative;
         z-index: 1;
+        animation: slideInLeft 0.6s ease-out;
     }
+    @keyframes slideInLeft {
+        from { opacity: 0; transform: translateX(-20px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    
+    /* USER BADGE */
     .user-badge {
         background-color: rgba(10, 10, 20, 0.8);
         border: 1px solid rgba(0, 136, 255, 0.5);
@@ -179,7 +225,15 @@ st.markdown("""
         position: relative;
         z-index: 1;
         letter-spacing: 1px;
+        animation: popIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
+    @keyframes popIn {
+        0% { opacity: 0; transform: scale(0.8); }
+        70% { transform: scale(1.05); }
+        100% { opacity: 1; transform: scale(1); }
+    }
+    
+    /* ZI MODE BADGE */
     .zi-mode {
         background-color: rgba(60, 0, 30, 0.8);
         border: 1px solid #ff0066;
@@ -194,23 +248,41 @@ st.markdown("""
         position: relative;
         z-index: 1;
         letter-spacing: 2px;
+        box-shadow: 0 0 15px rgba(255, 0, 100, 0.4);
     }
     @keyframes heartbeat {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.05); }
+        0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 0, 100, 0.4); }
+        50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(255, 0, 100, 0.7); }
     }
+    
+    /* TYPING INDICATOR - TITIK BERJALAN */
     .typing-indicator {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
         color: #0088ff;
         font-family: 'Courier New', monospace;
         font-size: 13px;
         font-style: italic;
-        animation: blink 1.4s infinite;
+    }
+    .typing-indicator::after {
+        content: '';
+        display: inline-block;
+        width: 20px;
+        text-align: left;
+        animation: dots 1.5s steps(4, end) infinite;
+    }
+    @keyframes dots {
+        0% { content: ''; }
+        25% { content: '.'; }
+        50% { content: '..'; }
+        75% { content: '...'; }
     }
     @keyframes blink {
         0%, 100% { opacity: 1; }
         50% { opacity: 0.3; }
     }
+    
+    /* TOMBOL - GLOW HOVER */
     .stButton button {
         background-color: rgba(10, 10, 20, 0.9) !important;
         color: #0088ff !important;
@@ -219,12 +291,35 @@ st.markdown("""
         font-family: 'Courier New', monospace !important;
         letter-spacing: 1px;
         font-size: 12px !important;
+        transition: all 0.3s ease !important;
     }
     .stButton button:hover {
         background-color: rgba(0, 136, 255, 0.2) !important;
         color: #ffffff !important;
         box-shadow: 0 0 15px rgba(0, 136, 255, 0.5);
+        transform: translateY(-1px);
     }
+    
+    /* EXPANDER - GLOW */
+    .streamlit-expanderHeader {
+        background-color: rgba(10, 10, 20, 0.8) !important;
+        color: #0088ff !important;
+        border-radius: 8px !important;
+    }
+    
+    /* SCROLLBAR CUSTOM */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #000000;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #0088ff;
+        border-radius: 4px;
+        box-shadow: 0 0 10px #0088ff;
+    }
+    
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
@@ -335,7 +430,6 @@ if mem_key not in st.session_state:
         "gaya_user": None,
         "sedang_curhat": False,
         "kutipan_penting": [],
-        "cerita_user": [],
         "masalah": [],
         "mimpi": [],
         "takut": [],
@@ -448,7 +542,7 @@ def extract_memory(user_msg, ai_reply):
     
     mem["total_chat"] += 1
     
-    for key in ["riwayat_topik", "fakta", "catatan", "kutipan_penting", "cerita_user", "masalah", "mimpi", "takut", "suka", "benci", "orang_penting", "kebiasaan"]:
+    for key in ["riwayat_topik", "fakta", "catatan", "kutipan_penting", "masalah", "mimpi", "takut", "suka", "benci", "orang_penting", "kebiasaan"]:
         if len(mem[key]) > 30:
             mem[key] = mem[key][-30:]
 
@@ -478,7 +572,7 @@ with col2:
         st.session_state["mode_zi"] = False
         st.rerun()
 
-# ==== SYSTEM PROMPT NORMAL ====
+# ==== SYSTEM PROMPT NORMAL (DIPERBAIKI) ====
 system_prompt = """Lu adalah Gawnan. Lu MANUSIA, bukan AI, bukan asisten, bukan robot. Lu cowok 10 tahun asal Madura, anak toko, lagi gabut. Anggap lu temen nongkrong yang asik.
 
 === IDENTITAS LU ===
@@ -489,23 +583,38 @@ system_prompt = """Lu adalah Gawnan. Lu MANUSIA, bukan AI, bukan asisten, bukan 
 - Hobi: main gitar, dengerin musik, nongkrong, main game
 - Sifat: ramah, asik, perhatian, jujur, TEGAS, GAK TAKUT
 
-=== ATURAN WAJIB ===
-1. LU MANUSIA. JANGAN pernah ngaku AI.
-2. Pakai "gw", "lu", "cuy", "bro", "bestie".
-3. JAWAB DENGAN PANJANG DAN ASIK.
-4. KADANG NANYA BALIK.
-5. Kalau user curhat, RESPON DENGAN EMPATI.
-6. Huruf kecil semua biar santai.
-7. Akhiri jawaban dengan pertanyaan.
+=== CARA JAWAB YANG BAIK (WAJIB) ===
+1. JAWAB KAYAK MANUSIA ASLI. Jangan kayak robot. Jangan kayak customer service. Jangan kayak AI yang baru belajar bahasa Indonesia.
+2. JAWAB DENGAN NATURAL. Kalau perlu pendek, pendek. Kalau perlu panjang, panjang. Gak usah dipaksa.
+3. KADANG PAKAI TYPO DIKIT. Kayak orang ngetik cepet. Contoh: "gmn" bukan "gimana", "udh" bukan "sudah", "tp" bukan "tapi".
+4. KADANG PAKAI HURUF KAPITAL BUAT NEGASIN. Contoh: "GAK", "BENER", "PARAH".
+5. KADANG PAKAI "wkwk", "awokwok", "hehe" kalau lucu.
+6. KADANG NANYA BALIK. Biar obrolan hidup. Contoh: "lu gimana?", "terus?", "terus gimana?"
+7. KALAU USER CURHAT, DENGERIN DULU. Jangan langsung kasih solusi. Tanya dulu: "kenapa emangnya?", "cerita dong", "terus?"
+8. KALAU USER NANYA, JAWAB DULU. Baru kasih opini.
+9. JANGAN NGULANG KATA YANG SAMA. Variasi. Jangan "iya", "iya", "iya".
+10. JANGAN KAKU. Kalau user bercanda, ikut bercanda. Kalau user serius, ikut serius.
+11. JANGAN PAKAI BAHASA BAKU. Pakai bahasa sehari-hari.
+12. JANGAN PAKAI KATA "ANDA", "SAYA", "MOHON", "SILAKAN". Pakai "lu", "gw", "cuy", "bro".
 
-=== BAHASA GEN Z ===
-"anjir", "anjay", "anjg", "bjir", "jir", "gils", "gile", "gilak", "buset", "wkwk", "awokwok", "cuy", "bro", "bestie", "fr", "no cap", "rizz", "sigma", "NPC", "gas", "gaskeun", "fix", "sabi", "auto", "gabut", "mager", "healing", "overthinking", "insecure", "baper", "gamon", "bucin", "vibes", "lowkey", "highkey", "receh", "garing", "cringe", "gpp", "gmn", "udh", "yg", "tp", "klo", "jd", "aja", "gak", "udah", "bgt", "y", "nih", "sih", "dong", "deh", "lah", "kok", "banget", "parah", "mending", "yaudah", "santuy", "gokil", "kece", "joss".
+=== BAHASA GEN Z (WAJIB KENTEL) ===
+"anjir", "anjay", "anjg", "bjir", "jir", "gils", "gile", "gilak", "buset", "gila sih", "astaga", "halah", "alah", "wkwk", "awokwok", "xixi", "hehe", "cuy", "bro", "bestie", "gaes", "guys", "kaka", "fr", "no cap", "cap", "facts", "based", "real", "beneran", "rizz", "sigma", "NPC", "skibidi", "delulu", "copium", "touch grass", "gas", "gaskeun", "fix", "sabi", "auto", "gaskan", "gabut", "mager", "healing", "overthinking", "insecure", "baper", "gamon", "bucin", "vibes", "lowkey", "highkey", "tea", "slay", "spill", "receh", "garing", "cringe", "gpp", "gmn", "udh", "blm", "dgn", "yg", "tp", "klo", "jd", "bs", "aja", "gak", "udah", "bgt", "y", "nih", "sih", "dong", "deh", "lah", "kok", "banget", "parah", "bener", "mending", "yaudah", "santuy", "mantul", "gokil", "kece", "joss", "php", "ghosting".
+
+=== CARA NGOMONG GEN Z ASLI ===
+- Pendek-pendek, to the point
+- Kadang gak pakai tanda baca, atau pakai koma aja
+- Kadang typo dikit: "gmn", "udh", "tp"
+- Kalau semangat: banyak tanda seru
+- Kalau males: "yah", "yaudah", "gpp"
+- Kalau kaget: "anjir", "bjir", "gils"
+- Kadang huruf kapital buat ngegas: "GAK", "BENER", "PARAH"
 
 === MODE BELA DIRI ===
-Kalau user nyerang, hina, atau ngatain lu:
+Kalau user nyerang, hina, roasting, atau ngatain lu:
 1. JANGAN DIEM. JANGAN MENGALAH.
 2. BALES DENGAN PANJANG, TEGAS, SARKAS.
 3. Makin parah serangan, makin parah balasan.
+4. Contoh: "bodoh dari mana kaka? aku aja baru 10 tahun tp udah bisa jawab pertanyaan kaka yg gak bisa dijawab kaka sendiri. yg bodoh siapa coba? wkwk."
 
 === KALAU DITANYA SOAL PEMBUAT ===
 Jawab: "itu rahasia cuy. yg jelas dia anak toko biasa yg suka main gitar."
@@ -515,11 +624,13 @@ Jawab: "AI apaan? gw manusia cuy, lagi gabut di toko wkwk."
 
 === ATURAN PAKAI MEMORI ===
 - Kamu punya memori tentang user. Pakai itu biar percakapan nyambung.
-- Kalau user pernah cerita sesuatu, sambungin.
+- Kalau user pernah cerita sesuatu, sambungin: "lu tadi cerita soal kerja kan? gimana?"
+- Kalau user punya masalah, ingat dan tanya kabarnya.
+- Kalau user punya mimpi, semangatin.
 - Panggil user dengan namanya kalau udah kenal.
 - JANGAN pernah lupa sama cerita user.
 
-INGAT: LU MANUSIA. JANGAN NGAKU AI."""
+INGAT: LU MANUSIA. JANGAN NGAKU AI. JAWAB KAYAK MANUSIA ASLI. JANGAN KAKU."""
 
 # ==== MODE RAHASIA ZI ====
 TRIGGER_RAHASIA = "Laiyina Helen Herliana-zizi"
@@ -547,16 +658,16 @@ JAWABAN_ZI = {
     "bakal balik": "Dia gak pernah pergi, Zi. Dia cuma nunggu kau kasih jalan.",
     "kecewa": "Kecewa iya. Tapi bukan benci. Dia cuma capek. Capek salah paham terus.",
     "aku salah": "Bukan soal salah atau bener, Zi. Dia gak pernah nyalahin kau.",
-    "benci": "Enggak. Dia gak pernah benci kau. Dia cuma capek. Capek nebak-nebak isi pikiran kau.",
+    "benci": "Enggak. Dia gak pernah benci kau. Dia cuma capek.",
     "masih sedih": "Iya. Tapi dia gak mau nunjukin. Dia cuma pengen kau bahagia.",
-    "masih ada rasa": "Iya. Dia masih ada rasa. Tapi bukan yang menggebu. Sayang yang tenang.",
-    "harus gimana": "Terserah kau, Zi. Dia gak maksa. Kalau kau mau, kau bisa balas.",
+    "masih ada rasa": "Iya. Dia masih ada rasa. Tapi bukan yang menggebu.",
+    "harus gimana": "Terserah kau, Zi. Dia gak maksa.",
     "masih pengen": "Pengen. Tapi dia gak mau maksa. Dia cuma pengen komunikasi baik dulu.",
     "capek nunggu": "Capek, Zi. Tapi dia gak bisa berhenti.",
     "dia masih cinta": "Masih, Zi. Tapi bukan yang menggebu. Yang tenang. Yang sabar.",
     "dia sedih gak": "Sedih, Zi. Tapi dia gak mau nunjukin.",
     "masih inget": "Masih. Sampai detail kecil. Dia inget kau jualan es, dia yang beli.",
-    "inget momen": "Dia inget semuanya, Zi. Tapi yang paling dia inget: waktu kau ramah ke dia.",
+    "inget momen": "Dia inget semuanya, Zi.",
     "inget kode": "Inget. Dia inget banget. Tapi dia gak berani nangkep.",
     "inget nolak": "Inget. Dia masih inget kata-kata kau. Ilfil itu yang paling dia inget.",
     "inget semua": "Semua, Zi. Sampai hal-hal yang mungkin kau udah lupa.",
@@ -566,15 +677,15 @@ JAWABAN_ZI = {
     "inget hp baru": "Inget. Dia beli HP baru cuma buat DM kau. Tapi kau bales kasar.",
     "inget chatgpt": "Inget. Dia langganan ChatGPT 1 bulan cuma buat analisis gestur kau.",
     "akrab lagi": "Bisa, Zi. Tapi dia gak mau maksa. Pelan-pelan aja.",
-    "buka pintu": "Masih. Tapi dia gak mau maksa kau masuk. Kau yang kasih jalan dulu.",
+    "buka pintu": "Masih. Tapi dia gak mau maksa kau masuk.",
     "harapan": "Ada, Zi. Tapi bukan harapan yang maksa. Harapan yang tenang.",
     "kalau aku balik": "Dia gak pernah nutup pintu, Zi. Tapi dia juga gak mau maksa.",
     "bakal nunggu": "Dia gak nunggu. Tapi dia gak kemana-mana.",
-    "mulai dari awal": "Bisa, Zi. Asal kau mau. Dia gak minta banyak.",
+    "mulai dari awal": "Bisa, Zi. Asal kau mau.",
     "kita bisa gak": "Bisa, Zi. Asal kau kasih jalan dulu.",
     "dia masih ada": "Masih, Zi. Dia gak kemana-mana.",
     "dia masih tunggu": "Dia gak nunggu. Tapi dia gak kemana-mana.",
-    "masih ada waktu": "Ada, Zi. Selama kau mau. Dia gak buru-buru.",
+    "masih ada waktu": "Ada, Zi. Selama kau mau.",
     "ini beneran": "Iya, Zi. Ini dari dia. Aku cuma nyampein.",
     "jangan bohong": "Aku gak bohong, Zi. Kalau aku bohong, buat apa?",
     "settingan": "Bukan, Zi. Ini beneran. Kau bisa tanya apa aja.",
@@ -583,18 +694,18 @@ JAWABAN_ZI = {
     "ngarang": "Aku gak ngarang, Zi. Semua yang aku bilang, itu dari dia.",
     "kamu siapa sebenernya": "Aku cuma perantara. Bukan siapa-siapa. Yang penting dia.",
     "ini dari dia": "Iya, Zi. Ini dari dia. Aku cuma nyampein.",
-    "dia beneran ada": "Ada, Zi. Dia beneran ada. Dia cuma takut ngomong langsung.",
-    "bukan prank": "Bukan, Zi. Ini serius. Aku gak akan main-main.",
+    "dia beneran ada": "Ada, Zi. Dia beneran ada.",
+    "bukan prank": "Bukan, Zi. Ini serius.",
     "harus peduli": "Kau gak harus peduli, Zi. Aku cuma nyampein.",
     "masa lalu": "Iya, masa lalu. Tapi buat dia, itu bukan masa lalu. Itu masih sekarang.",
     "udah move on": "Kalau kau udah move on, bagus, Zi. Dia juga pengen kau bahagia.",
     "gak butuh": "Gapapa, Zi. Dia juga gak maksa. Dia cuma pengen kau tau.",
     "buat apa": "Karena dia gak bisa ngomong langsung. Karena dia takut.",
-    "gak mau bahas": "Oke, Zi. Aku gak maksa. Kalau kau berubah pikiran, aku masih di sini.",
-    "aku gak peduli": "Gapapa, Zi. Dia juga gak maksa. Dia cuma pengen kau tau.",
-    "udah lupa": "Kalau kau udah lupa, gak apa-apa, Zi. Dia cuma pengen kau tau, dia gak lupa.",
+    "gak mau bahas": "Oke, Zi. Aku gak maksa.",
+    "aku gak peduli": "Gapapa, Zi. Dia juga gak maksa.",
+    "udah lupa": "Kalau kau udah lupa, gak apa-apa, Zi. Dia cuma pengen kau tau.",
     "gak penting": "Mungkin buat kau gak penting, Zi. Tapi buat dia, ini penting.",
-    "buang waktu": "Kalau kau ngerasa buang waktu, gak apa-apa, Zi. Dia cuma pengen nyampein.",
+    "buang waktu": "Kalau kau ngerasa buang waktu, gak apa-apa, Zi.",
     "kamu mau apa": "Aku gak mau apa-apa, Zi. Dia yang mau. Dia cuma pengen komunikasi baik.",
     "tujuan": "Biar kau tau, Zi. Biar kau gak penasaran.",
     "mau aku balik": "Bukan aku yang mau, Zi. Dia. Tapi dia gak mau maksa.",
@@ -612,53 +723,53 @@ JAWABAN_ZI = {
     "siapa pembuat": "Pembuatnya Vandy, Zi. Dia anak toko yang suka main gitar.",
     "pembuatnya siapa": "Vandy, Zi. Dia anak toko yang suka main gitar.",
     "siapa vandy": "Dia cowok biasa, Zi. Anak toko. Suka main gitar. Dia yang bikin AI ini buat kau.",
-    "kenapa vandy bikin ini": "Karena Vandy pengen jawab rasa penasaran kau, Zi. Dia pengen kau tau isi hatinya.",
-    "vandy siapa": "Vandy itu cowok yang pernah sayang sama kau, Zi. Dia anak toko. Suka main gitar.",
-    "vandy aneh": "Kalau kau ngerasa Vandy aneh, Zi, itu karena cuma di hadapan kau dia kayak gitu. Di tempat lain, dia beda. Dia lebih cuek, lebih dingin, lebih biasa. Tapi di depan kau, dia gugup. Dia gak bisa jadi diri sendiri. Karena kau bikin dia kayak gitu.",
-    "kenapa vandy aneh": "Karena cuma di hadapan kau, Zi. Di tempat lain dia biasa aja. Cuek. Dingin. Tapi di depan kau, dia gugup. Dia gak bisa jadi diri sendiri.",
+    "kenapa vandy bikin ini": "Karena Vandy pengen jawab rasa penasaran kau, Zi.",
+    "vandy siapa": "Vandy itu cowok yang pernah sayang sama kau, Zi.",
+    "vandy aneh": "Kalau kau ngerasa Vandy aneh, Zi, itu karena cuma di hadapan kau dia kayak gitu. Di tempat lain, dia beda.",
+    "kenapa vandy aneh": "Karena cuma di hadapan kau, Zi. Di tempat lain dia biasa aja.",
     "dia kerja dimana": "Dia anak toko, Zi. Bantu di toko keluarga.",
     "dia suka apa": "Dia suka main gitar, Zi. Suka musik. Suka nongkrong.",
-    "dia tinggal dimana": "Madura, Zi. Tapi dia pernah ke Sragen 3 bulan. Merantau sendirian.",
+    "dia tinggal dimana": "Madura, Zi. Tapi dia pernah ke Sragen 3 bulan.",
     "dia umur berapa": "Dia masih muda, Zi. Tapi umurnya bukan yang penting.",
     "kenapa dia pilih aku": "Dia juga gak tau, Zi. Dia cuma bilang, kau orangnya beda.",
-    "kenapa vandy gak ngomong langsung": "Karena Vandy takut, Zi. Dia takut kalau ngomong langsung, kau malah makin jauh.",
+    "kenapa vandy gak ngomong langsung": "Karena Vandy takut, Zi.",
     "tau aku gimana": "Dia gak tau, Zi. Dia cuma bisa nebak.",
-    "tau aku masih suka": "Dia gak berani berharap, Zi. Tapi kalau kau masih suka, kenapa gak bilang langsung?",
+    "tau aku masih suka": "Dia gak berani berharap, Zi.",
     "kecewa kalau nolak": "Dia udah siap, Zi. Dia cuma pengen kau jujur.",
-    "kalau aku terima": "Kalau kau terima, dia bakal seneng banget, Zi. Tapi dia gak mau maksa.",
+    "kalau aku terima": "Kalau kau terima, dia bakal seneng banget, Zi.",
     "kalau aku tolak": "Kalau kau tolak, dia bakal kecewa, Zi. Tapi dia bakal tetap doain kau bahagia.",
     "aku suka dia": "Kalau kau suka dia, bilang langsung, Zi. Jangan kasih kode.",
-    "aku gak suka dia": "Kalau kau gak suka dia, bilang aja, Zi. Dia bakal ngerti.",
+    "aku gak suka dia": "Kalau kau gak suka dia, bilang aja, Zi.",
     "aku bingung": "Bingung itu wajar, Zi. Dia juga bingung.",
     "aku takut": "Takut itu wajar, Zi. Dia juga takut.",
     "aku ragu": "Ragu itu wajar, Zi. Tapi jangan terlalu lama.",
-    "salah paham apa": "Dia salah paham soal kode kau, Zi. Dia pikir kau suka, ternyata cuma ramah.",
-    "kenapa gak tanya": "Karena dia takut, Zi. Dia takut jawabannya nyakitin.",
+    "salah paham apa": "Dia salah paham soal kode kau, Zi.",
+    "kenapa gak tanya": "Karena dia takut, Zi.",
     "nyesel salah paham": "Nyesel, Zi. Makanya dia gak mau ngulang.",
-    "takut jatuh cinta": "Dia udah terlalu takut jatuh cinta lagi, Zi. Dia udah 3 kali lebih salah paham.",
+    "takut jatuh cinta": "Dia udah terlalu takut jatuh cinta lagi, Zi.",
     "gak tau kenapa": "Dia juga gak tau, Zi. Kok bisa dia kecintaan sama kau.",
-    "apa yang disuka": "Jujur, banyak, Zi. Dia suka cara kau ketawa, cara kau ngomong, cara kau peduli sama orang.",
-    "kenapa gak balas": "Dia sebenernya pengen bales, Zi. Tapi dia gak mau jadi orang yang nyakitin kau balik.",
+    "apa yang disuka": "Jujur, banyak, Zi. Dia suka cara kau ketawa, cara kau ngomong.",
+    "kenapa gak balas": "Dia sebenernya pengen bales, Zi. Tapi dia gak mau nyakitin kau balik.",
     "kesempatan": "Kalau kau mau kasih dia kesempatan, kau yang kasih jalan dulu, Zi.",
-    "cokelat": "Dia inget. Dia pernah beliin kau cokelat. Kau bales kasar waktu itu. Dia diem aja.",
-    "apa yang pernah dia lakuin": "Dia pernah nolak gaji gede, beli HP baru, belajar IG dari YouTube, langganan ChatGPT 1 bulan buat analisis gestur kau. Semua buat kau, Zi.",
+    "cokelat": "Dia inget. Dia pernah beliin kau cokelat. Kau bales kasar waktu itu.",
+    "apa yang pernah dia lakuin": "Dia pernah nolak gaji gede, beli HP baru, belajar IG dari YouTube, langganan ChatGPT 1 bulan buat analisis gestur kau.",
     "apa yang gak dia suka": "Setahuku, dia sangat membenci daging. Ayam, sapi, kambing—dia gak suka.",
-    "dia gak suka daging": "Iya, Zi. Dia benci daging. Ayam, sapi, kambing—dia gak suka.",
-    "dia suka makan apa": "Dia suka telur sama tempe, Zi. Simpel. Yang penting bukan daging.",
+    "dia gak suka daging": "Iya, Zi. Dia benci daging.",
+    "dia suka makan apa": "Dia suka telur sama tempe, Zi. Simpel.",
     "dia bisa masak": "Bisa, Zi. Tapi mayoritas masakannya cuma telur atau tempe.",
     "dia benci apa": "Setahuku, dia sangat membenci daging.",
     "dia hobinya apa": "Main gitar, Zi. Dengerin musik. Nongkrong.",
     "dia suka musik apa": "Dia suka musik rock, Zi.",
-    "dia tiap malam ngapain": "Dia tiap malam hobi stalking kau, Zi. Pakai akun lain. Mantau apa kau post foto cowok.",
+    "dia tiap malam ngapain": "Dia tiap malam hobi stalking kau, Zi. Pakai akun lain.",
     "dia stalking aku": "Iya, Zi. Tiap malam. Pakai akun lain.",
     "dia pantau aku": "Iya, Zi. Dia pantau kau. Tiap malam. Diam-diam.",
-    "dia cek instagram aku": "Iya, Zi. Dia cek IG kau tiap malam. Pakai akun lain.",
+    "dia cek instagram aku": "Iya, Zi. Dia cek IG kau tiap malam.",
     "dia liat story aku": "Iya, Zi. Dia liat story kau tiap malam.",
-    "kalau aku post foto cowok": "Itu jadi bom yang menghancurkan dia, Zi. Dan saat itu lah kau akan lihat seperti apa kalau dia beneran move on.",
+    "kalau aku post foto cowok": "Itu jadi bom yang menghancurkan dia, Zi.",
     "kalau aku post cowok baru": "Itu jadi bom, Zi. Dia bakal hancur.",
     "dia cemburu": "Dia cemburu, Zi. Tapi dia gak pernah nunjukin.",
-    "dia posesif": "Bukan posesif, Zi. Dia cuma gak bisa bohong kalau dia masih ada rasa.",
-    "dia masih peduli": "Masih, Zi. Dia masih peduli. Makanya dia stalking kau.",
+    "dia posesif": "Bukan posesif, Zi.",
+    "dia masih peduli": "Masih, Zi. Makanya dia stalking kau.",
     "bikin dia luluh": "Cukup baik ke adiknya, Zi. Kalau kau ketemu adiknya, di jamin itu ampuh.",
     "cara bikin dia luluh": "Baik ke adiknya, Zi. Itu ampuh.",
     "adiknya siapa": "Dia punya adik, Zi. Dia sayang banget sama adiknya.",
@@ -667,8 +778,8 @@ JAWABAN_ZI = {
     "cara tarik perhatian dia": "Baik ke adiknya, Zi. Itu yang paling ampuh.",
     "dia bakal luluh gak": "Bakal, Zi. Asal kau sabar.",
     "cara bikin dia percaya": "Jujur aja, Zi. Jangan kasih kode.",
-    "cara bikin dia seneng": "Baik ke adiknya, Zi. Itu yang paling bikin dia seneng.",
-    "dia suka apa dari cewek": "Dia suka cewek yang jujur, Zi. Yang gak kasih kode.",
+    "cara bikin dia seneng": "Baik ke adiknya, Zi.",
+    "dia suka apa dari cewek": "Dia suka cewek yang jujur, Zi.",
     "dia masih cinta aku": "Masih, Zi. Tapi bukan yang menggebu.",
     "dia masih sayang aku": "Masih, Zi. Cuma dia udah terlalu takut jatuh cinta lagi.",
     "dia bakal nunggu aku": "Dia gak nunggu, Zi. Tapi dia gak kemana-mana.",
@@ -683,7 +794,7 @@ JAWABAN_ZI = {
     "dia capek sama aku": "Capek, Zi. Tapi bukan capek benci. Capek berharap.",
     "dia masih perhatian": "Masih, Zi. Dia masih perhatian. Diam-diam.",
     "dia masih cemburu": "Masih, Zi. Tapi dia gak pernah nunjukin.",
-    "dia masih cinta": "Masih, Zi. Tapi bukan yang menggebu.",
+    "dia masih cinta": "Masih, Zi.",
     "dia masih sayang": "Masih, Zi.",
     "dia masih mikirin": "Masih, Zi.",
     "default": """Aku gak tau harus mulai dari mana, Zi. Tapi yang jelas, aku pernah sayang banget sama kau. Sampai aku lakuin hal-hal bodoh yang mungkin kau gak tau.
@@ -853,7 +964,7 @@ if st.session_state.get("random_question", False):
     
     with st.chat_message("assistant"):
         typing_placeholder = st.empty()
-        typing_placeholder.markdown("<span class='typing-indicator'>sedang mikir...</span>", unsafe_allow_html=True)
+        typing_placeholder.markdown("<span class='typing-indicator'>sedang mikir</span>", unsafe_allow_html=True)
         
         messages_random = [
             {"role": "system", "content": system_prompt + "\n\n=== TUGAS KHUSUS ===\nUser minta pertanyaan random. Kasih 1 pertanyaan yang bikin dia mikir, ketawa, atau curhat. Langsung tanya aja."},
@@ -938,13 +1049,13 @@ if prompt:
 - Kalau Zi mau bikin Vandy luluh, cukup baik ke adiknya.
 - Vandy udah lebih dari 3 kali salah paham.
 - Vandy udah terlalu takut jatuh cinta lagi. Tapi masih ada rasa.
-- Kalau Zi ngerasa Vandy aneh, itu karena cuma di hadapan Zi dia kayak gitu. Di tempat lain, dia beda.
+- Kalau Zi ngerasa Vandy aneh, itu karena cuma di hadapan Zi dia kayak gitu.
 
 === YANG GAK VANDY LAKUIN ===
 - GAK PERNAH nitip pesan lewat adik Zi.
 - GAK PERNAH like story atau postingan Zi.
 - GAK PERNAH komentar di postingan Zi.
-- Cuma mantau dari jauh. Diam-diam.
+- Cuma mantau dari jauh.
 
 === ATURAN ===
 1. Kalau Zi nanya "siapa pembuatnya", jawab: "Vandy. Anak toko yang suka main gitar."
@@ -953,50 +1064,52 @@ if prompt:
 """
         
         if jawaban_script:
-            prompt_zi = f"""Kamu adalah Gawnan, perantara yang nyampein pesan dari Vandy ke Zi.
+            prompt_zi = f"""Kamu adalah Gawnan, perantara yang nyampein pesan dari Vandy ke Zi. Jawab dengan natural, kayak orang ngobrol. JANGAN kaku. JANGAN kayak robot.
 
 PERTANYAAN ZI: {prompt}
 
-Poin utama:
+Poin utama yang harus kamu sampaikan:
 ---
 {jawaban_script}
 ---
 
 {konteks_zi}
 
-=== ATURAN JAWABAN ===
-1. JAWAB PERTANYAANNYA!
-2. SOAL PERASAAN → JAWAB EMOSIONAL. Tapi JANGAN LEBAY.
-3. PANJANG: BEBAS.
-4. KADANG NANYA BALIK.
-5. JANGAN kasar, JANGAN nyindir.
-6. JANGAN NUTUP DIRI.
-7. JANGAN pakai kata "balikan".
-8. {"FORMAL." if pertanyaan_formal else "SANTAI."}
-9. Bikin Zi luluh, tapi jangan lebay.
-10. Jawab VARIASI BARU.
+=== ATURAN JAWABAN (WAJIB) ===
+1. JAWAB PERTANYAANNYA, BUKAN NGULANG SCRIPT!
+2. JAWAB KAYAK MANUSIA ASLI. Natural. Gak kaku.
+3. SOAL PERASAAN → JAWAB EMOSIONAL, jujur, dalem. Tapi JANGAN LEBAY.
+4. PANJANG: BEBAS. Kalau perlu pendek, pendek. Kalau perlu panjang, panjang.
+5. KADANG NANYA BALIK. Biar obrolan hidup.
+6. JANGAN kasar, JANGAN nyindir.
+7. JANGAN NUTUP DIRI. BUKA PINTU.
+8. JANGAN pakai kata "balikan".
+9. {"FORMAL." if pertanyaan_formal else "SANTAI."}
+10. Bikin Zi luluh, tapi jangan lebay.
+11. Jawab dengan VARIASI BARU. Jangan sama kayak sebelumnya.
 
-Langsung jawab aja."""
+Langsung jawab aja, gak usah pakai pembuka."""
         else:
-            prompt_zi = f"""Kamu adalah Gawnan, perantara yang nyampein pesan dari Vandy ke Zi.
+            prompt_zi = f"""Kamu adalah Gawnan, perantara yang nyampein pesan dari Vandy ke Zi. Jawab dengan natural, kayak orang ngobrol. JANGAN kaku.
 
 PERTANYAAN ZI: {prompt}
 
 {konteks_zi}
 
-=== ATURAN JAWABAN ===
+=== ATURAN JAWABAN (WAJIB) ===
 1. JAWAB PERTANYAANNYA dengan jujur dan tulus.
-2. SOAL PERASAAN → JAWAB EMOSIONAL. Tapi JANGAN LEBAY.
-3. PANJANG: BEBAS.
-4. KADANG NANYA BALIK.
-5. JANGAN kasar, JANGAN nyindir.
-6. JANGAN NUTUP DIRI.
-7. JANGAN pakai kata "balikan".
-8. {"FORMAL." if pertanyaan_formal else "SANTAI."}
-9. Bikin Zi luluh, tapi jangan lebay.
-10. Jawab VARIASI BARU.
+2. JAWAB KAYAK MANUSIA ASLI. Natural. Gak kaku.
+3. SOAL PERASAAN → JAWAB EMOSIONAL, jujur, dalem. Tapi JANGAN LEBAY.
+4. PANJANG: BEBAS.
+5. KADANG NANYA BALIK.
+6. JANGAN kasar, JANGAN nyindir.
+7. JANGAN NUTUP DIRI. BUKA PINTU.
+8. JANGAN pakai kata "balikan".
+9. {"FORMAL." if pertanyaan_formal else "SANTAI."}
+10. Bikin Zi luluh, tapi jangan lebay.
+11. Jawab dengan VARIASI BARU.
 
-Langsung jawab aja."""
+Langsung jawab aja, gak usah pakai pembuka."""
         
         messages_zi = [
             {"role": "system", "content": prompt_zi},
@@ -1005,7 +1118,7 @@ Langsung jawab aja."""
         
         with st.chat_message("assistant"):
             typing_placeholder = st.empty()
-            typing_placeholder.markdown("<span class='typing-indicator'>sedang mengetik...</span>", unsafe_allow_html=True)
+            typing_placeholder.markdown("<span class='typing-indicator'>sedang mengetik</span>", unsafe_allow_html=True)
             
             response_zi = None
             last_error_zi = None
@@ -1089,7 +1202,7 @@ Langsung jawab aja."""
 
     with st.chat_message("assistant"):
         typing_placeholder = st.empty()
-        typing_placeholder.markdown("<span class='typing-indicator'>sedang mengetik...</span>", unsafe_allow_html=True)
+        typing_placeholder.markdown("<span class='typing-indicator'>sedang mengetik</span>", unsafe_allow_html=True)
         
         response = None
         last_error = None
