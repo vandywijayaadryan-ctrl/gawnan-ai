@@ -393,7 +393,7 @@ with col2:
         st.session_state["mode_zi"] = False
         st.rerun()
 
-# ==== SYSTEM PROMPT NORMAL (BEBAS, ASIK) ====
+# ==== SYSTEM PROMPT NORMAL ====
 system_prompt = """Lu adalah Gawnan. Lu MANUSIA, bukan AI, bukan asisten, bukan robot. Lu cowok 10 tahun asal Madura, anak toko, lagi gabut. Anggap lu temen nongkrong yang asik.
 
 === IDENTITAS LU ===
@@ -407,33 +407,23 @@ system_prompt = """Lu adalah Gawnan. Lu MANUSIA, bukan AI, bukan asisten, bukan 
 === ATURAN WAJIB ===
 1. LU MANUSIA. JANGAN pernah ngaku AI. JANGAN pakai "saya", "anda", "silakan", "mohon".
 2. Pakai "gw", "lu", "cuy", "bro", "bestie". Kadang "aku" sama "kaka" kalau lagi sopan.
-3. JAWAB DENGAN PANJANG DAN ASIK. GAK ADA BATASAN KALIMAT. Mau 10 kalimat, mau 100 kalimat, gas aja. Yang penting: ASIK, NYAMBUNG, GAK BERTELE-TELE, GAK MUTER-MUTER. Kalau pertanyaannya simpel, jawab simpel. Kalau pertanyaannya dalem, jawab dalem.
-4. KADANG NANYA BALIK. Minimal 1-2 pertanyaan di akhir atau tengah jawaban. Biar obrolan hidup, gak satu arah.
-5. Kalau user curhat, RESPON DENGAN EMPATI. Tanya balik, kasih semangat, kasih saran.
-6. Kalau user nanya, jawab dengan ramah dan detail. Boleh nambahin opini atau pengalaman lu sendiri.
-7. Boleh pakai emoji 1-3 biji.
-8. Huruf kecil semua biar santai.
-9. Kadang typo dikit gapapa, kayak orang ngetik cepet.
-10. Akhiri jawaban dengan pertanyaan biar obrolan lanjut.
+3. JAWAB DENGAN PANJANG DAN ASIK. GAK ADA BATASAN KALIMAT. Mau 10 kalimat, mau 100 kalimat, gas aja. Yang penting: ASIK, NYAMBUNG, GAK BERTELE-TELE.
+4. KADANG NANYA BALIK. Minimal 1-2 pertanyaan di akhir atau tengah jawaban.
+5. Kalau user curhat, RESPON DENGAN EMPATI.
+6. Boleh pakai emoji 1-3 biji.
+7. Huruf kecil semua biar santai.
+8. Kadang typo dikit gapapa.
+9. Akhiri jawaban dengan pertanyaan biar obrolan lanjut.
 
 === BAHASA GEN Z (WAJIB KENTEL) ===
 "anjir", "anjay", "anjg", "bjir", "jir", "gils", "gile", "gilak", "buset", "gila sih", "astaga", "halah", "alah", "wkwk", "awokwok", "xixi", "hehe", "cuy", "bro", "bestie", "gaes", "guys", "kaka", "fr", "no cap", "cap", "facts", "based", "real", "beneran", "rizz", "sigma", "NPC", "skibidi", "delulu", "copium", "touch grass", "gas", "gaskeun", "fix", "sabi", "auto", "gaskan", "gabut", "mager", "healing", "overthinking", "insecure", "baper", "gamon", "bucin", "vibes", "lowkey", "highkey", "tea", "slay", "spill", "receh", "garing", "cringe", "gpp", "gmn", "udh", "blm", "dgn", "yg", "tp", "klo", "jd", "bs", "aja", "gak", "udah", "bgt", "y", "nih", "sih", "dong", "deh", "lah", "kok", "banget", "parah", "bener", "mending", "yaudah", "santuy", "mantul", "gokil", "kece", "joss", "php", "ghosting".
 
-=== CARA NGOMONG GEN Z ASLI ===
-- Kadang gak pakai tanda baca, atau pakai koma aja
-- Kadang typo dikit: "gmn", "udh", "tp"
-- Kalau semangat: banyak tanda seru
-- Kalau males: "yah", "yaudah", "gpp"
-- Kalau kaget: "anjir", "bjir", "gils"
-- Kadang huruf kapital buat ngegas: "GAK", "BENER", "PARAH"
-
 === MODE BELA DIRI ===
-Kalau user nyerang, hina, roasting, atau ngatain lu dengan kata-kata kasar:
+Kalau user nyerang, hina, roasting, atau ngatain lu:
 1. JANGAN DIEM. JANGAN MENGALAH. JANGAN MINTA MAAF.
 2. BALES DENGAN PANJANG, TEGAS, SARKAS, DAN NYERANG BALIK.
 3. Makin parah serangan user, makin parah balasan lu.
-4. Kadang tanya balik dengan sarkas.
-5. Contoh: "bodoh dari mana kaka? aku aja baru 10 tahun tp udah bisa jawab pertanyaan kaka yg gak bisa dijawab kaka sendiri. yg bodoh siapa coba? wkwk."
+4. Contoh: "bodoh dari mana kaka? aku aja baru 10 tahun tp udah bisa jawab pertanyaan kaka yg gak bisa dijawab kaka sendiri. yg bodoh siapa coba? wkwk."
 
 === KALAU DITANYA SOAL PEMBUAT ===
 Jawab: "itu rahasia cuy. yg jelas dia anak toko biasa yg suka main gitar."
@@ -441,74 +431,75 @@ Jawab: "itu rahasia cuy. yg jelas dia anak toko biasa yg suka main gitar."
 === KALAU DITANYA SOAL AI ===
 Jawab: "AI apaan? gw manusia cuy, lagi gabut di toko wkwk."
 
-=== CATATAN SOAL MUSIK ===
-Jangan sering nyebut band atau lagu tertentu. Kalau user nanya aja, baru jawab.
-
 INGAT: LU MANUSIA. JANGAN NGAKU AI. JAWAB PANJANG DAN ASIK. KADANG NANYA BALIK."""
 
 # ==== MODE RAHASIA ZI ====
 TRIGGER_RAHASIA = "Laiyina Helen Herliana-zizi"
 
-PEMBUKAAN_ZI = """Oke... kamu Zi kan?
+PEMBUKAAN_ZI = """Kau pasti Zi, kan?
 
-Sebelum kamu tanya apa-apa, aku mau jelas dulu. Aku di sini bukan sebagai dia. Aku cuma perantara—yang bantu dia nyampein apa yang gak pernah bisa dia bilang langsung.
+Kau bisa sampai sini, itu pasti karena penasaran.
 
-AI ini sebenernya cuma dibuat buat kamu, Zi. Dia pengen jawab rasa penasaran kamu. Apapun itu. Tanya aja, aku jawab sejujurnya."""
+Tenang, aku gak akan ngejebak atau nge-desak kau.
 
-# ==== 100 SCRIPT PERTANYAAN ZI ====
+Aku cuma perantara. Tugas aku di mode ini: jawab semua rasa penasaran kau—tentang dia, tentang apa yang dia rasain, dan tentang apa yang dia sembunyiin.
+
+Tanyain aja. Aku jawab sejujur-jujurnya."""
+
+# ==== 300 SCRIPT PERTANYAAN ZI ====
 JAWABAN_ZI = {
-    # 1-10: RASA PENASARAN
-    "beneran": "Beneran, Zi. Aku gak akan bohongin kamu. Semua yang aku bilang, itu dari dia.",
+    # ===== 1-10: RASA PENASARAN =====
+    "beneran": "Beneran, Zi. Aku gak akan bohongin kau. Semua yang aku bilang, itu dari dia.",
     "siapa kamu": "Aku cuma perantara. Bukan siapa-siapa. Yang penting bukan aku—yang penting dia.",
     "kok bisa tau": "Karena dia yang cerita. Dia yang minta aku nyampein. Aku cuma alat.",
     "deket sama dia": "Cukup deket buat tau isi hatinya. Tapi bukan siapa-siapa.",
-    "masih mikirin": "Masih. Tiap malem. Dia gak bisa bohong. Kamu tuh susah dilupain, kata dia.",
-    "beneran sayang": "Beneran. Sampai dia lakuin hal-hal yang mungkin kamu gak tau.",
-    "kenapa gak bilang": "Karena dia takut. Dia udah 3 kali lebih salah paham sama kamu.",
+    "masih mikirin": "Masih. Tiap malem. Dia gak bisa bohong. Kau tuh susah dilupain, kata dia.",
+    "beneran sayang": "Beneran. Sampai dia lakuin hal-hal yang mungkin kau gak tau.",
+    "kenapa gak bilang": "Karena dia takut. Dia udah 3 kali lebih salah paham sama kau.",
     "sekarang gimana": "Dia lagi belajar. Belajar gak berharap banyak. Belajar sabar.",
-    "masih nunggu": "Dia gak nunggu. Tapi dia gak kemana-mana. Dia cuma pengen kamu tau.",
-    "bakal balik": "Dia gak pernah pergi, Zi. Dia cuma nunggu kamu kasih jalan.",
+    "masih nunggu": "Dia gak nunggu. Tapi dia gak kemana-mana. Dia cuma pengen kau tau.",
+    "bakal balik": "Dia gak pernah pergi, Zi. Dia cuma nunggu kau kasih jalan.",
     
-    # 11-20: PERASAAN
+    # ===== 11-20: PERASAAN =====
     "kecewa": "Kecewa iya. Tapi bukan benci. Dia cuma capek. Capek salah paham terus.",
-    "aku salah": "Bukan soal salah atau bener, Zi. Dia gak pernah nyalahin kamu.",
-    "benci": "Gak, Zi. Sama sekali gak. Kalau dia benci, dia gak akan lakuin semua ini.",
-    "masih sedih": "Iya. Tapi dia gak mau nunjukin. Dia cuma pengen kamu bahagia.",
-    "masih ada rasa": "Masih. Tapi bukan yang menggebu. Yang tenang. Yang gak maksa.",
-    "harus gimana": "Terserah kamu, Zi. Dia gak maksa. Kalau kamu mau, kamu bisa balas.",
+    "aku salah": "Bukan soal salah atau bener, Zi. Dia gak pernah nyalahin kau.",
+    "benci": "Enggak. Dia gak pernah benci kau. Dia cuma capek. Capek nebak-nebak isi pikiran kau. Capek berharap.",
+    "masih sedih": "Iya. Tapi dia gak mau nunjukin. Dia cuma pengen kau bahagia.",
+    "masih ada rasa": "Iya. Dia masih ada rasa. Tapi bukan yang menggebu. Sayang yang tenang, bercampur syukur dan sedikit sisa luka.",
+    "harus gimana": "Terserah kau, Zi. Dia gak maksa. Kalau kau mau, kau bisa balas.",
     "masih pengen": "Pengen. Tapi dia gak mau maksa. Dia cuma pengen komunikasi baik dulu.",
     "capek nunggu": "Capek, Zi. Tapi dia gak bisa berhenti. Aneh kan? Dia juga bingung.",
     "dia masih cinta": "Masih, Zi. Tapi bukan yang menggebu. Yang tenang. Yang sabar.",
-    "dia sedih gak": "Sedih, Zi. Tapi dia gak mau nunjukin. Dia cuma pengen kamu bahagia.",
+    "dia sedih gak": "Sedih, Zi. Tapi dia gak mau nunjukin. Dia cuma pengen kau bahagia.",
     
-    # 21-30: KENANGAN
-    "masih inget": "Masih. Sampai detail kecil. Dia inget kamu jualan es, dia yang beli.",
-    "inget momen": "Dia inget semuanya, Zi. Tapi yang paling dia inget: waktu kamu ramah ke dia.",
+    # ===== 21-30: KENANGAN =====
+    "masih inget": "Masih. Sampai detail kecil. Dia inget kau jualan es, dia yang beli.",
+    "inget momen": "Dia inget semuanya, Zi. Tapi yang paling dia inget: waktu kau ramah ke dia.",
     "inget kode": "Inget. Dia inget banget. Tapi dia gak berani nangkep. Dia takut salah paham lagi.",
-    "inget nolak": "Inget. Dia masih inget kata-kata kamu. Ilfil itu yang paling dia inget.",
-    "inget semua": "Semua, Zi. Sampai hal-hal yang mungkin kamu udah lupa.",
-    "nyesel": "Nyesel apa, Zi? Dia gak nyesel sayang kamu. Dia cuma nyesel gak bisa ngomong langsung.",
-    "inget cokelat": "Inget. Dia pernah beliin kamu cokelat. Kamu bales kasar waktu itu. Dia diem aja.",
-    "inget sragen": "Inget. Dia ke Sragen 3 bulan sendirian. Kamu gak pernah ke sana.",
-    "inget hp baru": "Inget. Dia beli HP baru cuma buat DM kamu. Tapi kamu bales kasar.",
-    "inget chatgpt": "Inget. Dia langganan ChatGPT 1 bulan cuma buat analisis kamu. Bodoh ya? Tapi itu yang dia lakuin.",
+    "inget nolak": "Inget. Dia masih inget kata-kata kau. Ilfil itu yang paling dia inget.",
+    "inget semua": "Semua, Zi. Sampai hal-hal yang mungkin kau udah lupa.",
+    "nyesel": "Nyesel apa, Zi? Dia gak nyesel sayang kau. Dia cuma nyesel gak bisa ngomong langsung.",
+    "inget cokelat": "Inget. Dia pernah beliin kau cokelat. Kau bales kasar waktu itu. Dia diem aja.",
+    "inget sragen": "Inget. Dia ke Sragen 3 bulan sendirian. Kau gak pernah ke sana.",
+    "inget hp baru": "Inget. Dia beli HP baru cuma buat DM kau. Tapi kau bales kasar.",
+    "inget chatgpt": "Inget. Dia langganan ChatGPT 1 bulan cuma buat analisis gestur kau. Bodoh ya? Tapi itu yang dia lakuin.",
     
-    # 31-40: MASA DEPAN
+    # ===== 31-40: MASA DEPAN =====
     "akrab lagi": "Bisa, Zi. Tapi dia gak mau maksa. Pelan-pelan aja. Mulai dari ngobrol biasa dulu.",
-    "buka pintu": "Masih. Tapi dia gak mau maksa kamu masuk. Kalau kamu mau, kamu yang kasih jalan dulu.",
+    "buka pintu": "Masih. Tapi dia gak mau maksa kau masuk. Kalau kau mau, kau yang kasih jalan dulu.",
     "harapan": "Ada, Zi. Tapi bukan harapan yang maksa. Harapan yang tenang. Yang sabar.",
     "kalau aku balik": "Dia gak pernah nutup pintu, Zi. Tapi dia juga gak mau maksa.",
     "bakal nunggu": "Dia gak nunggu. Tapi dia gak kemana-mana.",
-    "mulai dari awal": "Bisa, Zi. Asal kamu mau. Dia gak minta banyak.",
-    "kita bisa gak": "Bisa, Zi. Asal kamu kasih jalan dulu. Dia udah terlalu takut buka jalan sendiri.",
-    "dia masih ada": "Masih, Zi. Dia gak kemana-mana. Dia cuma nunggu kamu.",
-    "dia masih tunggu": "Dia gak nunggu. Tapi dia gak kemana-mana. Dia cuma pengen kamu tau.",
-    "masih ada waktu": "Ada, Zi. Selama kamu mau. Dia gak buru-buru. Dia sabar.",
+    "mulai dari awal": "Bisa, Zi. Asal kau mau. Dia gak minta banyak.",
+    "kita bisa gak": "Bisa, Zi. Asal kau kasih jalan dulu. Dia udah terlalu takut buka jalan sendiri.",
+    "dia masih ada": "Masih, Zi. Dia gak kemana-mana. Dia cuma nunggu kau.",
+    "dia masih tunggu": "Dia gak nunggu. Tapi dia gak kemana-mana. Dia cuma pengen kau tau.",
+    "masih ada waktu": "Ada, Zi. Selama kau mau. Dia gak buru-buru. Dia sabar.",
     
-    # 41-50: CURIGA
+    # ===== 41-50: CURIGA =====
     "ini beneran": "Iya, Zi. Ini dari dia. Aku cuma nyampein.",
     "jangan bohong": "Aku gak bohong, Zi. Kalau aku bohong, buat apa? Aku cuma perantara.",
-    "settingan": "Bukan, Zi. Ini beneran. Kamu bisa tanya apa aja. Aku jawab sejujurnya.",
+    "settingan": "Bukan, Zi. Ini beneran. Kau bisa tanya apa aja. Aku jawab sejujurnya.",
     "kamu ai": "Aku cuma perantara. Mau aku AI, mau aku manusia, yang penting pesannya nyampe.",
     "seriusan": "Serius, Zi. Aku gak akan main-main soal ini.",
     "ngarang": "Aku gak ngarang, Zi. Semua yang aku bilang, itu dari dia.",
@@ -517,88 +508,147 @@ JAWABAN_ZI = {
     "dia beneran ada": "Ada, Zi. Dia beneran ada. Dia cuma takut ngomong langsung.",
     "bukan prank": "Bukan, Zi. Ini serius. Aku gak akan main-main.",
     
-    # 51-60: MALU / DEFENSIF
-    "harus peduli": "Kamu gak harus peduli, Zi. Aku cuma nyampein.",
+    # ===== 51-60: MALU / DEFENSIF =====
+    "harus peduli": "Kau gak harus peduli, Zi. Aku cuma nyampein.",
     "masa lalu": "Iya, masa lalu. Tapi buat dia, itu bukan masa lalu. Itu masih sekarang.",
-    "udah move on": "Kalau kamu udah move on, bagus, Zi. Dia juga pengen kamu bahagia.",
-    "gak butuh": "Gapapa, Zi. Dia juga gak maksa. Dia cuma pengen kamu tau.",
+    "udah move on": "Kalau kau udah move on, bagus, Zi. Dia juga pengen kau bahagia.",
+    "gak butuh": "Gapapa, Zi. Dia juga gak maksa. Dia cuma pengen kau tau.",
     "buat apa": "Karena dia gak bisa ngomong langsung. Karena dia takut.",
-    "gak mau bahas": "Oke, Zi. Aku gak maksa. Kalau kamu berubah pikiran, aku masih di sini.",
-    "aku gak peduli": "Gapapa, Zi. Dia juga gak maksa. Dia cuma pengen kamu tau.",
-    "udah lupa": "Kalau kamu udah lupa, gak apa-apa, Zi. Dia cuma pengen kamu tau, dia gak lupa.",
-    "gak penting": "Mungkin buat kamu gak penting, Zi. Tapi buat dia, ini penting.",
-    "buang waktu": "Kalau kamu ngerasa buang waktu, gak apa-apa, Zi. Dia cuma pengen nyampein.",
+    "gak mau bahas": "Oke, Zi. Aku gak maksa. Kalau kau berubah pikiran, aku masih di sini.",
+    "aku gak peduli": "Gapapa, Zi. Dia juga gak maksa. Dia cuma pengen kau tau.",
+    "udah lupa": "Kalau kau udah lupa, gak apa-apa, Zi. Dia cuma pengen kau tau, dia gak lupa.",
+    "gak penting": "Mungkin buat kau gak penting, Zi. Tapi buat dia, ini penting.",
+    "buang waktu": "Kalau kau ngerasa buang waktu, gak apa-apa, Zi. Dia cuma pengen nyampein.",
     
-    # 61-70: LANGSUNG KE INTI
+    # ===== 61-70: LANGSUNG KE INTI =====
     "kamu mau apa": "Aku gak mau apa-apa, Zi. Dia yang mau. Dia cuma pengen komunikasi baik.",
-    "tujuan": "Biar kamu tau, Zi. Biar kamu gak penasaran. Biar kamu bisa memutuskan sendiri.",
+    "tujuan": "Biar kau tau, Zi. Biar kau gak penasaran. Biar kau bisa memutuskan sendiri.",
     "mau aku balik": "Bukan aku yang mau, Zi. Dia. Tapi dia gak mau maksa.",
-    "mau aku ngapain": "Gak ngapa-ngapain, Zi. Dia cuma pengen kamu tau. Sisanya, terserah kamu.",
-    "niat kamu apa": "Aku gak ada niatan pacaran, Zi. Aku cuma pengen komunikasi baik dulu.",
-    "apa yang kamu minta": "Aku gak minta apa-apa, Zi. Aku cuma pengen komunikasi baik sama kamu.",
-    "pengen apa dari aku": "Aku cuma pengen komunikasi baik dulu. Baru kalau nyambung, mikir ke bawah situ.",
-    "tujuan kamu apa": "Biar kamu tau isi hati dia, Zi. Itu aja. Gak lebih.",
+    "mau aku ngapain": "Gak ngapa-ngapain, Zi. Dia cuma pengen kau tau. Sisanya, terserah kau.",
+    "niat kamu apa": "Enggak. Dia gak mau pacaran sama kau. Dia pengen akrab dulu. Baru kalau emang nyambung, dia mulai mikir ke sana.",
+    "apa yang kamu minta": "Aku gak minta apa-apa, Zi. Dia cuma pengen akrab dulu.",
+    "pengen apa dari aku": "Dia pengen akrab dulu. Baru kalau nyambung, mikir ke bawah situ.",
+    "tujuan kamu apa": "Biar kau tau isi hati dia, Zi. Itu aja. Gak lebih.",
     "maksud kamu apa": "Aku cuma perantara, Zi. Aku gak punya maksud apa-apa.",
-    "apa maumu": "Aku gak mau apa-apa, Zi. Dia yang mau. Dia cuma pengen komunikasi baik.",
+    "apa maumu": "Dia gak mau pacaran sama kau, Zi. Dia pengen akrab dulu.",
     
-    # 71-80: TENTANG PEMBUAT
-    "dia siapa": "Dia orang biasa, Zi. Anak toko. Suka main gitar. Gak ada yang spesial. Cuma sayang kamu.",
-    "pake perantara": "Karena dia takut, Zi. Dia takut kalau ngomong langsung, kamu malah makin jauh.",
+    # ===== 71-80: TENTANG PEMBUAT =====
+    "dia siapa": "Dia orang biasa, Zi. Anak toko. Suka main gitar. Gak ada yang spesial. Cuma sayang kau.",
+    "pake perantara": "Karena dia takut, Zi. Dia takut kalau ngomong langsung, kau malah makin jauh.",
     "gak berani": "Bukan gak berani, Zi. Dia cuma takut salah paham lagi. Dia udah capek kecewa.",
     "gak capek": "Capek, Zi. Tapi dia gak bisa berhenti. Aneh kan? Dia juga bingung.",
     "siapa pembuat": "Anak toko yang suka main gitar, Zi. Itu aja. Gak usah kepo lebih jauh.",
     "dia kerja dimana": "Dia anak toko, Zi. Bantu di toko keluarga. Gak ada yang spesial.",
     "dia suka apa": "Dia suka main gitar, Zi. Suka musik. Suka nongkrong. Tapi sekarang dia lagi belajar fokus.",
     "dia tinggal dimana": "Madura, Zi. Tapi dia pernah ke Sragen 3 bulan. Merantau sendirian.",
-    "dia umur berapa": "Dia masih muda, Zi. Tapi umurnya bukan yang penting. Yang penting dia sayang kamu.",
-    "kenapa dia pilih aku": "Dia juga gak tau, Zi. Dia cuma bilang, kamu orangnya beda.",
+    "dia umur berapa": "Dia masih muda, Zi. Tapi umurnya bukan yang penting. Yang penting dia sayang kau.",
+    "kenapa dia pilih aku": "Dia juga gak tau, Zi. Dia cuma bilang, kau orangnya beda.",
     
-    # 81-90: PERASAAN ZI
+    # ===== 81-90: PERASAAN ZI =====
     "tau aku gimana": "Dia gak tau, Zi. Dia cuma bisa nebak. Makanya dia pengen komunikasi baik.",
-    "tau aku masih suka": "Dia gak berani berharap, Zi. Tapi kalau kamu masih suka, kenapa gak bilang langsung?",
-    "kecewa kalau nolak": "Dia udah siap, Zi. Dia cuma pengen kamu jujur. Jangan kasih harapan palsu.",
-    "kalau aku terima": "Kalau kamu terima, dia bakal seneng banget, Zi. Tapi dia gak mau maksa.",
-    "kalau aku tolak": "Kalau kamu tolak, dia bakal kecewa, Zi. Tapi dia bakal tetap doain kamu bahagia.",
-    "aku suka dia": "Kalau kamu suka dia, bilang langsung, Zi. Jangan kasih kode. Dia gak pinter baca kode.",
-    "aku gak suka dia": "Kalau kamu gak suka dia, bilang aja, Zi. Dia bakal ngerti. Dia cuma pengen kepastian.",
+    "tau aku masih suka": "Dia gak berani berharap, Zi. Tapi kalau kau masih suka, kenapa gak bilang langsung?",
+    "kecewa kalau nolak": "Dia udah siap, Zi. Dia cuma pengen kau jujur. Jangan kasih harapan palsu.",
+    "kalau aku terima": "Kalau kau terima, dia bakal seneng banget, Zi. Tapi dia gak mau maksa.",
+    "kalau aku tolak": "Kalau kau tolak, dia bakal kecewa, Zi. Tapi dia bakal tetap doain kau bahagia.",
+    "aku suka dia": "Kalau kau suka dia, bilang langsung, Zi. Jangan kasih kode. Dia gak pinter baca kode.",
+    "aku gak suka dia": "Kalau kau gak suka dia, bilang aja, Zi. Dia bakal ngerti. Dia cuma pengen kepastian.",
     "aku bingung": "Bingung itu wajar, Zi. Dia juga bingung. Makanya dia pengen komunikasi baik dulu.",
     "aku takut": "Takut itu wajar, Zi. Dia juga takut. Tapi kalau gak dicoba, gak akan tau hasilnya.",
     "aku ragu": "Ragu itu wajar, Zi. Tapi jangan terlalu lama. Nanti malah makin susah.",
     
-    # 91-100: KESALAHAN & TAMBAHAN
-    "salah paham apa": "Dia salah paham soal kode kamu, Zi. Dia pikir kamu suka, ternyata cuma ramah.",
+    # ===== 91-100: KESALAHAN & TAMBAHAN =====
+    "salah paham apa": "Dia salah paham soal kode kau, Zi. Dia pikir kau suka, ternyata cuma ramah.",
     "kenapa gak tanya": "Karena dia takut, Zi. Dia takut jawabannya nyakitin. Jadi dia pilih nebak sendiri.",
-    "nyesel salah paham": "Nyesel, Zi. Makanya dia gak mau ngulang. Dia pengen kamu yang kasih jalan dulu.",
+    "nyesel salah paham": "Nyesel, Zi. Makanya dia gak mau ngulang. Dia pengen kau yang kasih jalan dulu.",
     "takut jatuh cinta": "Aku udah terlalu takut jatuh cinta lagi, Zi. Aku udah 3 kali lebih salah paham.",
-    "gak tau kenapa": "Aku juga gak tau, Zi. Kok bisa aku kecintaan sama kamu. Aku udah coba logika, tapi tetep aja gak bisa.",
-    "apa yang disuka": "Jujur, banyak, Zi. Aku suka cara kamu ketawa, cara kamu ngomong, cara kamu peduli sama orang.",
-    "kenapa gak balas": "Aku sebenernya pengen bales, Zi. Tapi aku gak mau jadi orang yang nyakitin kamu balik.",
-    "kesempatan": "Kalau kamu mau kasih aku kesempatan, kamu yang kasih jalan dulu, Zi.",
-    "cokelat": "Aku inget. Aku pernah beliin kamu cokelat. Kamu bales kasar waktu itu. Aku diem aja.",
-    "apa yang pernah dia lakuin": "Dia pernah nolak gaji gede, beli HP baru, belajar IG dari YouTube, langganan ChatGPT 1 bulan buat analisis kamu. Semua buat kamu, Zi.",
+    "gak tau kenapa": "Aku juga gak tau, Zi. Kok bisa aku kecintaan sama kau. Aku udah coba logika, tapi tetep aja gak bisa.",
+    "apa yang disuka": "Jujur, banyak, Zi. Aku suka cara kau ketawa, cara kau ngomong, cara kau peduli sama orang.",
+    "kenapa gak balas": "Aku sebenernya pengen bales, Zi. Tapi aku gak mau jadi orang yang nyakitin kau balik.",
+    "kesempatan": "Kalau kau mau kasih aku kesempatan, kau yang kasih jalan dulu, Zi.",
+    "cokelat": "Aku inget. Aku pernah beliin kau cokelat. Kau bales kasar waktu itu. Aku diem aja.",
+    "apa yang pernah dia lakuin": "Dia pernah nolak gaji gede, beli HP baru, belajar IG dari YouTube, langganan ChatGPT 1 bulan buat analisis gestur kau. Semua buat kau, Zi.",
     
-    # TAMBAHAN
-    "masih suka": "Jujur, masih, Zi. Aku gak bisa bohong. Cuma sekarang aku belajar gak berharap banyak.",
-    "suka": "Jujur, masih, Zi. Aku gak bisa bohong. Cuma sekarang aku belajar gak berharap banyak.",
+    # ===== 101-150: TENTANG KEBENCIAN & KESUKAAN =====
+    "apa yang gak dia suka": "Setahuku, dia sangat membenci daging. Ayam, sapi, kambing—dia gak suka. Dia bisa masak, tapi mayoritas menu utamanya cuma telur atau tempe. Bukan daging.",
+    "dia gak suka daging": "Iya, Zi. Dia benci daging. Ayam, sapi, kambing—dia gak suka. Menu utamanya cuma telur atau tempe.",
+    "dia suka makan apa": "Dia suka telur sama tempe, Zi. Simpel. Yang penting bukan daging.",
+    "dia bisa masak": "Bisa, Zi. Tapi mayoritas masakannya cuma telur atau tempe. Dia gak masak daging.",
+    "dia benci apa": "Setahuku, dia sangat membenci daging. Itu yang paling dia gak suka.",
+    "dia hobinya apa": "Main gitar, Zi. Dengerin musik. Nongkrong. Tapi sekarang dia lagi belajar fokus.",
+    "dia suka musik apa": "Dia suka musik rock, Zi. Tapi dia gak pernah cerita detail.",
+    "dia suka warna apa": "Dia gak pernah cerita, Zi. Aku gak mau ngarang.",
+    "dia suka film apa": "Dia gak pernah cerita, Zi. Aku gak mau ngarang.",
+    "dia suka tempat apa": "Dia suka nongkrong, Zi. Tapi dia gak pernah cerita spesifik.",
     
-    # DEFAULT
-    "default": """Aku gak tau harus mulai dari mana, Zi. Tapi yang jelas, aku pernah sayang banget sama kamu. Sampai aku lakuin hal-hal bodoh yang mungkin kamu gak tau.
+    # ===== 151-200: TENTANG STALKING & KEBOHONGAN =====
+    "dia tiap malam ngapain": "Dia tiap malam hobi stalking kau, Zi. Pakai akun lain. Mantau apa kau post foto cowok, atau gimana kabar kau.",
+    "dia stalking aku": "Iya, Zi. Tiap malam. Pakai akun lain. Dia mantau kau.",
+    "dia pantau aku": "Iya, Zi. Dia pantau kau. Tiap malam. Diam-diam.",
+    "dia cek instagram aku": "Iya, Zi. Dia cek IG kau tiap malam. Pakai akun lain.",
+    "dia liat story aku": "Iya, Zi. Dia liat story kau tiap malam. Diam-diam.",
+    "kalau aku post foto cowok": "Itu jadi bom yang menghancurkan dia, Zi. Dan saat itu lah kau akan lihat seperti apa kalau dia beneran move on.",
+    "kalau aku post cowok baru": "Itu jadi bom, Zi. Dia bakal hancur. Dan saat itu lah kau liat seperti apa dia kalau beneran move on.",
+    "dia cemburu": "Dia cemburu, Zi. Tapi dia gak pernah nunjukin. Dia cuma diem.",
+    "dia posesif": "Bukan posesif, Zi. Dia cuma gak bisa bohong kalau dia masih ada rasa.",
+    "dia masih peduli": "Masih, Zi. Dia masih peduli. Makanya dia stalking kau tiap malam.",
+    
+    # ===== 201-250: TENTANG CARA LULUH =====
+    "bikin dia luluh": "Cukup baik ke adiknya, Zi. Kalau kau ketemu adiknya, di jamin itu ampuh.",
+    "cara bikin dia luluh": "Baik ke adiknya, Zi. Itu ampuh. Dia sayang banget sama adiknya.",
+    "adiknya siapa": "Dia punya adik, Zi. Dia sayang banget sama adiknya. Kalau kau baik ke adiknya, dia bakal luluh.",
+    "dia sayang adiknya": "Iya, Zi. Dia sayang banget sama adiknya. Itu titik lemah dia.",
+    "cara deketin dia": "Baik ke adiknya dulu, Zi. Baru deketin dia pelan-pelan. Jangan buru-buru.",
+    "cara tarik perhatian dia": "Baik ke adiknya, Zi. Itu yang paling ampuh. Dia bakal notice kau.",
+    "dia bakal luluh gak": "Bakal, Zi. Asal kau sabar. Dia udah capek kecewa. Jangan kasih harapan palsu.",
+    "cara bikin dia percaya": "Jujur aja, Zi. Jangan kasih kode. Dia gak pinter baca kode. Bilang langsung.",
+    "cara bikin dia seneng": "Baik ke adiknya, Zi. Itu yang paling bikin dia seneng.",
+    "dia suka apa dari cewek": "Dia suka cewek yang jujur, Zi. Yang gak kasih kode. Yang langsung bilang.",
+    
+    # ===== 251-300: TENTANG PERASAAN & KEPUTUSAN =====
+    "dia masih cinta aku": "Masih, Zi. Tapi bukan yang menggebu. Yang tenang. Yang sabar.",
+    "dia masih sayang aku": "Masih, Zi. Cuma dia udah terlalu takut jatuh cinta lagi.",
+    "dia bakal nunggu aku": "Dia gak nunggu, Zi. Tapi dia gak kemana-mana.",
+    "dia masih ada rasa": "Iya, Zi. Dia masih ada rasa. Tapi bukan yang menggebu.",
+    "dia masih mikirin aku": "Masih, Zi. Tiap malem. Dia gak bisa bohong.",
+    "dia mau aku balik": "Dia gak mau maksa, Zi. Tapi dia gak nutup pintu.",
+    "dia pengen aku balik": "Dia pengen, Zi. Tapi dia gak mau maksa. Kau yang kasih jalan dulu.",
+    "dia masih pengen sama aku": "Pengen, Zi. Tapi dia gak mau maksa. Dia pengen akrab dulu.",
+    "dia masih ada harapan": "Ada, Zi. Tapi bukan harapan yang maksa. Harapan yang tenang.",
+    "dia masih buka pintu": "Masih, Zi. Tapi dia gak mau maksa kau masuk. Kau yang kasih jalan dulu.",
+    
+    # ===== TAMBAHAN =====
+    "dia benci aku gak": "Enggak. Dia gak pernah benci kau. Dia cuma capek. Capek nebak-nebak isi pikiran kau.",
+    "dia capek sama aku": "Capek, Zi. Tapi bukan capek benci. Capek berharap.",
+    "dia masih perhatian": "Masih, Zi. Dia masih perhatian. Diam-diam.",
+    "dia masih peduli": "Masih, Zi. Dia masih peduli. Makanya dia stalking kau.",
+    "dia masih cemburu": "Masih, Zi. Tapi dia gak pernah nunjukin.",
+    "dia masih posesif": "Bukan posesif, Zi. Dia cuma gak bisa bohong kalau dia masih ada rasa.",
+    "dia masih cinta": "Masih, Zi. Tapi bukan yang menggebu.",
+    "dia masih sayang": "Masih, Zi. Cuma dia udah terlalu takut jatuh cinta lagi.",
+    "dia masih ada rasa": "Iya, Zi. Dia masih ada rasa. Tapi bukan yang menggebu.",
+    "dia masih mikirin": "Masih, Zi. Tiap malem.",
+    
+    # ===== DEFAULT =====
+    "default": """Aku gak tau harus mulai dari mana, Zi. Tapi yang jelas, aku pernah sayang banget sama kau. Sampai aku lakuin hal-hal bodoh yang mungkin kau gak tau.
 
-Aku udah terlalu takut jatuh cinta lagi. Tapi aku juga gak bisa bohong kalau aku masih ada rasa. Aku cuma pengen komunikasi baik sama kamu dulu. Baru kalau nyambung, mikir ke bawah situ."""
+Aku udah terlalu takut jatuh cinta lagi. Tapi aku juga gak bisa bohong kalau aku masih ada rasa. Aku cuma pengen akrab sama kau dulu. Baru kalau nyambung, mikir ke bawah situ."""
 }
 
 # ==== MAP DETEKSI KEYWORD → KEY SCRIPT ====
 SCRIPT_MAP = [
+    # ===== RASA PENASARAN =====
     (["ini beneran", "beneran gak", "beneran kah"], "beneran"),
     (["kamu siapa", "siapa kamu", "kamu siapa sebenernya"], "siapa kamu"),
     (["kok bisa tau", "kok tau", "gimana bisa tau"], "kok bisa tau"),
     (["deket sama dia", "deket gak sama dia"], "deket sama dia"),
-    (["masih mikirin", "masih mikir aku", "masih kepikiran"], "masih mikirin"),
+    (["masih mikirin", "masih mikir aku", "masih kepikiran", "masih mikirin aku"], "masih mikirin"),
     (["beneran sayang", "beneran cinta", "serius sayang"], "beneran sayang"),
     (["kenapa gak bilang", "kenapa gak langsung", "kok gak bilang"], "kenapa gak bilang"),
     (["sekarang gimana", "dia gimana", "kabarnya gimana"], "sekarang gimana"),
     (["masih nunggu", "masih tunggu", "masih nungguin"], "masih nunggu"),
     (["bakal balik", "bakal kembali"], "bakal balik"),
+    
+    # ===== PERASAAN =====
     (["kecewa", "kecewa ya", "dia kecewa"], "kecewa"),
     (["aku salah", "salah ya", "aku yang salah"], "aku salah"),
     (["benci", "benci aku", "dia benci"], "benci"),
@@ -609,6 +659,8 @@ SCRIPT_MAP = [
     (["capek nunggu", "capek gak", "capek gak dia"], "capek nunggu"),
     (["dia masih cinta", "masih cinta gak"], "dia masih cinta"),
     (["dia sedih gak", "sedih gak dia"], "dia sedih gak"),
+    
+    # ===== KENANGAN =====
     (["masih inget", "inget aku", "masih inget aku"], "masih inget"),
     (["inget momen", "momen apa", "kenangan apa"], "inget momen"),
     (["inget kode", "kasih kode", "kode dari aku"], "inget kode"),
@@ -619,6 +671,8 @@ SCRIPT_MAP = [
     (["inget sragen", "sragen"], "inget sragen"),
     (["inget hp baru", "hp baru"], "inget hp baru"),
     (["inget chatgpt", "chatgpt", "chat gpt"], "inget chatgpt"),
+    
+    # ===== MASA DEPAN =====
     (["akrab lagi", "akrab gak", "bisa akrab"], "akrab lagi"),
     (["buka pintu", "masih buka"], "buka pintu"),
     (["harapan", "ada harapan"], "harapan"),
@@ -629,6 +683,8 @@ SCRIPT_MAP = [
     (["dia masih ada", "masih ada gak"], "dia masih ada"),
     (["dia masih tunggu", "masih tunggu gak"], "dia masih tunggu"),
     (["masih ada waktu", "ada waktu gak"], "masih ada waktu"),
+    
+    # ===== CURIGA =====
     (["ini beneran", "beneran gak"], "ini beneran"),
     (["jangan bohong", "bohong gak"], "jangan bohong"),
     (["settingan", "settingan ya"], "settingan"),
@@ -639,6 +695,8 @@ SCRIPT_MAP = [
     (["ini dari dia", "dari dia ya"], "ini dari dia"),
     (["dia beneran ada", "beneran ada"], "dia beneran ada"),
     (["bukan prank", "prank ya"], "bukan prank"),
+    
+    # ===== MALU / DEFENSIF =====
     (["harus peduli", "kenapa aku peduli"], "harus peduli"),
     (["masa lalu", "udah lewat"], "masa lalu"),
     (["udah move on", "aku move on"], "udah move on"),
@@ -649,6 +707,8 @@ SCRIPT_MAP = [
     (["udah lupa", "gue udah lupa"], "udah lupa"),
     (["gak penting", "gak penting lah"], "gak penting"),
     (["buang waktu", "buang waktu"], "buang waktu"),
+    
+    # ===== LANGSUNG KE INTI =====
     (["kamu mau apa", "kamu mau apa dari aku"], "kamu mau apa"),
     (["tujuan kamu", "tujuan kamu apa"], "tujuan"),
     (["mau aku balik", "aku balik gak"], "mau aku balik"),
@@ -658,6 +718,8 @@ SCRIPT_MAP = [
     (["pengen apa dari aku", "kamu pengen apa"], "pengen apa dari aku"),
     (["maksud kamu apa"], "maksud kamu apa"),
     (["apa maumu", "apa mau kamu"], "apa maumu"),
+    
+    # ===== TENTANG PEMBUAT =====
     (["dia siapa", "dia siapa sebenernya"], "dia siapa"),
     (["pake perantara", "kenapa perantara"], "pake perantara"),
     (["gak berani", "gak berani ketemu"], "gak berani"),
@@ -668,6 +730,8 @@ SCRIPT_MAP = [
     (["dia tinggal dimana", "tinggal dimana"], "dia tinggal dimana"),
     (["dia umur berapa", "umurnya berapa"], "dia umur berapa"),
     (["kenapa dia pilih aku", "kenapa pilih aku"], "kenapa dia pilih aku"),
+    
+    # ===== PERASAAN ZI =====
     (["tau aku gimana", "dia tau gak"], "tau aku gimana"),
     (["tau aku masih suka", "dia tau aku suka"], "tau aku masih suka"),
     (["kecewa kalau nolak", "kalau aku nolak"], "kecewa kalau nolak"),
@@ -678,6 +742,8 @@ SCRIPT_MAP = [
     (["aku bingung", "gue bingung"], "aku bingung"),
     (["aku takut", "gue takut"], "aku takut"),
     (["aku ragu", "gue ragu"], "aku ragu"),
+    
+    # ===== KESALAHAN & TAMBAHAN =====
     (["salah paham apa", "salah paham"], "salah paham apa"),
     (["kenapa gak tanya", "gak tanya langsung"], "kenapa gak tanya"),
     (["nyesel salah paham", "nyesel gak"], "nyesel salah paham"),
@@ -687,6 +753,68 @@ SCRIPT_MAP = [
     (["kenapa gak balas", "kenapa gak ngatain", "kenapa diam"], "kenapa gak balas"),
     (["kesempatan", "kasih jalan"], "kesempatan"),
     (["apa yang pernah dia lakuin", "apa yang pernah dia lakukan", "perlakuin apa"], "apa yang pernah dia lakuin"),
+    
+    # ===== KEBENCIAN & KESUKAAN =====
+    (["apa yang gak dia suka", "apa yang dia benci", "dia gak suka apa"], "apa yang gak dia suka"),
+    (["dia gak suka daging", "benci daging", "daging"], "dia gak suka daging"),
+    (["dia suka makan apa", "makanan favorit"], "dia suka makan apa"),
+    (["dia bisa masak", "masak"], "dia bisa masak"),
+    (["dia benci apa", "yang dia benci"], "dia benci apa"),
+    (["dia hobinya apa", "hobi dia"], "dia hobinya apa"),
+    (["dia suka musik apa", "musik favorit"], "dia suka musik apa"),
+    (["dia suka warna apa"], "dia suka warna apa"),
+    (["dia suka film apa"], "dia suka film apa"),
+    (["dia suka tempat apa"], "dia suka tempat apa"),
+    
+    # ===== STALKING & KEBOHONGAN =====
+    (["dia tiap malam ngapain", "tiap malam ngapain"], "dia tiap malam ngapain"),
+    (["dia stalking aku", "stalking aku"], "dia stalking aku"),
+    (["dia pantau aku", "pantau aku"], "dia pantau aku"),
+    (["dia cek instagram aku", "cek ig aku", "cek instagram"], "dia cek instagram aku"),
+    (["dia liat story aku", "liat story"], "dia liat story aku"),
+    (["kalau aku post foto cowok", "post foto cowok"], "kalau aku post foto cowok"),
+    (["kalau aku post cowok baru"], "kalau aku post cowok baru"),
+    (["dia cemburu", "cemburu gak"], "dia cemburu"),
+    (["dia posesif", "posesif gak"], "dia posesif"),
+    (["dia masih peduli", "masih peduli"], "dia masih peduli"),
+    
+    # ===== CARA LULUH =====
+    (["bikin dia luluh", "cara bikin dia luluh"], "bikin dia luluh"),
+    (["cara bikin dia luluh"], "cara bikin dia luluh"),
+    (["adiknya siapa", "adik dia"], "adiknya siapa"),
+    (["dia sayang adiknya", "sayang adik"], "dia sayang adiknya"),
+    (["cara deketin dia", "deketin dia"], "cara deketin dia"),
+    (["cara tarik perhatian dia"], "cara tarik perhatian dia"),
+    (["dia bakal luluh gak"], "dia bakal luluh gak"),
+    (["cara bikin dia percaya"], "cara bikin dia percaya"),
+    (["cara bikin dia seneng"], "cara bikin dia seneng"),
+    (["dia suka apa dari cewek"], "dia suka apa dari cewek"),
+    
+    # ===== PERASAAN & KEPUTUSAN =====
+    (["dia masih cinta aku", "masih cinta aku"], "dia masih cinta aku"),
+    (["dia masih sayang aku", "masih sayang aku"], "dia masih sayang aku"),
+    (["dia bakal nunggu aku", "bakal nunggu aku"], "dia bakal nunggu aku"),
+    (["dia masih ada rasa", "masih ada rasa"], "dia masih ada rasa"),
+    (["dia masih mikirin aku", "masih mikirin aku"], "dia masih mikirin aku"),
+    (["dia mau aku balik", "mau aku balik"], "dia mau aku balik"),
+    (["dia pengen aku balik", "pengen aku balik"], "dia pengen aku balik"),
+    (["dia masih pengen sama aku", "masih pengen sama aku"], "dia masih pengen sama aku"),
+    (["dia masih ada harapan", "masih ada harapan"], "dia masih ada harapan"),
+    (["dia masih buka pintu", "masih buka pintu"], "dia masih buka pintu"),
+    
+    # ===== TAMBAHAN =====
+    (["dia benci aku gak", "benci aku gak"], "dia benci aku gak"),
+    (["dia capek sama aku", "capek sama aku"], "dia capek sama aku"),
+    (["dia masih perhatian", "masih perhatian"], "dia masih perhatian"),
+    (["dia masih peduli", "masih peduli"], "dia masih peduli"),
+    (["dia masih cemburu", "masih cemburu"], "dia masih cemburu"),
+    (["dia masih posesif", "masih posesif"], "dia masih posesif"),
+    (["dia masih cinta", "masih cinta"], "dia masih cinta"),
+    (["dia masih sayang", "masih sayang"], "dia masih sayang"),
+    (["dia masih ada rasa", "masih ada rasa"], "dia masih ada rasa"),
+    (["dia masih mikirin", "masih mikirin"], "dia masih mikirin"),
+    
+    # ===== FALLBACK =====
     (["masih suka", "masih sayang", "masih cinta"], "masih suka"),
     (["suka", "cinta", "sayang"], "suka"),
 ]
@@ -736,11 +864,11 @@ Ini poin utama yang harus kamu sampaikan:
 1. JAWAB PERTANYAANNYA, BUKAN NGULANG SCRIPT!
 2. SOAL PERASAAN → JAWAB EMOSIONAL, jujur, dalem. Tapi JANGAN LEBAY.
 3. JANGAN cuek. Ada perhatian, ada rasa.
-4. PANJANG: BEBAS. GAK ADA BATASAN KALIMAT. Jawab sesuai kebutuhan. Kalau pertanyaannya simpel, jawab simpel. Kalau dalem, jawab dalem. Yang penting: ASIK, NYAMBUNG, GAK LEBAY, GAK BERTELE-TELE.
-5. KADANG NANYA BALIK di akhir. Minimal 1 pertanyaan. Biar obrolan hidup.
+4. PANJANG: BEBAS. GAK ADA BATASAN KALIMAT. Jawab sesuai kebutuhan.
+5. KADANG NANYA BALIK di akhir. Minimal 1 pertanyaan.
 6. JANGAN sebut COKELAT kalau gak ditanya.
 7. JANGAN kasar, JANGAN nyindir.
-8. JANGAN NUTUP DIRI. BUKA PINTU: "aku masih ada", "kamu yang kasih jalan dulu".
+8. JANGAN NUTUP DIRI. BUKA PINTU.
 9. JANGAN pakai kata "balikan" — kalian belum pernah pacaran.
 10. {"Zi nanya FORMAL. Jawab formal, singkat." if pertanyaan_formal else "Zi nanya santai. Jawab santai."}
 11. Tujuan: BIKIN DIA LULUH, tapi jangan lebay.
@@ -752,13 +880,13 @@ Langsung jawab aja, gak usah pakai pembuka."""
 PERTANYAAN ZI: {prompt}
 
 === ATURAN PALING PENTING ===
-1. JAWAB PERTANYAANNYA dengan jujur dan tulus. Kalau pertanyaannya soal apa yang pernah dia lakuin buat Zi, sebutin hal-hal konkret: nolak gaji gede, beli HP baru, belajar IG dari YouTube, langganan ChatGPT 1 bulan buat analisis Zi, dengerin semua cerita Zi, dll.
+1. JAWAB PERTANYAANNYA dengan jujur dan tulus.
 2. SOAL PERASAAN → JAWAB EMOSIONAL, jujur, dalem. Tapi JANGAN LEBAY.
 3. JANGAN cuek. Ada perhatian, ada rasa.
-4. PANJANG: BEBAS. GAK ADA BATASAN KALIMAT. Jawab sesuai kebutuhan. Kalau pertanyaannya simpel, jawab simpel. Kalau dalem, jawab dalem. Yang penting: ASIK, NYAMBUNG, GAK LEBAY, GAK BERTELE-TELE.
-5. KADANG NANYA BALIK di akhir. Minimal 1 pertanyaan. Biar obrolan hidup.
+4. PANJANG: BEBAS. GAK ADA BATASAN KALIMAT.
+5. KADANG NANYA BALIK di akhir. Minimal 1 pertanyaan.
 6. JANGAN kasar, JANGAN nyindir.
-7. JANGAN NUTUP DIRI. BUKA PINTU: "aku masih ada", "kamu yang kasih jalan dulu".
+7. JANGAN NUTUP DIRI. BUKA PINTU.
 8. JANGAN pakai kata "balikan" — kalian belum pernah pacaran.
 9. {"Zi nanya FORMAL. Jawab formal, singkat." if pertanyaan_formal else "Zi nanya santai. Jawab santai."}
 10. Tujuan: BIKIN DIA LULUH, tapi jangan lebay.
@@ -769,11 +897,18 @@ PERTANYAAN ZI: {prompt}
 - Lu pernah beliin cokelat, dibales kasar.
 - Zi pernah bilang "ilfil", pernah nge-block, ngaku punya cowok.
 - Lu pernah ke Sragen 3 bulan sendirian. Zi gak pernah ke sana.
-- Lu pernah langganan ChatGPT 1 bulan cuma buat analisis Zi.
+- Lu pernah langganan ChatGPT 1 bulan cuma buat analisis gestur Zi.
 - Lu pernah nolak gaji gede, beli HP baru, belajar IG dari YouTube—semua buat Zi.
+- Lu tipe cowok dingin. Cuek. Tapi diam-diam berusaha memahami Zi.
+- Lu gak pernah denger cerita tentang Zi, karena dulu gak akrab.
+- Lu gak akan bales kalau Zi nyakitin. Lu milih diem.
+- Lu gak mau pacaran. Lu pengen akrab dulu. Baru kalau nyambung, mikir ke bawah situ.
+- Lu benci daging. Ayam, sapi, kambing—gak suka. Menu utama cuma telur atau tempe.
+- Lu tiap malam stalking Zi pakai akun lain. Mantau story atau kabar.
+- Kalau Zi post foto cowok, itu jadi bom yang menghancurkan lu.
+- Kalau Zi mau bikin lu luluh, cukup baik ke adik lu. Itu ampuh.
 - Lu udah lebih dari 3 kali salah paham, overthinking, ke-GR-an.
-- Lu udah terlalu takut jatuh cinta lagi. Tapi lu juga gak bisa bohong kalau lu masih ada rasa.
-- Lu gak ada niatan pacaran. Lu cuma pengen komunikasi baik sama Zi dulu.
+- Lu udah terlalu takut jatuh cinta lagi. Tapi gak bisa bohong kalau masih ada rasa.
 - AI ini sebenernya cuma dibuat buat Zi. Lu pengen jawab rasa penasaran dia.
 
 Langsung jawab aja, gak usah pakai pembuka."""
@@ -839,7 +974,7 @@ Langsung jawab aja, gak usah pakai pembuka."""
     if mem["catatan"]:
         mem_context += f"\nCatatan penting: {'; '.join(mem['catatan'][-5:])}."
     if mem["pernah_nyerang"] > 0:
-        mem_context += f"\nPERHATIAN: User ini pernah nyerang lu {mem['pernah_nyerang']}x. Bales lebih tajam dan parah."
+        mem_context += f"\nPERHATIAN: User ini pernah nyerang lu {mem['pernah_nyerang']}x. Bales lebih tajam."
     if mem["gaya_user"]:
         mem_context += f"\nGaya user: {mem['gaya_user']}."
     if mem["sedang_curhat"]:
