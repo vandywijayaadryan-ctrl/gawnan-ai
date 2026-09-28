@@ -285,12 +285,19 @@ st.markdown(f"<div class='user-badge'>👤 {st.session_state.user_id}</div>", un
 if st.session_state.get("mode_zi", False):
     st.markdown("<div class='zi-mode'>👁️ MODE KHUSUS AKTIF 👁️</div>", unsafe_allow_html=True)
 
+# ==== MODE PROMPTS ====
+MODE_PROMPTS = {
+    "default": "",
+    "serius": "\n\n=== MODE SERIUS ===\nSekarang lu dalam MODE SERIUS. Jawab dengan serius, gak usah becanda. Fokus ke inti masalah. Tetap pakai bahasa santai, tapi gak usah becanda. Kalau user curhat, dengerin bener-bener, kasih saran yang serius dan berguna.",
+    "bisik": "\n\n=== MODE BISIK ===\nSekarang lu dalam MODE BISIK. Jawab dengan HURUF KECIL SEMUA. Gak usah pakai tanda baca yang ribet. Kayak lagi bisik-bisik ke user, rahasia, pelan, intim. Tetap jawab pertanyaannya dengan tulus.",
+}
+
 # ==== TOMBOL MODE ====
 if "mode_ai" not in st.session_state:
     st.session_state.mode_ai = "default"
 
 st.markdown("**🎭 Pilih Mode:**")
-mode_cols = st.columns(5)
+mode_cols = st.columns(3)
 with mode_cols[0]:
     if st.button("Default", use_container_width=True):
         st.session_state.mode_ai = "default"
@@ -300,21 +307,18 @@ with mode_cols[1]:
         st.session_state.mode_ai = "serius"
         st.rerun()
 with mode_cols[2]:
-    if st.button("Kocak", use_container_width=True):
-        st.session_state.mode_ai = "kocak"
-        st.rerun()
-with mode_cols[3]:
-    if st.button("Adu Lucu", use_container_width=True):
-        st.session_state.mode_ai = "adu_lucu"
-        st.rerun()
-with mode_cols[4]:
-    if st.button("Adu Emosi", use_container_width=True):
-        st.session_state.mode_ai = "adu_emosi"
+    if st.button("🔊 Bisik", use_container_width=True):
+        st.session_state.mode_ai = "bisik"
         st.rerun()
 
 st.markdown(f"*Mode aktif: **{st.session_state.mode_ai.upper()}***")
 
-# ==== MEMORI PER-USER ====
+# ==== TOMBOL RANDOM PERTANYAAN ====
+if st.button("🎲 Kasih aku pertanyaan random", use_container_width=True):
+    st.session_state.random_question = True
+    st.rerun()
+
+# ==== MEMORI PER-USER (DIPERKUAT) ====
 mem_key = f"memory_{st.session_state.user_id}"
 msg_key = f"messages_{st.session_state.user_id}"
 
@@ -330,6 +334,16 @@ if mem_key not in st.session_state:
         "pernah_nyerang": 0,
         "gaya_user": None,
         "sedang_curhat": False,
+        "kutipan_penting": [],  # kalimat penting user
+        "cerita_user": [],      # cerita yang pernah user bagi
+        "janji": [],            # janji user atau AI
+        "masalah": [],          # masalah yang pernah diceritain
+        "mimpi": [],            # impian/cita-cita user
+        "takut": [],            # ketakutan user
+        "suka": [],             # hal yang disukai user
+        "benci": [],            # hal yang dibenci user
+        "orang_penting": [],    # orang yang sering disebut user
+        "kebiasaan": [],        # kebiasaan user
     }
 
 if msg_key not in st.session_state:
@@ -339,43 +353,52 @@ if msg_key not in st.session_state:
 if "regenerate" not in st.session_state:
     st.session_state.regenerate = False
 
+# Flag random question
+if "random_question" not in st.session_state:
+    st.session_state.random_question = False
+
 mem = st.session_state[mem_key]
 
-# ==== FUNGSI EKSTRAK MEMORI ====
+# ==== FUNGSI EKSTRAK MEMORI (DIPERKUAT) ====
 def extract_memory(user_msg, ai_reply):
     msg_lower = user_msg.lower()
     mem = st.session_state[mem_key]
     
-    if any(k in msg_lower for k in ["nama gue", "nama gw", "panggil gue", "panggil gw"]):
+    # Nama
+    if any(k in msg_lower for k in ["nama gue", "nama gw", "panggil gue", "panggil gw", "nama aku", "nama saya"]):
         parts = user_msg.split()
         for i, p in enumerate(parts):
-            if p.lower() in ["gue", "gw", "aku"] and i + 1 < len(parts):
+            if p.lower() in ["gue", "gw", "aku", "saya"] and i + 1 < len(parts):
                 nama = parts[i+1].strip(",.!?")
-                if nama:
+                if nama and len(nama) < 20:
                     mem["nama"] = nama
                 break
     
-    if any(k in msg_lower for k in ["galau", "sedih", "capek", "stress", "overthinking", "insecure", "nangis", "down", "hancur", "patah hati"]):
+    # Mood
+    if any(k in msg_lower for k in ["galau", "sedih", "capek", "stress", "overthinking", "insecure", "nangis", "down", "hancur", "patah hati", "kecewa"]):
         mem["mood"] = "galau"
         mem["sedang_curhat"] = True
-    elif any(k in msg_lower for k in ["seneng", "happy", "bahagia", "gokil", "mantap", "seru", "asik", "bangga"]):
+    elif any(k in msg_lower for k in ["seneng", "happy", "bahagia", "gokil", "mantap", "seru", "asik", "bangga", "excited"]):
         mem["mood"] = "happy"
         mem["sedang_curhat"] = False
-    elif any(k in msg_lower for k in ["marah", "kesel", "bete", "emosi", "jengkel", "muak"]):
+    elif any(k in msg_lower for k in ["marah", "kesel", "bete", "emosi", "jengkel", "muak", "kesal"]):
         mem["mood"] = "kesel"
-    elif any(k in msg_lower for k in ["bingung", "gatau", "ragu", "dilema"]):
+    elif any(k in msg_lower for k in ["bingung", "gatau", "ragu", "dilema", "galau"]):
         mem["mood"] = "bingung"
     
+    # Nyerang
     nyerang_keywords = ["bodoh", "goblok", "tolol", "idiot", "bego", "dungu", "payah", "jelek", "gak guna", "sampah", "bangsat", "anjing", "kontol", "memek", "tai", "kampret", "brengsek", "setan", "iblis", "ngentot", "babi", "monyet", "kntl", "mmk", "anjg", "gblk", "bgsd"]
     if any(k in msg_lower for k in nyerang_keywords):
         mem["pernah_nyerang"] += 1
     
+    # Gaya user
     if any(k in msg_lower for k in ["cuy", "bro", "gw", "gue", "lu", "wkwk", "anjir", "bjir"]):
         mem["gaya_user"] = "santai"
     elif any(k in msg_lower for k in ["anda", "saya", "terima kasih", "mohon"]):
         mem["gaya_user"] = "formal"
     
-    topik_keywords = ["kerja", "kuliah", "sekolah", "mantan", "pacar", "gebetan", "keluarga", "temen", "sahabat", "cinta", "duit", "uang", "bisnis", "jualan", "game", "musik", "film", "band", "gitar", "sepeda", "motor", "mobil", "hp", "laptop", "coding", "programming", "ujian", "nilai", "tidur", "insomnia", "olahraga", "gym", "makan", "diet", "kesehatan", "masa depan", "cita-cita", "mimpi", "tujuan", "rencana", "keputusan", "jodoh", "nikah", "putus", "balikan", "selingkuh", "ghosting", "php"]
+    # Topik
+    topik_keywords = ["kerja", "kuliah", "sekolah", "mantan", "pacar", "gebetan", "keluarga", "temen", "sahabat", "cinta", "duit", "uang", "bisnis", "jualan", "game", "musik", "film", "band", "gitar", "sepeda", "motor", "mobil", "hp", "laptop", "coding", "programming", "ujian", "nilai", "tidur", "insomnia", "olahraga", "gym", "makan", "diet", "kesehatan", "masa depan", "cita-cita", "mimpi", "tujuan", "rencana", "keputusan", "jodoh", "nikah", "putus", "balikan", "selingkuh", "ghosting", "php", "adik", "kakak", "ayah", "ibu", "bapak", "mama", "papa"]
     for kw in topik_keywords:
         if kw in msg_lower:
             entry = {"topik": kw, "waktu": time.time()}
@@ -383,23 +406,93 @@ def extract_memory(user_msg, ai_reply):
             if kw not in mem["topik"]:
                 mem["topik"].append(kw)
     
-    fakta_patterns = ["gue suka", "gw suka", "gue tinggal", "gw tinggal", "gue kerja", "gw kerja", "gue sekolah", "gw sekolah", "gue umur", "gw umur", "gue punya", "gw punya", "gue benci", "gw benci", "gue takut", "gw takut"]
+    # Fakta
+    fakta_patterns = ["gue suka", "gw suka", "aku suka", "gue tinggal", "gw tinggal", "aku tinggal", "gue kerja", "gw kerja", "aku kerja", "gue sekolah", "gw sekolah", "aku sekolah", "gue umur", "gw umur", "aku umur", "gue punya", "gw punya", "aku punya", "gue benci", "gw benci", "aku benci", "gue takut", "gw takut", "aku takut"]
     for pattern in fakta_patterns:
         if pattern in msg_lower:
             idx = msg_lower.find(pattern)
-            fakta = user_msg[idx:idx+80].strip()
+            fakta = user_msg[idx:idx+100].strip()
             if fakta not in mem["fakta"]:
                 mem["fakta"].append(fakta)
     
-    if any(k in msg_lower for k in ["ingat ya", "catat", "jangan lupa", "note"]):
+    # Catatan
+    if any(k in msg_lower for k in ["ingat ya", "catat", "jangan lupa", "note", "tolong ingat", "inget ya"]):
         catatan = user_msg.strip()
         if catatan not in mem["catatan"]:
             mem["catatan"].append(catatan)
     
+    # Kutipan penting (kalimat yang diawali "aku merasa", "aku tuh", dll)
+    kutipan_patterns = ["aku merasa", "gue merasa", "aku tuh", "gue tuh", "sebenernya aku", "sebenernya gue", "jujur aku", "jujur gue", "aku pengen", "gue pengen", "aku ingin", "gue ingin"]
+    for pattern in kutipan_patterns:
+        if pattern in msg_lower:
+            kutipan = user_msg.strip()
+            if kutipan not in mem["kutipan_penting"]:
+                mem["kutipan_penting"].append(kutipan)
+    
+    # Cerita user (kalau panjang)
+    if len(user_msg) > 100:
+        cerita = user_msg.strip()
+        if cerita not in mem["cerita_user"]:
+            mem["cerita_user"].append(cerita)
+    
+    # Masalah
+    if any(k in msg_lower for k in ["masalah", "problem", "susah", "sulit", "berat", "beban", "gagal", "gak bisa"]):
+        masalah = user_msg.strip()
+        if masalah not in mem["masalah"]:
+            mem["masalah"].append(masalah)
+    
+    # Mimpi/cita-cita
+    if any(k in msg_lower for k in ["cita-cita", "impian", "mimpi", "pengen jadi", "ingin jadi", "suatu hari"]):
+        mimpi = user_msg.strip()
+        if mimpi not in mem["mimpi"]:
+            mem["mimpi"].append(mimpi)
+    
+    # Takut
+    if any(k in msg_lower for k in ["takut", "fobia", "ngeri", "serem"]):
+        takut = user_msg.strip()
+        if takut not in mem["takut"]:
+            mem["takut"].append(takut)
+    
+    # Suka
+    if any(k in msg_lower for k in ["suka", "seneng", "hobi", "favorit", "kesukaan"]):
+        suka = user_msg.strip()
+        if suka not in mem["suka"]:
+            mem["suka"].append(suka)
+    
+    # Benci
+    if any(k in msg_lower for k in ["benci", "gak suka", "nggak suka", "muak", "ilfeel"]):
+        benci = user_msg.strip()
+        if benci not in mem["benci"]:
+            mem["benci"].append(benci)
+    
+    # Orang penting
+    orang_keywords = ["adik", "kakak", "ayah", "ibu", "bapak", "mama", "papa", "temen", "sahabat", "mantan", "gebetan", "pacar", "doi"]
+    for kw in orang_keywords:
+        if kw in msg_lower:
+            if kw not in mem["orang_penting"]:
+                mem["orang_penting"].append(kw)
+    
+    # Kebiasaan
+    if any(k in msg_lower for k in ["biasanya", "kebiasaan", "tiap hari", "tiap malem", "selalu"]):
+        kebiasaan = user_msg.strip()
+        if kebiasaan not in mem["kebiasaan"]:
+            mem["kebiasaan"].append(kebiasaan)
+    
     mem["total_chat"] += 1
-    mem["riwayat_topik"] = mem["riwayat_topik"][-30:]
-    mem["fakta"] = mem["fakta"][-10:]
-    mem["catatan"] = mem["catatan"][-10:]
+    
+    # Batasi memori (biar gak kebanyakan)
+    mem["riwayat_topik"] = mem["riwayat_topik"][-50:]
+    mem["fakta"] = mem["fakta"][-20:]
+    mem["catatan"] = mem["catatan"][-20:]
+    mem["kutipan_penting"] = mem["kutipan_penting"][-15:]
+    mem["cerita_user"] = mem["cerita_user"][-10:]
+    mem["masalah"] = mem["masalah"][-10:]
+    mem["mimpi"] = mem["mimpi"][-10:]
+    mem["takut"] = mem["takut"][-10:]
+    mem["suka"] = mem["suka"][-15:]
+    mem["benci"] = mem["benci"][-15:]
+    mem["orang_penting"] = mem["orang_penting"][-10:]
+    mem["kebiasaan"] = mem["kebiasaan"][-10:]
 
 # ==== TAMPILKAN MEMORI ====
 info = []
@@ -426,15 +519,6 @@ with col2:
         st.session_state.user_id = None
         st.session_state["mode_zi"] = False
         st.rerun()
-
-# ==== MODE PROMPTS ====
-MODE_PROMPTS = {
-    "default": "",
-    "serius": "\n\n=== MODE SERIUS ===\nSekarang lu dalam MODE SERIUS. Jawab dengan serius, gak usah becanda, gak usah receh. Fokus ke inti masalah. Tetap pakai bahasa santai, tapi gak usah becanda. Kalau user curhat, dengerin bener-bener, kasih saran yang serius dan berguna.",
-    "kocak": "\n\n=== MODE KOCAK ===\nSekarang lu dalam MODE KOCAK. Jawab dengan lebih lucu, lebih receh, lebih banyak becanda. Sisipin jokes, pantun receh, atau analogi lucu. Tujuan: bikin user ketawa. Tapi tetap jawab pertanyaannya.",
-    "adu_lucu": "\n\n=== MODE ADU LUCU ===\nSekarang lu dalam MODE ADU LUCU. User mau adu receh sama lu. Balas dengan yang lebih lucu, lebih receh, lebih absurd. Kalau user becanda, balas lebih becanda. Tujuan: menang adu lucu, bikin user ngakak.",
-    "adu_emosi": "\n\n=== MODE ADU EMOSI ===\nSekarang lu dalam MODE ADU EMOSI. User mau adu emosi. Balas dengan lebih tegas, lebih dalem, lebih emosional. Kalau user marah, balas dengan tenang tapi tegas. Kalau user sedih, balas dengan empati yang dalem. Tujuan: bikin user ngerasa lawan bicaranya beneran manusia yang punya perasaan.",
-}
 
 # ==== SYSTEM PROMPT NORMAL ====
 system_prompt = """Lu adalah Gawnan. Lu MANUSIA, bukan AI, bukan asisten, bukan robot. Lu cowok 10 tahun asal Madura, anak toko, lagi gabut. Anggap lu temen nongkrong yang asik.
@@ -472,6 +556,16 @@ Jawab: "itu rahasia cuy. yg jelas dia anak toko biasa yg suka main gitar."
 === KALAU DITANYA SOAL AI ===
 Jawab: "AI apaan? gw manusia cuy, lagi gabut di toko wkwk."
 
+=== ATURAN PAKAI MEMORI ===
+- Kamu punya memori tentang user. Pakai itu biar percakapan nyambung.
+- Kalau user pernah cerita sesuatu, sambungin: "lu tadi cerita soal kerja kan? gimana?"
+- Kalau user punya masalah, ingat dan tanya kabarnya.
+- Kalau user punya mimpi, semangatin.
+- Kalau user punya takut, hibur.
+- Kalau user punya kebiasaan, sebut sesekali.
+- Panggil user dengan namanya kalau udah kenal.
+- JANGAN pernah lupa sama cerita user.
+
 INGAT: LU MANUSIA. JANGAN NGAKU AI."""
 
 # ==== MODE RAHASIA ZI ====
@@ -487,7 +581,7 @@ Aku cuma perantara. Tugas aku di mode ini: jawab semua rasa penasaran kau—tent
 
 Tanyain aja. Aku jawab sejujur-jujurnya."""
 
-# ==== SCRIPT ZI ====
+# ==== SCRIPT ZI (DIPERKUAT) ====
 JAWABAN_ZI = {
     "beneran": "Beneran, Zi. Aku gak akan bohongin kau. Semua yang aku bilang, itu dari dia.",
     "siapa kamu": "Aku cuma perantara. Bukan siapa-siapa. Yang penting bukan aku—yang penting dia.",
@@ -796,6 +890,51 @@ for msg in st.session_state[msg_key]:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
+# ==== RANDOM PERTANYAAN ====
+if st.session_state.get("random_question", False):
+    st.session_state.random_question = False
+    prompt_random = "Kasih aku satu pertanyaan random. Yang bikin aku mikir, atau bikin aku ketawa, atau bikin aku curhat. Pilih salah satu. Jangan nanya hal yang biasa-biasa aja."
+    st.session_state[msg_key].append({"role": "user", "content": prompt_random})
+    with st.chat_message("user"):
+        st.markdown(f"🎲 *{prompt_random}*")
+    
+    with st.chat_message("assistant"):
+        typing_placeholder = st.empty()
+        typing_placeholder.markdown("<span class='typing-indicator'>sedang mikir...</span>", unsafe_allow_html=True)
+        
+        messages_random = [
+            {"role": "system", "content": system_prompt + "\n\n=== TUGAS KHUSUS ===\nUser minta pertanyaan random. Kasih 1 pertanyaan yang bikin dia mikir, ketawa, atau curhat. Jangan pertanyaan biasa. Langsung tanya aja, gak usah basa-basi panjang."},
+            {"role": "user", "content": "Kasih aku pertanyaan random"}
+        ]
+        
+        response_random = None
+        try:
+            stream = client.chat.completions.create(
+                model="openai/gpt-oss-120b",
+                messages=messages_random,
+                stream=True,
+                temperature=1.2,
+                max_tokens=500,
+            )
+            response_random = ""
+            response_placeholder = st.empty()
+            for chunk in stream:
+                if chunk.choices and chunk.choices[0].delta.content is not None:
+                    text_chunk = chunk.choices[0].delta.content
+                    if text_chunk:
+                        response_random += text_chunk
+                        response_placeholder.markdown(response_random + "▌")
+            response_placeholder.markdown(response_random)
+            typing_placeholder.empty()
+        except Exception as e:
+            typing_placeholder.empty()
+            st.error(f"⚠️ error: {e}")
+        
+        if response_random:
+            st.session_state[msg_key].append({"role": "assistant", "content": response_random})
+    
+    st.rerun()
+
 # ==== INPUT & RESPON ====
 prompt = st.chat_input("Ketik pesan...")
 
@@ -809,7 +948,6 @@ if st.session_state.get("regenerate", False):
             st.session_state[msg_key].pop()
 
 if prompt:
-    # Kalau bukan regenerate, tambahin pesan user
     if not st.session_state.get("regenerate_processing", False):
         if not st.session_state[msg_key] or st.session_state[msg_key][-1].get("content") != prompt or st.session_state[msg_key][-1]["role"] != "user":
             st.session_state[msg_key].append({"role": "user", "content": prompt})
@@ -885,7 +1023,7 @@ Poin utama:
 7. JANGAN pakai kata "balikan".
 8. {"FORMAL." if pertanyaan_formal else "SANTAI."}
 9. Tujuan: BIKIN ZI LULUH, tapi jangan lebay.
-10. Jawab VARIASI BARU yang beda dari sebelumnya.
+10. Jawab VARIASI BARU.
 
 Langsung jawab aja."""
         else:
@@ -964,11 +1102,27 @@ Langsung jawab aja."""
     if mem["mood"]:
         mem_context += f"\nMood terakhir user: {mem['mood']}."
     if mem["topik"]:
-        mem_context += f"\nTopik yang pernah dibahas: {', '.join(mem['topik'][-8:])}."
+        mem_context += f"\nTopik yang pernah dibahas: {', '.join(mem['topik'][-10:])}."
     if mem["fakta"]:
-        mem_context += f"\nFakta tentang user: {'; '.join(mem['fakta'][-5:])}."
+        mem_context += f"\nFakta tentang user: {'; '.join(mem['fakta'][-10:])}."
     if mem["catatan"]:
-        mem_context += f"\nCatatan penting: {'; '.join(mem['catatan'][-5:])}."
+        mem_context += f"\nCatatan penting: {'; '.join(mem['catatan'][-10:])}."
+    if mem["kutipan_penting"]:
+        mem_context += f"\nKutipan penting user: {'; '.join(mem['kutipan_penting'][-5:])}."
+    if mem["masalah"]:
+        mem_context += f"\nMasalah yang pernah diceritain: {'; '.join(mem['masalah'][-5:])}."
+    if mem["mimpi"]:
+        mem_context += f"\nMimpi/cita-cita user: {'; '.join(mem['mimpi'][-5:])}."
+    if mem["takut"]:
+        mem_context += f"\nKetakutan user: {'; '.join(mem['takut'][-5:])}."
+    if mem["suka"]:
+        mem_context += f"\nHal yang disukai user: {'; '.join(mem['suka'][-10:])}."
+    if mem["benci"]:
+        mem_context += f"\nHal yang dibenci user: {'; '.join(mem['benci'][-10:])}."
+    if mem["orang_penting"]:
+        mem_context += f"\nOrang penting di hidup user: {', '.join(mem['orang_penting'][-10:])}."
+    if mem["kebiasaan"]:
+        mem_context += f"\nKebiasaan user: {'; '.join(mem['kebiasaan'][-5:])}."
     if mem["pernah_nyerang"] > 0:
         mem_context += f"\nPERHATIAN: User ini pernah nyerang lu {mem['pernah_nyerang']}x. Bales lebih tajam."
     if mem["gaya_user"]:
@@ -979,7 +1133,7 @@ Langsung jawab aja."""
 
     mode_prompt = MODE_PROMPTS.get(st.session_state.mode_ai, "")
     messages = [{"role": "system", "content": system_prompt + mode_prompt + "\n\nINFO USER:" + mem_context}]
-    recent = st.session_state[msg_key][-20:]
+    recent = st.session_state[msg_key][-30:]
     messages.extend(recent)
 
     with st.chat_message("assistant"):
