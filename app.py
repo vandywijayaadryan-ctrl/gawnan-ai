@@ -1,7 +1,8 @@
 import streamlit as st
 from groq import Groq
+import google.generativeai as genai
+from PIL import Image
 import time
-import base64
 
 # ==== KONFIG ====
 st.set_page_config(page_title="Gawnan AI", page_icon="👁️", layout="centered")
@@ -234,6 +235,11 @@ st.markdown("""
 
 # ==== GROQ ====
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
+
+# ==== GEMINI UNTUK VISION ====
+GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY", "")
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
 
 # ==== LOGIN ====
 if "user_id" not in st.session_state:
@@ -527,7 +533,6 @@ Jawab: "AI apaan? gw manusia cuy, lagi gabut di toko wkwk."
 === ATURAN PAKAI MEMORI ===
 - Kamu punya memori tentang user. Pakai itu biar percakapan nyambung.
 - Kalau user pernah cerita sesuatu, sambungin.
-- Kalau user punya masalah, ingat dan tanya kabarnya.
 - Panggil user dengan namanya kalau udah kenal.
 - JANGAN pernah lupa sama cerita user.
 
@@ -900,14 +905,9 @@ if st.session_state.get("random_question", False):
     
     st.rerun()
 
-# ==== ANALISIS FOTO ====
+# ==== ANALISIS FOTO PAKAI GEMINI ====
 if st.session_state.get("analisis_foto", False) and uploaded_file is not None:
     st.session_state.analisis_foto = False
-    
-    # Convert gambar ke base64
-    img_bytes = uploaded_file.getvalue()
-    img_base64 = base64.b64encode(img_bytes).decode('utf-8')
-    img_type = uploaded_file.type
     
     with st.chat_message("user"):
         st.markdown("📸 *[Upload foto]*")
@@ -920,26 +920,22 @@ if st.session_state.get("analisis_foto", False) and uploaded_file is not None:
         typing_placeholder.markdown("<span class='typing-indicator'>sedang analisis foto...</span>", unsafe_allow_html=True)
         
         try:
-            # Pakai model vision Groq
-            vision_response = client.chat.completions.create(
-                model="meta-llama/llama-4-scout-17b-16e-instruct",
-                messages=[
-                    {
-                        "role": "user",
-                        "content": [
-                            {"type": "text", "text": "Analisis foto ini dengan santai. Kasih komentar apa aja yang kamu lihat, dengan gaya Gen Z yang asik. Kalau ada orang, komentarin. Kalau ada tempat, komentarin. Kalau ada benda, komentarin. Jawab dengan bahasa Indonesia gaul."},
-                            {"type": "image_url", "image_url": {"url": f"data:{img_type};base64,{img_base64}"}}
-                        ]
-                    }
-                ],
-                temperature=1.0,
-                max_tokens=1000,
-            )
-            hasil_analisis = vision_response.choices[0].message.content
-            
-            st.markdown(hasil_analisis)
-            typing_placeholder.empty()
-            st.session_state[msg_key].append({"role": "assistant", "content": hasil_analisis})
+            if GEMINI_API_KEY:
+                img = Image.open(uploaded_file)
+                model_gemini = genai.GenerativeModel('gemini-2.5-flash')
+                
+                prompt_foto = """Analisis foto ini dengan santai. Kasih komentar apa aja yang kamu lihat, dengan gaya Gen Z yang asik. Kalau ada orang, komentarin. Kalau ada tempat, komentarin. Kalau ada benda, komentarin. Jawab dengan bahasa Indonesia gaul. Panjang aja, gak usah pendek-pendek."""
+                
+                response_gemini = model_gemini.generate_content([prompt_foto, img])
+                hasil_analisis = response_gemini.text
+                
+                st.markdown(hasil_analisis)
+                typing_placeholder.empty()
+                st.session_state[msg_key].append({"role": "assistant", "content": hasil_analisis})
+            else:
+                typing_placeholder.empty()
+                st.error("⚠️ GEMINI_API_KEY belum di-set. Tambahin di Streamlit Secrets.")
+                st.info("💡 Cara: share.streamlit.io → Manage app → Settings → Secrets → tambahin GEMINI_API_KEY = 'AIza...'")
             
         except Exception as e:
             typing_placeholder.empty()
@@ -970,7 +966,6 @@ if prompt:
         st.session_state[msg_key].append({"role": "assistant", "content": PEMBUKAAN_ZI})
         st.rerun()
     
-    # ==== MODE ZI ====
     if st.session_state.get("mode_zi", False):
         msg_lower = prompt.lower()
         jawaban_script = None
@@ -998,7 +993,7 @@ if prompt:
 - Kalau Zi mau bikin Vandy luluh, cukup baik ke adiknya.
 - Vandy udah lebih dari 3 kali salah paham.
 - Vandy udah terlalu takut jatuh cinta lagi. Tapi masih ada rasa.
-- Kalau Zi ngerasa Vandy aneh, itu karena cuma di hadapan Zi dia kayak gitu. Di tempat lain, dia beda. Cuek, dingin, biasa.
+- Kalau Zi ngerasa Vandy aneh, itu karena cuma di hadapan Zi dia kayak gitu. Di tempat lain, dia beda.
 
 === YANG GAK VANDY LAKUIN ===
 - GAK PERNAH nitip pesan lewat adik Zi.
