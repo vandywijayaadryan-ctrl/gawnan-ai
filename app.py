@@ -3,20 +3,28 @@ from groq import Groq
 import time
 
 # ==== KONFIG ====
-st.set_page_config(page_title="Gawnan AI", page_icon="👁️", layout="centered")
+st.set_page_config(page_title="Gawnan AI", page_icon="⚡", layout="centered")
 
-# ==== CSS TEMA CYBERPUNK KECE ====
+# ==== CSS TEMA CYBERPUNK PREMIUM ====
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
     
+    /* BACKGROUND ANIMATED GRADIENT */
     .stApp {
-        background: radial-gradient(ellipse at top, #0a0e1a 0%, #000000 50%, #000000 100%);
+        background: linear-gradient(-45deg, #000000, #0a0515, #000814, #0a0515, #000000);
+        background-size: 400% 400%;
+        animation: gradientBG 15s ease infinite;
         color: #ffffff;
         overflow: hidden;
     }
+    @keyframes gradientBG {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
     
-    /* Grid background */
+    /* GRID OVERLAY */
     .stApp::before {
         content: '';
         position: fixed;
@@ -25,88 +33,104 @@ st.markdown("""
         width: 100%;
         height: 100%;
         background-image: 
-            linear-gradient(rgba(0, 136, 255, 0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0, 136, 255, 0.03) 1px, transparent 1px);
-        background-size: 40px 40px;
+            linear-gradient(rgba(0, 200, 255, 0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 200, 255, 0.04) 1px, transparent 1px);
+        background-size: 50px 50px;
         z-index: 0;
         pointer-events: none;
-        animation: gridMove 20s linear infinite;
+        animation: gridMove 25s linear infinite;
     }
     @keyframes gridMove {
         0% { transform: translate(0, 0); }
-        100% { transform: translate(40px, 40px); }
+        100% { transform: translate(50px, 50px); }
     }
     
-    /* Judul */
+    /* GLOW ORB */
+    .stApp::after {
+        content: '';
+        position: fixed;
+        top: 20%;
+        right: -10%;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(0, 150, 255, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
+        z-index: 0;
+        pointer-events: none;
+        animation: orbFloat 20s ease-in-out infinite;
+    }
+    @keyframes orbFloat {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(-50px, 50px) scale(1.2); }
+    }
+    
+    /* JUDUL */
     h1 {
         color: #ffffff;
         font-family: 'Orbitron', monospace;
         text-align: center;
-        font-size: 44px;
+        font-size: 48px;
         font-weight: 900;
-        letter-spacing: 12px;
-        padding-top: 25px;
+        letter-spacing: 14px;
+        padding-top: 30px;
         margin-bottom: 8px;
-        text-shadow: 
-            0 0 10px #0088ff,
-            0 0 20px #0088ff,
-            0 0 40px #0088ff,
-            0 0 60px #0088ff;
-        animation: titlePulse 2s ease-in-out infinite;
+        background: linear-gradient(90deg, #ffffff, #00d4ff, #ffffff, #00d4ff, #ffffff);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        animation: shineText 3s linear infinite;
         position: relative;
         z-index: 1;
     }
-    @keyframes titlePulse {
-        0%, 100% { 
-            text-shadow: 0 0 10px #0088ff, 0 0 20px #0088ff, 0 0 40px #0088ff;
-            transform: scale(1);
-        }
-        50% { 
-            text-shadow: 0 0 15px #00aaff, 0 0 30px #00aaff, 0 0 60px #00aaff, 0 0 80px #00aaff;
-            transform: scale(1.02);
-        }
+    @keyframes shineText {
+        0% { background-position: 0% center; }
+        100% { background-position: 200% center; }
     }
     
     .subtitle {
-        color: #00aaff;
-        opacity: 0.7;
+        color: #00d4ff;
+        opacity: 0.6;
         text-align: center;
-        font-size: 13px;
-        letter-spacing: 6px;
-        margin-bottom: 30px;
+        font-size: 11px;
+        letter-spacing: 8px;
+        margin-bottom: 35px;
         font-family: 'Rajdhani', monospace;
         font-weight: 600;
         position: relative;
         z-index: 1;
-        animation: subtitleFade 3s ease-in-out infinite;
+        text-transform: uppercase;
+        animation: subtitleGlow 2.5s ease-in-out infinite;
     }
-    @keyframes subtitleFade {
-        0%, 100% { opacity: 0.5; }
-        50% { opacity: 0.9; }
+    @keyframes subtitleGlow {
+        0%, 100% { opacity: 0.4; text-shadow: 0 0 10px rgba(0, 212, 255, 0.3); }
+        50% { opacity: 0.9; text-shadow: 0 0 20px rgba(0, 212, 255, 0.8); }
     }
     
-    /* Mata cyber */
+    /* MATA CYBER */
     .eye-container {
         position: fixed;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         z-index: 0;
-        opacity: 0.15;
+        opacity: 0.18;
         pointer-events: none;
         display: flex;
-        gap: 120px;
+        gap: 140px;
     }
     .eye {
-        width: 200px;
-        height: 130px;
+        width: 220px;
+        height: 140px;
         background: transparent;
-        border: 3px solid #0088ff;
-        border-radius: 20px;
+        border: 3px solid #00d4ff;
+        border-radius: 25px;
         position: relative;
         box-shadow: 
-            0 0 30px #0088ff,
-            inset 0 0 30px rgba(0, 136, 255, 0.3);
+            0 0 40px #00d4ff,
+            inset 0 0 40px rgba(0, 212, 255, 0.3),
+            0 0 80px rgba(0, 212, 255, 0.5);
         animation: eyeBlink 4s infinite;
     }
     @keyframes eyeBlink {
@@ -114,62 +138,66 @@ st.markdown("""
         93%, 97% { transform: scaleY(0.05); }
     }
     .pupil {
-        width: 45px;
-        height: 45px;
-        background: #0088ff;
-        border-radius: 8px;
+        width: 50px;
+        height: 50px;
+        background: radial-gradient(circle, #ffffff, #00d4ff);
+        border-radius: 10px;
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         box-shadow: 
-            0 0 20px #0088ff,
-            0 0 40px #0088ff,
-            inset 0 0 15px #ffffff;
+            0 0 25px #00d4ff,
+            0 0 50px #00d4ff,
+            inset 0 0 20px #ffffff;
         transition: all 0.3s ease;
     }
     
-    /* Bubble chat - glassmorphism */
+    /* BUBBLE CHAT GLASSMORPHISM */
     .stChatMessage {
-        background: rgba(10, 15, 30, 0.75) !important;
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(0, 136, 255, 0.25) !important;
-        border-radius: 16px !important;
-        padding: 14px 18px !important;
-        margin: 10px 0 !important;
+        background: rgba(10, 15, 30, 0.65) !important;
+        backdrop-filter: blur(20px) saturate(150%);
+        -webkit-backdrop-filter: blur(20px) saturate(150%);
+        border: 1px solid rgba(0, 212, 255, 0.2) !important;
+        border-radius: 20px !important;
+        padding: 16px 20px !important;
+        margin: 12px 0 !important;
         max-width: 85% !important;
         position: relative;
         z-index: 1;
-        animation: messageSlide 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        transition: all 0.4s ease;
+        animation: messageSlide 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         box-shadow: 
-            0 4px 20px rgba(0, 0, 0, 0.4),
-            inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            0 8px 32px rgba(0, 0, 0, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
     .stChatMessage:hover {
-        border-color: rgba(0, 170, 255, 0.6) !important;
+        border-color: rgba(0, 212, 255, 0.6) !important;
         box-shadow: 
-            0 6px 30px rgba(0, 136, 255, 0.3),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        transform: translateY(-2px);
+            0 12px 40px rgba(0, 212, 255, 0.25),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        transform: translateY(-3px) scale(1.01);
     }
     .stChatMessage p {
         color: #ffffff !important;
         opacity: 0.95;
-        line-height: 1.7;
+        line-height: 1.75;
         font-family: 'Rajdhani', sans-serif;
-        font-size: 15px;
-        animation: textAppear 0.8s ease-out;
+        font-size: 15.5px;
+        font-weight: 500;
+        animation: textAppear 1s ease-out;
+        letter-spacing: 0.3px;
     }
     @keyframes messageSlide {
         0% { 
             opacity: 0; 
-            transform: translateY(25px) scale(0.96);
+            transform: translateY(30px) scale(0.95);
+            filter: blur(5px);
         }
         100% { 
             opacity: 1; 
             transform: translateY(0) scale(1);
+            filter: blur(0);
         }
     }
     @keyframes textAppear {
@@ -177,145 +205,170 @@ st.markdown("""
         100% { opacity: 0.95; filter: blur(0); }
     }
     
-    /* User bubble - biru lebih terang */
+    /* USER BUBBLE */
     div[data-testid="stChatMessage"]:has(div[data-testid="stChatMessageAvatarUser"]) {
-        background: rgba(0, 60, 100, 0.7) !important;
+        background: linear-gradient(135deg, rgba(0, 80, 130, 0.7), rgba(0, 50, 90, 0.7)) !important;
         margin-left: auto !important;
         margin-right: 0 !important;
-        border: 1px solid rgba(0, 170, 255, 0.5) !important;
+        border: 1px solid rgba(0, 212, 255, 0.5) !important;
         box-shadow: 
-            0 4px 20px rgba(0, 136, 255, 0.2),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            0 8px 32px rgba(0, 150, 255, 0.25),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
     }
     
-    /* AI bubble - gelap */
+    /* AI BUBBLE */
     div[data-testid="stChatMessage"]:has(div[data-testid="stChatMessageAvatarAssistant"]) {
-        background: rgba(10, 15, 30, 0.75) !important;
+        background: rgba(10, 15, 30, 0.65) !important;
         margin-right: auto !important;
         margin-left: 0 !important;
-        border: 1px solid rgba(0, 136, 255, 0.3) !important;
+        border: 1px solid rgba(0, 212, 255, 0.3) !important;
     }
     
-    /* Input */
+    /* INPUT */
     .stChatInput input {
-        background: rgba(10, 15, 30, 0.9) !important;
-        backdrop-filter: blur(10px);
+        background: rgba(10, 15, 30, 0.85) !important;
+        backdrop-filter: blur(15px);
         color: #ffffff !important;
-        border: 1px solid rgba(0, 136, 255, 0.5) !important;
-        border-radius: 28px !important;
-        padding: 16px 24px !important;
+        border: 1px solid rgba(0, 212, 255, 0.4) !important;
+        border-radius: 30px !important;
+        padding: 18px 28px !important;
         font-family: 'Rajdhani', sans-serif !important;
         font-size: 15px !important;
         font-weight: 500 !important;
-        box-shadow: 0 0 20px rgba(0, 136, 255, 0.15);
+        box-shadow: 
+            0 0 25px rgba(0, 212, 255, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05);
         position: relative;
         z-index: 1;
-        transition: all 0.3s ease;
+        transition: all 0.4s ease;
     }
     .stChatInput input:focus {
-        box-shadow: 0 0 30px rgba(0, 136, 255, 0.5);
-        border-color: #00aaff !important;
-        transform: translateY(-1px);
+        box-shadow: 
+            0 0 40px rgba(0, 212, 255, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        border-color: #00d4ff !important;
+        transform: translateY(-2px);
     }
     .stChatInput input::placeholder {
-        color: rgba(255, 255, 255, 0.4) !important;
+        color: rgba(0, 212, 255, 0.4) !important;
         font-style: italic;
     }
     
-    /* Watermark */
+    /* WATERMARK */
     .watermark {
-        color: #00aaff;
+        color: #00d4ff;
         text-align: center;
         font-size: 11px;
-        margin-top: 25px;
+        margin-top: 30px;
         opacity: 0.5;
-        letter-spacing: 3px;
+        letter-spacing: 4px;
         font-family: 'Orbitron', monospace;
         position: relative;
         z-index: 1;
-        text-shadow: 0 0 10px rgba(0, 136, 255, 0.5);
+        text-shadow: 0 0 15px rgba(0, 212, 255, 0.6);
+        animation: watermarkPulse 3s ease-in-out infinite;
+    }
+    @keyframes watermarkPulse {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 0.7; }
     }
     
-    /* Memory box */
+    /* MEMORY BOX */
     .memory-box {
-        background: rgba(10, 15, 30, 0.8);
-        backdrop-filter: blur(10px);
-        border-left: 3px solid #00aaff;
-        border-radius: 10px;
-        padding: 12px 18px;
-        margin-bottom: 18px;
+        background: rgba(10, 15, 30, 0.75);
+        backdrop-filter: blur(15px);
+        border-left: 3px solid #00d4ff;
+        border-radius: 12px;
+        padding: 14px 20px;
+        margin-bottom: 20px;
         font-size: 12px;
-        color: rgba(0, 170, 255, 0.9);
+        color: rgba(0, 212, 255, 0.9);
         font-family: 'Rajdhani', monospace;
+        font-weight: 500;
         position: relative;
         z-index: 1;
-        animation: messageSlide 0.5s ease-out;
-        line-height: 1.6;
-        box-shadow: 0 0 15px rgba(0, 136, 255, 0.1);
+        animation: messageSlide 0.6s ease-out;
+        line-height: 1.7;
+        box-shadow: 
+            0 4px 20px rgba(0, 212, 255, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        letter-spacing: 0.5px;
     }
     
-    /* User badge */
+    /* USER BADGE */
     .user-badge {
         background: rgba(10, 15, 30, 0.85);
-        border: 1px solid rgba(0, 170, 255, 0.6);
-        border-radius: 25px;
-        padding: 7px 18px;
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(0, 212, 255, 0.6);
+        border-radius: 30px;
+        padding: 8px 22px;
         font-size: 12px;
-        color: #00aaff;
+        color: #00d4ff;
         display: inline-block;
-        margin-bottom: 12px;
+        margin-bottom: 15px;
         font-family: 'Rajdhani', monospace;
         font-weight: 600;
-        position: relative;
-        z-index: 1;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        box-shadow: 0 0 15px rgba(0, 136, 255, 0.2);
-    }
-    
-    /* Zi mode badge */
-    .zi-mode {
-        background: rgba(60, 0, 30, 0.85);
-        backdrop-filter: blur(10px);
-        border: 1px solid #ff0066;
-        border-radius: 25px;
-        padding: 7px 18px;
-        font-size: 12px;
-        color: #ff66aa;
-        display: inline-block;
-        margin-bottom: 12px;
-        font-family: 'Rajdhani', monospace;
-        font-weight: 600;
-        animation: ziPulse 1.5s ease-in-out infinite;
         position: relative;
         z-index: 1;
         letter-spacing: 3px;
         text-transform: uppercase;
-        box-shadow: 0 0 20px rgba(255, 0, 102, 0.3);
+        box-shadow: 
+            0 0 20px rgba(0, 212, 255, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        animation: badgeGlow 3s ease-in-out infinite;
+    }
+    @keyframes badgeGlow {
+        0%, 100% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.2); }
+        50% { box-shadow: 0 0 30px rgba(0, 212, 255, 0.5); }
+    }
+    
+    /* ZI MODE BADGE */
+    .zi-mode {
+        background: linear-gradient(135deg, rgba(60, 0, 30, 0.85), rgba(30, 0, 60, 0.85));
+        backdrop-filter: blur(15px);
+        border: 1px solid #ff0066;
+        border-radius: 30px;
+        padding: 8px 22px;
+        font-size: 12px;
+        color: #ff66aa;
+        display: inline-block;
+        margin-bottom: 15px;
+        font-family: 'Rajdhani', monospace;
+        font-weight: 600;
+        animation: ziPulse 1.8s ease-in-out infinite;
+        position: relative;
+        z-index: 1;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        box-shadow: 
+            0 0 30px rgba(255, 0, 102, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
     @keyframes ziPulse {
         0%, 100% { 
             transform: scale(1);
-            box-shadow: 0 0 20px rgba(255, 0, 102, 0.3);
+            box-shadow: 0 0 30px rgba(255, 0, 102, 0.4);
         }
         50% { 
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(255, 0, 102, 0.6);
+            transform: scale(1.06);
+            box-shadow: 0 0 50px rgba(255, 0, 102, 0.8);
         }
     }
     
-    /* Typing indicator */
+    /* TYPING INDICATOR */
     .typing-indicator {
         display: inline-block;
-        color: #00aaff;
+        color: #00d4ff;
         font-family: 'Rajdhani', monospace;
         font-size: 14px;
+        font-weight: 600;
         font-style: italic;
         animation: typingPulse 1.2s ease-in-out infinite;
+        letter-spacing: 1px;
     }
     @keyframes typingPulse {
-        0%, 100% { opacity: 0.4; }
-        50% { opacity: 1; }
+        0%, 100% { opacity: 0.4; text-shadow: 0 0 5px rgba(0, 212, 255, 0.3); }
+        50% { opacity: 1; text-shadow: 0 0 15px rgba(0, 212, 255, 0.8); }
     }
     .typing-dots::after {
         content: '';
@@ -328,27 +381,32 @@ st.markdown("""
         75% { content: '...'; }
     }
     
-    /* Tombol */
+    /* TOMBOL */
     .stButton button {
         background: rgba(10, 15, 30, 0.85) !important;
-        backdrop-filter: blur(10px);
-        color: #00aaff !important;
-        border: 1px solid rgba(0, 136, 255, 0.5) !important;
-        border-radius: 12px !important;
+        backdrop-filter: blur(15px);
+        color: #00d4ff !important;
+        border: 1px solid rgba(0, 212, 255, 0.4) !important;
+        border-radius: 14px !important;
         font-family: 'Rajdhani', monospace !important;
         font-weight: 600 !important;
-        letter-spacing: 1.5px;
+        letter-spacing: 2px;
         font-size: 13px !important;
-        padding: 10px 16px !important;
-        transition: all 0.3s ease !important;
-        box-shadow: 0 0 10px rgba(0, 136, 255, 0.1);
+        padding: 12px 18px !important;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        box-shadow: 
+            0 4px 15px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        text-transform: uppercase;
     }
     .stButton button:hover {
-        background: rgba(0, 136, 255, 0.15) !important;
+        background: rgba(0, 212, 255, 0.15) !important;
         color: #ffffff !important;
-        box-shadow: 0 0 25px rgba(0, 136, 255, 0.5);
-        transform: translateY(-2px);
-        border-color: #00aaff !important;
+        box-shadow: 
+            0 0 35px rgba(0, 212, 255, 0.6),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        transform: translateY(-3px);
+        border-color: #00d4ff !important;
     }
     
     #MainMenu {visibility: hidden;}
@@ -394,7 +452,7 @@ if st.session_state.get("mode_zi", False):
                 const eyeCenterX = rect.left + rect.width / 2;
                 const eyeCenterY = rect.top + rect.height / 2;
                 const angle = Math.atan2(e.clientY - eyeCenterY, e.clientX - eyeCenterX);
-                const distance = Math.min(22, Math.hypot(e.clientX - eyeCenterX, e.clientY - eyeCenterY) / 10);
+                const distance = Math.min(25, Math.hypot(e.clientX - eyeCenterX, e.clientY - eyeCenterY) / 10);
                 const x = Math.cos(angle) * distance;
                 const y = Math.sin(angle) * distance;
                 pupils[i].style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
