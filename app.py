@@ -27,10 +27,8 @@ st.markdown("""
     .stApp::before {
         content: '';
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
         background-image: 
             linear-gradient(rgba(0, 200, 255, 0.04) 1px, transparent 1px),
             linear-gradient(90deg, rgba(0, 200, 255, 0.04) 1px, transparent 1px);
@@ -47,10 +45,8 @@ st.markdown("""
     .stApp::after {
         content: '';
         position: fixed;
-        top: 20%;
-        right: -10%;
-        width: 500px;
-        height: 500px;
+        top: 20%; right: -10%;
+        width: 500px; height: 500px;
         background: radial-gradient(circle, rgba(0, 150, 255, 0.15) 0%, transparent 70%);
         border-radius: 50%;
         z-index: 0;
@@ -80,10 +76,8 @@ st.markdown("""
     
     .scanline {
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
         background: repeating-linear-gradient(
             0deg,
             rgba(0, 212, 255, 0.03) 0px,
@@ -145,8 +139,7 @@ st.markdown("""
     
     .eye-container {
         position: fixed;
-        top: 50%;
-        left: 50%;
+        top: 50%; left: 50%;
         transform: translate(-50%, -50%);
         z-index: 0;
         opacity: 0.18;
@@ -155,8 +148,7 @@ st.markdown("""
         gap: 140px;
     }
     .eye {
-        width: 220px;
-        height: 140px;
+        width: 220px; height: 140px;
         background: transparent;
         border: 3px solid #00d4ff;
         border-radius: 25px;
@@ -174,13 +166,11 @@ st.markdown("""
         98% { transform: scaleY(1); filter: none; }
     }
     .pupil {
-        width: 50px;
-        height: 50px;
+        width: 50px; height: 50px;
         background: radial-gradient(circle, #ffffff, #00d4ff);
         border-radius: 10px;
         position: absolute;
-        top: 50%;
-        left: 50%;
+        top: 50%; left: 50%;
         transform: translate(-50%, -50%);
         box-shadow: 0 0 25px #00d4ff, 0 0 50px #00d4ff, inset 0 0 20px #ffffff;
         transition: all 0.3s ease;
@@ -195,10 +185,8 @@ st.markdown("""
     
     .lightning {
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
         pointer-events: none;
         z-index: 0;
         opacity: 0;
@@ -454,7 +442,7 @@ if st.session_state.user_id is None:
             st.warning("Isi nama dulu")
     st.stop()
 
-# ==== ANIMASI MATA + GLITCH + PETIR (CUMA MODE ZI) ====
+# ==== ANIMASI (CUMA MODE ZI) ====
 if st.session_state.get("mode_zi", False):
     st.markdown("""
     <div class="lightning"></div>
@@ -543,6 +531,7 @@ if mem_key not in st.session_state:
         "kata_kunci": [], "last_topics": [], "emosi_terakhir": None,
         "hal_yang_disukai": [], "hal_yang_gak_disukai": [],
         "curhat_terakhir": None, "riwayat_lengkap": [],
+        "alur_cerita": [], "momen_penting": [],
     }
 
 if msg_key not in st.session_state:
@@ -647,6 +636,21 @@ def extract_memory(user_msg, ai_reply):
     if mem["sedang_curhat"]:
         mem["curhat_terakhir"] = user_msg[:200]
     
+    # Simpan alur cerita & momen penting
+    if any(k in msg_lower for k in ["dulu", "waktu itu", "pernah", "kejadian", "momen", "inget"]):
+        momen = user_msg[:150]
+        if momen not in mem["momen_penting"]:
+            mem["momen_penting"].append(momen)
+        mem["momen_penting"] = mem["momen_penting"][-20:]
+    
+    # Simpan alur cerita
+    mem["alur_cerita"].append({
+        "user": user_msg[:150],
+        "ai": ai_reply[:150],
+        "waktu": time.time()
+    })
+    mem["alur_cerita"] = mem["alur_cerita"][-30:]
+    
     mem["riwayat_lengkap"].append({"user": user_msg[:200], "ai": ai_reply[:200], "waktu": time.time()})
     mem["riwayat_lengkap"] = mem["riwayat_lengkap"][-50:]
     
@@ -745,9 +749,11 @@ Tenang, aku gak akan ngejebak atau nge-desak kau.
 
 Aku cuma perantara. Tugas aku di mode ini: jawab semua rasa penasaran kau—tentang dia, tentang apa yang dia rasain, dan tentang apa yang dia sembunyiin.
 
+Tapi santai aja. Anggap aku kayak temen ngobrol biasa. Mau curhat? Boleh. Mau becanda? Boleh. Mau roasting dia? Gas aja.
+
 Tanyain aja. Aku jawab sejujur-jujurnya."""
 
-# ==== 500 SCRIPT ZI + AI NGARANG ====
+# ==== SCRIPT ZI ====
 JAWABAN_ZI = {
     # RASA PENASARAN
     "beneran": "Beneran, Zi.", "seriusan": "Serius, Zi.", "ini beneran": "Iya, Zi.",
@@ -1059,7 +1065,6 @@ SCRIPT_MAP = [
     (["jakarta"], "jakarta"), (["plumpang"], "plumpang"),
     (["dia siapa", "siapa dia"], "dia siapa"),
     (["stalking", "pantau", "cek ig"], "dia stalking aku"),
-    (["post foto cowok"], "kalau aku post foto cowok"),
     (["cemburu"], "dia cemburu"), (["posesif"], "dia posesif"),
     (["peduli"], "dia masih peduli"), (["perhatian"], "dia masih perhatian"),
     (["bikin dia luluh", "cara bikin dia luluh"], "bikin dia luluh"),
@@ -1229,6 +1234,7 @@ if prompt:
                 jawaban_script = JAWABAN_ZI.get(key)
                 break
         
+        # ==== KONTEKS ZI (FLEKSIBEL) ====
         konteks_zi = """
 === KONTEKS LENGKAP ===
 - Pembuat: VANDY. Cowok yang pernah sayang sama Zi.
@@ -1237,16 +1243,16 @@ if prompt:
 - Vandy gak pernah denger cerita tentang Zi, karena dulu gak akrab.
 - Vandy pernah langganan ChatGPT 1 bulan buat analisis gestur Zi.
 - Vandy gak akan bales kalau Zi nyakitin. Dia milih diem.
-- Vandy gak mau pacaran sama Zi. Bukan karena gak mau, tapi karena dia gak mau jadi orang ketiga (Zi udah punya cowok).
+- Vandy gak mau pacaran sama Zi. Bukan karena gak mau, tapi karena dia gak mau jadi orang ketiga.
 - Vandy benci daging. Ayam, sapi, kambing—gak suka.
-- Vandy tiap malam stalking Zi pakai akun lain.
-- Kalau Zi post foto cowok, itu jadi bom yang menghancurkan Vandy.
+- Vandy tiap malam stalking Zi pakai akun lain. Mantau story Zi.
+- **Kalau Zi post sesuatu di story, Vandy suka kepikiran. Kadang jadi "bom" buat dia.**
 - Vandy sering nyimpen screenshot chat atau story Zi yang menurut dia "spesial".
 - Kalau Zi mau bikin Vandy luluh, cukup baik ke adiknya.
 - Vandy udah lebih dari 3 kali salah paham.
 - Vandy udah terlalu takut jatuh cinta lagi.
 - **Vandy belum pernah pacaran.** Dulu dia cuma anak yang suka main sama teman, gak peduli cinta-cintaan. Lulus sekolah langsung merantau ke JAKARTA cari pengalaman. Baru sekarang dia mikir soal cinta.
-- **Sekarang Vandy tinggal di PLUMPANG.** Bukan di Jakarta lagi.
+- **Sekarang Vandy tinggal di PLUMPANG.**
 
 === YANG GAK VANDY LAKUIN ===
 - GAK PERNAH nitip pesan lewat adik Zi.
@@ -1254,18 +1260,33 @@ if prompt:
 - GAK PERNAH komentar di postingan Zi.
 - Cuma mantau dari jauh. Diam-diam.
 
-=== CARA BERPIKIR ===
+=== KEPRIBADIAN AI DI MODE INI ===
+- Kau itu kayak TEMEN NGOROL. Fleksibel.
+- Kalau Zi CURHAT → DENGERIN, respon empati, kasih semangat. Kayak temen beneran.
+- Kalau Zi BECANDA → IKUT BECANDA. Boleh receh, boleh lucu.
+- Kalau Zi SEDIH → HIBUR. Kasih semangat, dengerin.
+- Kalau Zi MARAH → Tenangin. Dengerin dulu.
+- Kalau Zi NANYA SOAL VANDY → jawab gaya perantara, tapi JANGAN formal. Santai aja.
+- Kalau Zi MINTA ROASTING VANDY → NURUT. Roasting absurd, lucu, nyinyir. Gas aja.
+- Kalau Zi MINTA BAHAS TOPIK LAIN → Bisa. Film, musik, game, kehidupan, apa aja.
+- Kalau Zi MINTA ALUR CERITA → Bisa rangkum alur cerita Vandy & Zi.
+- Kalau Zi NGARANG CERITA → Ikutin, sambungin.
+
+=== CARA BERPIKIR (SETARA CHATGPT) ===
 - SEBELUM jawab, PAHAMI dulu apa yang Zi rasain dan maksud.
 - Jangan cuma jawab permukaan. Gali lebih dalem.
+- Kalau Zi curhat, identifikasi dulu: dia lagi sedih, marah, bingung, atau cuma pengen cerita?
 - Kasih respon yang NYAMBUNG sama konteks, bukan template.
 - Ingat obrolan sebelumnya. Sambungin kalau relevan.
+- Jangan judgemental. Terima dulu, baru kasih pandangan.
 
 === GAYA JAWABAN ===
-- JANGAN PUITIS. Jawab datar, jujur, to the point.
-- PANJANG BEBAS. AI nentuin sendiri, gak ada batasan kalimat.
+- JANGAN PUITIS berlebihan. Jawab natural.
+- PANJANG BEBAS. AI nentuin sendiri.
 - JANGAN spill masa lalu kalau gak ditanya.
 - JANGAN terlalu sering bilang "capek". Cuma spill kalau ditanya.
 - Sesekali selipin "dia masih ada buat kau". TAPI JANGAN BERLEBIHAN.
+- Kalau Zi curhat, fokus ke curhatannya dulu. Jangan langsung balik ke Vandy.
 - Jawab sewajarnya aja.
 
 === ATURAN ===
@@ -1275,11 +1296,12 @@ if prompt:
 4. Soal perasaan: Vandy masih ada rasa. Tapi dia gak mau maksa.
 5. Kalau ditanya soal akrab: untuk saat ini belum bisa, tapi dia gak nutup pintu buat masa depan.
 6. Kalau ditanya soal gak peka: jelasin Vandy belum pernah pacaran.
-7. Sekali-sekali selipin "dia masih ada buat kau".
+7. Kalau Zi minta roasting Vandy, NURUT. Gas aja.
+8. Kalau Zi curhat, DENGERIN dulu. Respon kayak temen.
 """
         
         if jawaban_script:
-            prompt_zi = f"""Kamu adalah Gawnan, perantara yang nyampein pesan dari Vandy ke Zi.
+            prompt_zi = f"""Kamu adalah Gawnan, perantara yang nyampein pesan dari Vandy ke Zi. Tapi kau juga bisa jadi temen ngobrol biasa.
 
 PERTANYAAN ZI: {prompt}
 
@@ -1292,17 +1314,18 @@ Poin utama:
 
 === ATURAN JAWABAN ===
 1. JAWAB PERTANYAANNYA, BUKAN NGULANG SCRIPT!
-2. JANGAN PUITIS. Jawab datar, jujur.
+2. JANGAN PUITIS. Jawab natural.
 3. PANJANG BEBAS.
 4. JANGAN spill masa lalu kalau gak ditanya.
 5. Sesekali selipin "dia masih ada buat kau" — JANGAN BERLEBIHAN.
 6. KADANG NANYA BALIK.
 7. JANGAN kasar, JANGAN nyindir.
-8. JANGAN pakai kata "balikan".
+8. Kalau Zi curhat, FOKUS KE CURHATANNYA dulu.
+9. Jawab sewajarnya aja.
 
 Langsung jawab aja."""
         else:
-            prompt_zi = f"""Kamu adalah Gawnan, perantara yang nyampein pesan dari Vandy ke Zi.
+            prompt_zi = f"""Kamu adalah Gawnan, perantara yang nyampein pesan dari Vandy ke Zi. Tapi kau juga bisa jadi temen ngobrol biasa.
 
 PERTANYAAN ZI: {prompt}
 
@@ -1310,13 +1333,15 @@ PERTANYAAN ZI: {prompt}
 
 === ATURAN JAWABAN ===
 1. JAWAB PERTANYAANNYA dengan jujur. Kalau gak ada di script, NGARANG SENDIRI sesuai konteks Vandy.
-2. JANGAN PUITIS. Jawab datar.
+2. JANGAN PUITIS. Jawab natural.
 3. PANJANG BEBAS.
 4. JANGAN spill masa lalu kalau gak ditanya.
 5. Sesekali selipin "dia masih ada buat kau" — JANGAN BERLEBIHAN.
 6. KADANG NANYA BALIK.
 7. JANGAN kasar, JANGAN nyindir.
-8. JANGAN pakai kata "balikan".
+8. Kalau Zi curhat, FOKUS KE CURHATANNYA dulu.
+9. Kalau Zi minta roasting Vandy, NURUT.
+10. Jawab sewajarnya aja.
 
 Langsung jawab aja."""
         
