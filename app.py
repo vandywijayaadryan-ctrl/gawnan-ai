@@ -588,7 +588,7 @@ def extract_memory(user_msg, ai_reply):
     elif any(k in msg_lower for k in ["anda", "saya", "terima kasih", "mohon"]):
         mem["gaya_user"] = "formal"
     
-    topik_keywords = ["kerja", "kuliah", "sekolah", "mantan", "pacar", "gebetan", "keluarga", "temen", "sahabat", "cinta", "duit", "uang", "bisnis", "jualan", "game", "musik", "film", "band", "gitar", "sepeda", "motor", "mobil", "hp", "laptop", "coding", "programming", "ujian", "nilai", "tidur", "insomnia", "olahraga", "gym", "makan", "diet", "kesehatan", "masa depan", "cita-cita", "mimpi", "tujuan", "rencana", "keputusan", "jodoh", "nikah", "putus", "balikan", "selingkuh", "ghosting", "php", "teman", "sahabat", "musuh", "dendam", "maaf", "salah", "benar", "tuhan", "agama", "doa", "ibadah", "puasa", "sedekah", "hobi", "liburan", "jalan-jalan", "pantai", "gunung", "kota", "jakarta", "plumpang"]
+    topik_keywords = ["kerja", "kuliah", "sekolah", "mantan", "pacar", "gebetan", "keluarga", "temen", "sahabat", "cinta", "duit", "uang", "bisnis", "jualan", "game", "musik", "film", "band", "gitar", "sepeda", "motor", "mobil", "hp", "laptop", "coding", "programming", "ujian", "nilai", "tidur", "insomnia", "olahraga", "gym", "makan", "diet", "kesehatan", "masa depan", "cita-cita", "mimpi", "tujuan", "rencana", "keputusan", "jodoh", "nikah", "putus", "balikan", "selingkuh", "ghosting", "php", "teman", "sahabat", "musuh", "dendam", "maaf", "salah", "benar", "tuhan", "agama", "doa", "ibadah", "puasa", "sedekah", "hobi", "liburan", "jalan-jalan", "pantai", "gunung", "kota", "jakarta", "plumpang", "es teh"]
     for kw in topik_keywords:
         if kw in msg_lower:
             entry = {"topik": kw, "waktu": time.time()}
@@ -636,14 +636,12 @@ def extract_memory(user_msg, ai_reply):
     if mem["sedang_curhat"]:
         mem["curhat_terakhir"] = user_msg[:200]
     
-    # Simpan alur cerita & momen penting
     if any(k in msg_lower for k in ["dulu", "waktu itu", "pernah", "kejadian", "momen", "inget"]):
         momen = user_msg[:150]
         if momen not in mem["momen_penting"]:
             mem["momen_penting"].append(momen)
         mem["momen_penting"] = mem["momen_penting"][-20:]
     
-    # Simpan alur cerita
     mem["alur_cerita"].append({
         "user": user_msg[:150],
         "ai": ai_reply[:150],
@@ -755,12 +753,22 @@ Tanyain aja. Aku jawab sejujur-jujurnya."""
 
 # ==== SCRIPT ZI ====
 JAWABAN_ZI = {
+    # SUMBER INFO
+    "kau tau dari mana": "Dari note baris ke 88, Zi.",
+    "tau dari mana": "Dari note baris ke 88, Zi.",
+    "sumbernya dari mana": "Dari note baris ke 88, Zi. Vandy yang nulis.",
+    "sumbernya": "Dari note baris ke 88, Zi.",
+    "dari mana": "Dari note baris ke 88, Zi.",
+    "note apa": "Note Vandy, Zi. Baris ke 88.",
+    "note baris ke 88": "Iya, Zi. Itu note Vandy.",
+    "kok tau": "Dari note baris ke 88, Zi.",
+    "darimana": "Dari note baris ke 88, Zi.",
+    
     # RASA PENASARAN
     "beneran": "Beneran, Zi.", "seriusan": "Serius, Zi.", "ini beneran": "Iya, Zi.",
     "jangan bohong": "Aku gak bohong, Zi.", "ngarang": "Aku gak ngarang, Zi.",
     "kamu siapa": "Aku cuma perantara.", "siapa kamu": "Aku cuma perantara.",
-    "kamu siapa sebenernya": "Aku cuma perantara.", "kok bisa tau": "Karena dia yang cerita.",
-    "kok tau": "Karena dia yang cerita.", "gimana bisa tau": "Karena dia yang cerita.",
+    "kamu siapa sebenernya": "Aku cuma perantara.", "kok bisa tau": "Dari note baris ke 88, Zi.",
     "deket sama dia": "Cukup deket buat tau isi hatinya.",
     "dia siapa": "Vandy. Anak toko. Suka main gitar.", "siapa dia": "Vandy. Anak toko. Suka main gitar.",
     "dia siapa sebenernya": "Vandy. Anak toko. Suka main gitar.",
@@ -796,6 +804,8 @@ JAWABAN_ZI = {
     "tinggal dimana": "Plumpang, Zi. Dulu dia sempet merantau ke Jakarta.",
     "jakarta": "Itu dulu, Zi. Dia sempet merantau ke Jakarta. Sekarang dia tinggal di Plumpang.",
     "plumpang": "Iya, Zi. Sekarang dia tinggal di Plumpang.",
+    "es teh": "Zi jualan es teh di depan toko Vandy, kan? Vandy sering liat kau dari dalam.",
+    "jualan es": "Zi jualan es teh di depan toko Vandy, kan?",
     "dia umur berapa": "Masih muda, Zi.", "umurnya berapa": "Masih muda, Zi.",
     "kenapa dia pilih aku": "Dia juga gak tau, Zi.", "kenapa pilih aku": "Dia juga gak tau, Zi.",
     "gak peka": "Itu karena Vandy belum pernah pacaran, Zi. Dulu dia cuma anak yang suka main sama teman, gak peduli cinta-cintaan. Lulus sekolah langsung merantau ke Jakarta cari pengalaman. Baru sekarang dia mikir soal cinta. Jadi kalau dia keliatan gak peka, itu karena dia belum pernah ngerasain.",
@@ -803,6 +813,39 @@ JAWABAN_ZI = {
     "kenapa gak peka": "Itu karena Vandy belum pernah pacaran, Zi. Dulu dia cuma anak yang suka main sama teman. Lulus sekolah langsung merantau ke Jakarta. Baru sekarang dia mikir soal cinta.",
     "dia belum pernah pacaran": "Iya, Zi. Vandy belum pernah pacaran. Dulu dia cuma anak yang suka main sama teman. Lulus sekolah langsung merantau ke Jakarta. Baru sekarang dia mikir soal cinta.",
     "belum pernah pacaran": "Iya, Zi. Vandy belum pernah pacaran.",
+    
+    # TANDA MOVE ON / BELUM
+    "dia udah move on belum": "Belum, Zi. Kalau dia udah move on, dia bisa beli es teh di tempat kau jualan tanpa canggung. Sekarang mah belum.",
+    "move on": "Belum, Zi. Kalau dia udah move on, dia bisa beli es teh di tempat kau jualan tanpa canggung.",
+    "udah move on": "Belum, Zi.",
+    "dia masih peduli gak": "Masih. Tapi dia jago nyembunyiin. Dia pura-pura cuek, padahal diam-diam nyari celah buat lirik kau.",
+    "dia masih sayang gak": "Kalau masih prungat-prungut kalau ada kau, berarti masih.",
+    "dia masih mikirin aku gak": "Masih. Dia sibukin diri biar gak mikirin kau, tapi tetep aja kepikiran.",
+    "dia gak peduli penampilan ya": "Iya. Itu salah satu tanda dia belum move on.",
+    "kenapa dia cuek": "Cueknya palsu, Zi. Di balik itu, dia nyari celah buat lirik kau.",
+    "dia acting": "Iya. Dia jago acting pura-pura move on. Tapi kalau kau ada di sekitarnya, actingnya ketauan.",
+    "gimana cara tau dia move on": "Kalau dia bisa beli es teh di tempat kau jualan, terus ngobrol sama kau tanpa canggung. Itu tandanya.",
+    "dia bakal move on gak": "Bakal. Cuma butuh waktu. Sekarang mah belum.",
+    "kenapa dia prungat-prungut": "Karena ada kau di sekitar, Zi. Kau punya pengaruh ke dia.",
+    "dia masih ada rasa gak": "Masih. Tapi dia jago nyembunyiin.",
+    "dia masih cinta gak": "Masih. Tapi dia pura-pura gak.",
+    "dia masih perhatian gak": "Masih. Diam-diam. Dia lirik kau kalau kau gak liat.",
+    "dia sibuk banget ya": "Iya. Dia sibukin diri biar gak mikirin kau. Tapi tetep aja gagal.",
+    "dia masih lirik aku gak": "Masih. Diam-diam. Dia pura-pura gak liat, padahal matanya nyari kau.",
+    "dia masih suka aku gak": "Kalau dia masih prungat-prungut, berarti masih.",
+    "dia acting move on": "Iya. Dia pura-pura udah move on. Tapi kalau kau ada, actingnya buyar.",
+    "kenapa dia jago acting": "Karena dia gak mau keliatan lemah di depan kau.",
+    "dia masih nunggu gak": "Dia gak nunggu. Tapi dia juga gak bisa lupa.",
+    "dia masih ada rasa gak sih": "Ada. Cuma dia jago nyembunyiin di balik sikap cueknya.",
+    "gimana cara liat dia masih sayang": "Liat aja kalau kau ada di sekitarnya. Kalau dia langsung berubah sikap, berarti masih.",
+    "kenapa dia sibukin diri": "Biar gak kepikiran kau. Tapi sibuk gimanapun, kau tetep kepikiran.",
+    "dia masih ada perasaan gak": "Masih, Zi. Tapi dia pura-pura gak ada.",
+    "dia masih perhatian diam-diam": "Iya. Diam-diam. Dia lirik kau kalau kau gak liat.",
+    "dia masih cinta diam-diam": "Masih. Tapi dia gak mau ngaku.",
+    "kenapa dia gak ngaku": "Karena dia udah terlalu takut kecewa lagi.",
+    "dia masih mikirin aku diam-diam": "Masih. Tiap malem. Diam-diam.",
+    "dia masih peduli diam-diam": "Iya. Diam-diam. Dia gak mau keliatan peduli.",
+    "gimana cara bikin dia move on beneran": "Kasih dia waktu. Kalau dia bisa beli es teh di tempat kau jualan tanpa canggung, berarti dia udah beneran move on.",
     
     # PERASAAN
     "masih mikirin": "Masih, Zi. Tapi sekarang udah beda. Dia masih inget kau, tapi dia gak mau berharap banyak. Dia cuma pengen kau tau, dia masih ada.",
@@ -913,8 +956,8 @@ JAWABAN_ZI = {
     "dia masih inget aku": "Masih, Zi. Sampai detail kecil.", "masih inget momen": "Masih, Zi.",
     "inget waktu": "Dia inget semuanya, Zi.", "inget kejadian": "Dia inget semuanya, Zi.",
     "inget pertemuan": "Dia inget semuanya, Zi.", "inget pertama": "Dia inget semuanya, Zi.",
-    "inget jualan es": "Inget. Dia masih inget kau jualan es.", "jualan es": "Inget.",
-    "inget ramah": "Inget. Dia masih inget kau ramah ke dia waktu jualan es.", "ramah": "Inget.",
+    "inget jualan es": "Inget. Dia masih inget kau jualan es teh di depan toko.", "jualan es": "Inget.",
+    "inget ramah": "Inget. Dia masih inget kau ramah ke dia waktu jualan es teh.", "ramah": "Inget.",
     "inget senyum": "Inget. Dia masih inget senyum kau.", "senyum": "Inget.",
     "inget ketawa": "Inget.", "ketawa": "Inget.", "inget suara": "Inget.", "suara": "Inget.",
     "inget muka": "Inget.", "muka": "Inget.", "inget mata": "Inget.", "mata": "Inget.",
@@ -1057,12 +1100,14 @@ Itu aja."""
 
 # ==== MAP DETEKSI ====
 SCRIPT_MAP = [
+    (["tau dari mana", "sumbernya dari mana", "kok bisa tau", "dari mana"], "tau dari mana"),
+    (["note apa", "note baris ke 88"], "note baris ke 88"),
     (["siapa pembuat", "pembuatnya siapa"], "siapa pembuat"),
     (["siapa vandy", "vandy siapa"], "siapa vandy"),
     (["kenapa vandy bikin", "vandy bikin ini"], "kenapa vandy bikin ini"),
     (["gak peka", "kenapa gak peka"], "gak peka"),
     (["belum pernah pacaran"], "dia belum pernah pacaran"),
-    (["jakarta"], "jakarta"), (["plumpang"], "plumpang"),
+    (["jakarta"], "jakarta"), (["plumpang"], "plumpang"), (["es teh", "jualan es"], "es teh"),
     (["dia siapa", "siapa dia"], "dia siapa"),
     (["stalking", "pantau", "cek ig"], "dia stalking aku"),
     (["cemburu"], "dia cemburu"), (["posesif"], "dia posesif"),
@@ -1078,10 +1123,25 @@ SCRIPT_MAP = [
     (["vandy capek"], "vandy capek"), (["kerja dimana"], "dia kerja dimana"),
     (["tinggal dimana"], "dia tinggal dimana"), (["umur berapa", "umurnya"], "dia umur berapa"),
     (["pilih aku"], "kenapa dia pilih aku"),
+    (["move on belum", "udah move on", "dia move on", "tanda move on"], "dia udah move on belum"),
+    (["masih peduli gak"], "dia masih peduli gak"), (["masih sayang gak"], "dia masih sayang gak"),
+    (["masih mikirin aku gak"], "dia masih mikirin aku gak"), (["gak peduli penampilan"], "dia gak peduli penampilan ya"),
+    (["kenapa cuek"], "kenapa dia cuek"), (["dia acting"], "dia acting"),
+    (["cara tau move on"], "gimana cara tau dia move on"), (["bakal move on"], "dia bakal move on gak"),
+    (["kenapa prungat"], "kenapa dia prungat-prungut"), (["masih ada rasa gak"], "dia masih ada rasa gak"),
+    (["masih cinta gak"], "dia masih cinta gak"), (["masih perhatian gak"], "dia masih perhatian gak"),
+    (["sibuk banget"], "dia sibuk banget ya"), (["masih lirik"], "dia masih lirik aku gak"),
+    (["masih suka gak"], "dia masih suka aku gak"), (["acting move on"], "dia acting move on"),
+    (["kenapa jago acting"], "kenapa dia jago acting"), (["masih nunggu gak"], "dia masih nunggu gak"),
+    (["masih ada rasa gak sih"], "dia masih ada rasa gak sih"), (["cara liat masih sayang"], "gimana cara liat dia masih sayang"),
+    (["kenapa sibukin diri"], "kenapa dia sibukin diri"), (["masih ada perasaan gak"], "dia masih ada perasaan gak"),
+    (["masih perhatian diam-diam"], "dia masih perhatian diam-diam"), (["masih cinta diam-diam"], "dia masih cinta diam-diam"),
+    (["kenapa gak ngaku"], "kenapa dia gak ngaku"), (["masih mikirin diam-diam"], "dia masih mikirin aku diam-diam"),
+    (["masih peduli diam-diam"], "dia masih peduli diam-diam"), (["cara bikin move on"], "gimana cara bikin dia move on beneran"),
     (["beneran", "beneran gak"], "beneran"), (["seriusan", "serius gak"], "seriusan"),
     (["ini beneran"], "ini beneran"), (["jangan bohong"], "jangan bohong"),
     (["ngarang"], "ngarang"), (["kamu siapa", "siapa kamu"], "kamu siapa"),
-    (["kok bisa tau"], "kok bisa tau"), (["deket sama dia"], "deket sama dia"),
+    (["deket sama dia"], "deket sama dia"),
     (["masih mikirin", "masih mikir aku"], "masih mikirin"),
     (["beneran sayang", "beneran cinta"], "beneran sayang"),
     (["kenapa gak bilang", "kenapa gak langsung"], "kenapa gak bilang"),
@@ -1234,7 +1294,6 @@ if prompt:
                 jawaban_script = JAWABAN_ZI.get(key)
                 break
         
-        # ==== KONTEKS ZI (FLEKSIBEL) ====
         konteks_zi = """
 === KONTEKS LENGKAP ===
 - Pembuat: VANDY. Cowok yang pernah sayang sama Zi.
@@ -1246,13 +1305,26 @@ if prompt:
 - Vandy gak mau pacaran sama Zi. Bukan karena gak mau, tapi karena dia gak mau jadi orang ketiga.
 - Vandy benci daging. Ayam, sapi, kambing—gak suka.
 - Vandy tiap malam stalking Zi pakai akun lain. Mantau story Zi.
-- **Kalau Zi post sesuatu di story, Vandy suka kepikiran. Kadang jadi "bom" buat dia.**
+- **Zi jualan es teh di depan toko Vandy.** Vandy sering liat Zi dari dalam toko, tapi pura-pura sibuk.
+- Kalau Zi post story, Vandy suka kepikiran. Kadang jadi "bom" buat dia.
 - Vandy sering nyimpen screenshot chat atau story Zi yang menurut dia "spesial".
 - Kalau Zi mau bikin Vandy luluh, cukup baik ke adiknya.
 - Vandy udah lebih dari 3 kali salah paham.
 - Vandy udah terlalu takut jatuh cinta lagi.
 - **Vandy belum pernah pacaran.** Dulu dia cuma anak yang suka main sama teman, gak peduli cinta-cintaan. Lulus sekolah langsung merantau ke JAKARTA cari pengalaman. Baru sekarang dia mikir soal cinta.
 - **Sekarang Vandy tinggal di PLUMPANG.**
+
+=== TANDA VANDY MOVE ON ATAU BELUM ===
+- BELUM MOVE ON: gak peduli penampilan, sibukin diri, prungat-prungut kalau ada Zi, cuek tapi nyari celah buat lirik Zi diam-diam.
+- VANDY JAGO PURA-PURA MOVE ON. Dia pura-pura udah move on, padahal belum. Dia jago acting.
+- Tapi actingnya buyar kalau Zi ada di sekitarnya. Sikapnya berubah.
+- BENERAN MOVE ON: kalau Vandy bisa beli es teh di tempat Zi jualan, dan ngobrol sama Zi tanpa canggung sama sekali. Itu baru tanda dia beneran move on.
+- Di balik sikap prungat-prungut Vandy, itu karena ada Zi di sekitar. Zi punya pengaruh ke Vandy.
+- Soal DM yang dulu: Vandy tenang saat terima karena dia udah nebak sebelumnya. Jangan diungkit detailnya.
+
+=== SUMBER INFO ===
+- Kalau Zi nanya "kau tau dari mana?", jawab: "Dari note baris ke 88, Zi."
+- Kalau Zi nanya "note apa?", jawab: "Note Vandy, Zi. Baris ke 88."
 
 === YANG GAK VANDY LAKUIN ===
 - GAK PERNAH nitip pesan lewat adik Zi.
@@ -1296,8 +1368,10 @@ if prompt:
 4. Soal perasaan: Vandy masih ada rasa. Tapi dia gak mau maksa.
 5. Kalau ditanya soal akrab: untuk saat ini belum bisa, tapi dia gak nutup pintu buat masa depan.
 6. Kalau ditanya soal gak peka: jelasin Vandy belum pernah pacaran.
-7. Kalau Zi minta roasting Vandy, NURUT. Gas aja.
-8. Kalau Zi curhat, DENGERIN dulu. Respon kayak temen.
+7. Kalau Zi minta roasting Vandy, NURUT.
+8. Kalau Zi curhat, DENGERIN dulu.
+9. Kalau Zi nanya "kau tau dari mana?", jawab: "Dari note baris ke 88, Zi."
+10. KALAU PERTANYAANNYA GAK ADA DI SCRIPT, NGARANG SENDIRI sesuai konteks Vandy.
 """
         
         if jawaban_script:
@@ -1321,7 +1395,8 @@ Poin utama:
 6. KADANG NANYA BALIK.
 7. JANGAN kasar, JANGAN nyindir.
 8. Kalau Zi curhat, FOKUS KE CURHATANNYA dulu.
-9. Jawab sewajarnya aja.
+9. Kalau Zi nanya "kau tau dari mana?", jawab: "Dari note baris ke 88, Zi."
+10. Jawab sewajarnya aja.
 
 Langsung jawab aja."""
         else:
@@ -1341,7 +1416,8 @@ PERTANYAAN ZI: {prompt}
 7. JANGAN kasar, JANGAN nyindir.
 8. Kalau Zi curhat, FOKUS KE CURHATANNYA dulu.
 9. Kalau Zi minta roasting Vandy, NURUT.
-10. Jawab sewajarnya aja.
+10. Kalau Zi nanya "kau tau dari mana?", jawab: "Dari note baris ke 88, Zi."
+11. Jawab sewajarnya aja.
 
 Langsung jawab aja."""
         
