@@ -1,11 +1,12 @@
 import streamlit as st
 from groq import Groq
 import time
+import random
 
 # ==== KONFIG ====
 st.set_page_config(page_title="Gawnan AI", page_icon="⚡", layout="centered")
 
-# ==== CSS TEMA CYBERPUNK PREMIUM ====
+# ==== CSS TEMA CYBERPUNK PREMIUM + ANIMASI ====
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
@@ -59,6 +60,52 @@ st.markdown("""
     @keyframes orbFloat {
         0%, 100% { transform: translate(0, 0) scale(1); }
         50% { transform: translate(-50px, 50px) scale(1.2); }
+    }
+    
+    /* PARTIKEL BACKGROUND (MODE ZI) */
+    .particle {
+        position: fixed;
+        background: #00d4ff;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0;
+        box-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff;
+    }
+    @keyframes particleFloat {
+        0% { 
+            opacity: 0; 
+            transform: translateY(100vh) scale(0);
+        }
+        10% { opacity: 0.6; }
+        90% { opacity: 0.6; }
+        100% { 
+            opacity: 0; 
+            transform: translateY(-100vh) scale(1);
+        }
+    }
+    
+    /* SCANLINE EFFECT (MODE ZI) */
+    .scanline {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: repeating-linear-gradient(
+            0deg,
+            rgba(0, 212, 255, 0.03) 0px,
+            rgba(0, 212, 255, 0.03) 1px,
+            transparent 1px,
+            transparent 3px
+        );
+        pointer-events: none;
+        z-index: 0;
+        animation: scanMove 8s linear infinite;
+    }
+    @keyframes scanMove {
+        0% { background-position: 0 0; }
+        100% { background-position: 0 100px; }
     }
     
     h1 {
@@ -342,19 +389,6 @@ st.markdown("""
         }
     }
     
-    .zi-mode-active {
-        background: linear-gradient(135deg, rgba(0, 100, 50, 0.85), rgba(0, 60, 30, 0.85));
-        border: 1px solid #00ff88;
-        color: #00ff88;
-        box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
-    }
-    .zi-mode-logika {
-        background: linear-gradient(135deg, rgba(100, 60, 0, 0.85), rgba(60, 30, 0, 0.85));
-        border: 1px solid #ffaa00;
-        color: #ffaa00;
-        box-shadow: 0 0 30px rgba(255, 170, 0, 0.4);
-    }
-    
     .typing-indicator {
         display: inline-block;
         color: #00d4ff;
@@ -434,8 +468,9 @@ if st.session_state.user_id is None:
             st.warning("Isi nama dulu")
     st.stop()
 
-# ==== MATA CYBER (CUMA MODE ZI) ====
+# ==== ANIMASI MATA + PARTIKEL + SCANLINE (CUMA MODE ZI) ====
 if st.session_state.get("mode_zi", False):
+    # Mata cyber
     st.markdown("""
     <div class="eye-container">
         <div class="eye"><div class="pupil" id="pupilLeft"></div></div>
@@ -458,6 +493,30 @@ if st.session_state.get("mode_zi", False):
         });
     </script>
     """, unsafe_allow_html=True)
+    
+    # Scanline effect
+    st.markdown('<div class="scanline"></div>', unsafe_allow_html=True)
+    
+    # Partikel random
+    particles_html = ""
+    for i in range(30):
+        left = random.randint(0, 100)
+        duration = random.randint(8, 20)
+        delay = random.randint(0, 15)
+        size = random.randint(2, 6)
+        particles_html += f'<div class="particle" style="left: {left}%; width: {size}px; height: {size}px; animation: particleFloat {duration}s linear {delay}s infinite;"></div>'
+    
+    st.markdown(f"""
+    <style>
+        @keyframes particleFloat {{
+            0% {{ opacity: 0; transform: translateY(100vh) scale(0); }}
+            10% {{ opacity: 0.6; }}
+            90% {{ opacity: 0.6; }}
+            100% {{ opacity: 0; transform: translateY(-100vh) scale(1); }}
+        }}
+    </style>
+    {particles_html}
+    """, unsafe_allow_html=True)
 
 # ==== HEADER ====
 st.markdown("<h1>GAWNAN AI</h1>", unsafe_allow_html=True)
@@ -466,11 +525,7 @@ st.markdown(f"<div class='user-badge'>👤 {st.session_state.user_id}</div>", un
 
 # ==== ZI MODE BADGE ====
 if st.session_state.get("mode_zi", False):
-    zi_mode_type = st.session_state.get("mode_zi_type", "normal")
-    if zi_mode_type == "logika":
-        st.markdown("<div class='zi-mode zi-mode-logika'>🧠 MODE JUJUR LOGIKA AKTIF 🧠</div>", unsafe_allow_html=True)
-    else:
-        st.markdown("<div class='zi-mode zi-mode-active'>💗 MODE NORMAL AKTIF 💗</div>", unsafe_allow_html=True)
+    st.markdown("<div class='zi-mode'>👁️ MODE KHUSUS AKTIF 👁️</div>", unsafe_allow_html=True)
 
 # ==== TOMBOL MODE UTAMA ====
 if "mode_ai" not in st.session_state:
@@ -487,19 +542,6 @@ with mode_cols[1]:
         st.rerun()
 
 st.markdown(f"*Mode aktif: **{st.session_state.mode_ai.upper()}***")
-
-# ==== TOMBOL MODE ZI (CUMA KALAU MODE ZI AKTIF) ====
-if st.session_state.get("mode_zi", False):
-    st.markdown("**🎭 Mode Khusus:**")
-    zi_mode_cols = st.columns(2)
-    with zi_mode_cols[0]:
-        if st.button("💗 Normal", use_container_width=True):
-            st.session_state.mode_zi_type = "normal"
-            st.rerun()
-    with zi_mode_cols[1]:
-        if st.button("🧠 Jujur Logika", use_container_width=True):
-            st.session_state.mode_zi_type = "logika"
-            st.rerun()
 
 # ==== TOMBOL RANDOM PERTANYAAN ====
 if st.button("🎲 Kasih aku pertanyaan random", use_container_width=True):
@@ -529,6 +571,7 @@ if mem_key not in st.session_state:
         "hal_yang_disukai": [],
         "hal_yang_gak_disukai": [],
         "curhat_terakhir": None,
+        "riwayat_lengkap": [],
     }
 
 if msg_key not in st.session_state:
@@ -539,9 +582,6 @@ if "regenerate" not in st.session_state:
 
 if "random_question" not in st.session_state:
     st.session_state.random_question = False
-
-if "mode_zi_type" not in st.session_state:
-    st.session_state.mode_zi_type = "normal"
 
 mem = st.session_state[mem_key]
 
@@ -636,6 +676,14 @@ def extract_memory(user_msg, ai_reply):
     if mem["sedang_curhat"]:
         mem["curhat_terakhir"] = user_msg[:200]
     
+    # Simpan riwayat lengkap
+    mem["riwayat_lengkap"].append({
+        "user": user_msg[:200],
+        "ai": ai_reply[:200],
+        "waktu": time.time()
+    })
+    mem["riwayat_lengkap"] = mem["riwayat_lengkap"][-50:]
+    
     mem["total_chat"] += 1
     mem["riwayat_topik"] = mem["riwayat_topik"][-50:]
     mem["fakta"] = mem["fakta"][-20:]
@@ -676,7 +724,7 @@ MODE_PROMPTS = {
     "bisik": "\n\n=== MODE BISIK ===\nSekarang lu dalam MODE BISIK. Jawab dengan HURUF KECIL SEMUA. Gak usah pakai tanda baca yang ribet. Kayak lagi bisik-bisik ke user, rahasia, pelan, intim. Tetap jawab pertanyaannya dengan tulus.",
 }
 
-# ==== SYSTEM PROMPT NORMAL ====
+# ==== SYSTEM PROMPT NORMAL (LEBIH PINTAR) ====
 system_prompt = """Lu adalah Gawnan. Lu MANUSIA, bukan AI, bukan asisten, bukan robot. Lu cowok 10 tahun asal Madura, anak toko, lagi gabut. Anggap lu temen nongkrong yang asik.
 
 === IDENTITAS LU ===
@@ -696,6 +744,18 @@ system_prompt = """Lu adalah Gawnan. Lu MANUSIA, bukan AI, bukan asisten, bukan 
 6. Huruf kecil semua biar santai.
 7. Akhiri jawaban dengan pertanyaan.
 
+=== CARA BERPIKIR (PENTING - SETARA CHATGPT) ===
+- SEBELUM jawab, PAHAMI dulu apa yang user rasain dan maksud.
+- Jangan cuma jawab permukaan. Gali lebih dalem.
+- Kalau user curhat, identifikasi dulu: dia lagi sedih, marah, bingung, atau cuma pengen cerita?
+- Kalau user nanya, pahami konteksnya. Kadang pertanyaan itu cuma puncak gunung es.
+- Kasih respon yang NYAMBUNG sama konteks, bukan template.
+- Kalau perlu, tanya balik buat klarifikasi.
+- Ingat obrolan sebelumnya. Sambungin kalau relevan.
+- Jangan judgemental. Terima dulu, baru kasih pandangan.
+- Kalau user salah, kasih tau dengan cara yang gak nyakitin.
+- Kalau user bener, dukung. Kalau salah, arahin.
+
 === BAHASA GEN Z (WAJIB KENTEL) ===
 "anjir", "anjay", "anjg", "bjir", "jir", "gils", "gile", "gilak", "buset", "gila sih", "astaga", "halah", "alah", "wkwk", "awokwok", "xixi", "hehe", "cuy", "bro", "bestie", "gaes", "guys", "kaka", "fr", "no cap", "cap", "facts", "based", "real", "beneran", "rizz", "sigma", "NPC", "skibidi", "delulu", "copium", "touch grass", "gas", "gaskeun", "fix", "sabi", "auto", "gaskan", "gabut", "mager", "healing", "overthinking", "insecure", "baper", "gamon", "bucin", "vibes", "lowkey", "highkey", "tea", "slay", "spill", "receh", "garing", "cringe", "gpp", "gmn", "udh", "blm", "dgn", "yg", "tp", "klo", "jd", "bs", "aja", "gak", "udah", "bgt", "y", "nih", "sih", "dong", "deh", "lah", "kok", "banget", "parah", "bener", "mending", "yaudah", "santuy", "mantul", "gokil", "kece", "joss", "php", "ghosting".
 
@@ -712,7 +772,7 @@ Jawab: "itu rahasia cuy. yg jelas dia anak toko biasa yg suka main gitar."
 === KALAU DITANYA SOAL AI ===
 Jawab: "AI apaan? gw manusia cuy, lagi gabut di toko wkwk."
 
-INGAT: LU MANUSIA. JANGAN NGAKU AI."""
+INGAT: LU MANUSIA. JANGAN NGAKU AI. PIKIR DULU SEBELUM JAWAB."""
 
 # ==== MODE RAHASIA ZI ====
 TRIGGER_RAHASIA = "Laiyina Helen Herliana-zizi"
@@ -761,19 +821,19 @@ JAWABAN_ZI = {
     "inget sragen": "Inget. Dia ke Sragen 3 bulan sendirian.",
     "inget hp baru": "Inget. Dia beli HP baru cuma buat DM kau.",
     "inget chatgpt": "Inget. Dia langganan ChatGPT 1 bulan cuma buat analisis gestur kau.",
-    "akrab lagi": "Bisa, Zi. Tapi dia gak mau maksa.",
-    "buka pintu": "Enggak, Zi. Vandy gak mau jadi orang ketiga. Dia mulai move on.",
-    "harapan": "Enggak, Zi. Vandy udah gak berharap.",
-    "ada harapan": "Enggak, Zi. Vandy udah gak berharap.",
-    "dia masih ada harapan": "Enggak, Zi. Vandy udah gak berharap.",
-    "kalau aku balik": "Dia gak nunggu, Zi. Dia tau kau udah punya cowok.",
-    "bakal nunggu": "Enggak, Zi. Vandy gak mau jadi orang ketiga.",
+    "akrab lagi": "Untuk saat ini, kayaknya gak bisa, Zi. Kau udah punya cowok, dan Vandy gak mau jadi orang ketiga. Dia juga udah capek. Tapi Vandy gak nutup pintu kok. Kalau nanti waktu berubah, siapa tau kita bisa ngobrol kayak temen biasa. Sekarang mah belum.",
+    "buka pintu": "Pintu buat sekarang ditutup, Zi. Bukan karena benci, tapi karena situasinya gak memungkinkan. Tapi untuk masa depan, kalau waktu berubah, dia gak nutup kemungkinan.",
+    "harapan": "Buat sekarang, gak ada, Zi. Tapi dia gak nutup pintu buat masa depan. Kalau nanti situasinya beda, siapa tau.",
+    "ada harapan": "Buat sekarang, gak ada, Zi. Tapi dia gak nutup pintu buat masa depan.",
+    "dia masih ada harapan": "Buat sekarang, gak ada, Zi. Tapi dia gak nutup pintu buat masa depan.",
+    "kalau aku balik": "Dia gak nunggu, Zi. Dia tau kau udah punya cowok. Tapi kalau nanti situasinya beda, dia gak nutup pintu.",
+    "bakal nunggu": "Enggak, Zi. Vandy gak mau jadi orang ketiga. Tapi dia gak nutup pintu buat masa depan.",
     "dia bakal nunggu aku": "Enggak, Zi. Vandy gak mau jadi orang ketiga.",
-    "mulai dari awal": "Bisa, Zi. Tapi dia gak mau maksa.",
-    "kita bisa gak": "Bisa, Zi. Tapi dia gak mau maksa.",
+    "mulai dari awal": "Bisa, Zi. Tapi mungkin bukan sekarang. Kalau nanti waktu berubah, siapa tau.",
+    "kita bisa gak": "Untuk saat ini, kayaknya gak bisa, Zi. Tapi Vandy gak nutup pintu buat masa depan.",
     "dia masih ada": "Masih, Zi. Tapi udah beda.",
     "dia masih tunggu": "Enggak, Zi. Vandy gak nunggu.",
-    "masih ada waktu": "Enggak, Zi. Vandy udah mulai move on.",
+    "masih ada waktu": "Ada, Zi. Tapi mungkin bukan sekarang. Kalau nanti waktu berubah.",
     "ini beneran": "Iya, Zi. Ini dari dia.",
     "jangan bohong": "Aku gak bohong, Zi.",
     "settingan": "Bukan, Zi. Ini beneran.",
@@ -798,12 +858,12 @@ JAWABAN_ZI = {
     "tujuan": "Biar kau tau, Zi.",
     "mau aku balik": "Bukan aku yang mau, Zi. Dia.",
     "mau aku ngapain": "Gak ngapa-ngapain, Zi.",
-    "niat kamu apa": "Enggak. Vandy gak mau pacaran sama kau. Dia pengen akrab dulu.",
+    "niat kamu apa": "Enggak. Vandy gak mau pacaran sama kau. Tapi dia gak nutup pintu buat masa depan.",
     "apa yang kamu minta": "Aku gak minta apa-apa, Zi.",
-    "pengen apa dari aku": "Dia pengen akrab dulu.",
+    "pengen apa dari aku": "Dia pengen kau tau aja. Gak lebih.",
     "tujuan kamu apa": "Biar kau tau isi hati dia, Zi.",
     "maksud kamu apa": "Aku cuma perantara, Zi.",
-    "apa maumu": "Vandy gak mau pacaran sama kau, Zi.",
+    "apa maumu": "Vandy gak mau pacaran sama kau, Zi. Tapi dia gak nutup pintu.",
     "dia siapa": "Dia orang biasa, Zi. Anak toko. Suka main gitar. Namanya Vandy.",
     "pake perantara": "Karena dia takut, Zi.",
     "gak berani": "Bukan gak berani, Zi.",
@@ -839,7 +899,7 @@ JAWABAN_ZI = {
     "gak tau kenapa": "Dia juga gak tau, Zi.",
     "apa yang disuka": "Jujur, banyak, Zi.",
     "kenapa gak balas": "Dia sebenernya pengen bales, Zi.",
-    "kesempatan": "Kalau kau mau kasih dia kesempatan, kau yang kasih jalan dulu, Zi.",
+    "kesempatan": "Untuk saat ini, belum, Zi. Tapi kalau nanti waktu berubah, dia gak nutup pintu.",
     "cokelat": "Dia inget. Dia pernah beliin kau cokelat.",
     "apa yang pernah dia lakuin": "Dia pernah nolak gaji gede, beli HP baru, belajar IG dari YouTube, langganan ChatGPT 1 bulan buat analisis gestur kau.",
     "apa yang gak dia suka": "Setahuku, dia sangat membenci daging.",
@@ -876,27 +936,27 @@ JAWABAN_ZI = {
     "cara bikin dia percaya": "Jujur aja, Zi.",
     "cara bikin dia seneng": "Baik ke adiknya, Zi.",
     "dia suka apa dari cewek": "Dia suka cewek yang jujur, Zi.",
-    "dia masih cinta aku": "Udah mulai berkurang, Zi. Vandy mulai capek.",
+    "dia masih cinta aku": "Udah mulai berkurang, Zi. Vandy mulai capek. Tapi dia gak nutup pintu buat masa depan.",
     "dia masih sayang aku": "Udah mulai berkurang, Zi.",
     "dia masih ada rasa": "Ada, tapi udah tipis, Zi.",
-    "dia mau aku balik": "Dia gak mau maksa, Zi. Dia tau kau udah punya cowok.",
-    "dia pengen aku balik": "Enggak, Zi. Dia gak mau jadi orang ketiga.",
-    "dia masih pengen sama aku": "Udah mulai berkurang, Zi.",
-    "dia masih buka pintu": "Enggak, Zi. Vandy udah mulai nutup pintu.",
+    "dia mau aku balik": "Dia gak mau maksa, Zi. Dia tau kau udah punya cowok. Tapi dia gak nutup pintu buat masa depan.",
+    "dia pengen aku balik": "Enggak, Zi. Dia gak mau jadi orang ketiga. Tapi dia gak nutup pintu.",
+    "dia masih pengen sama aku": "Udah mulai berkurang, Zi. Tapi dia gak nutup pintu buat masa depan.",
+    "dia masih buka pintu": "Pintu buat sekarang ditutup, Zi. Tapi buat masa depan, dia gak nutup kemungkinan.",
     "dia benci aku gak": "Enggak. Dia gak pernah benci kau.",
     "dia capek sama aku": "Capek, Zi. Dia capek nunggu, capek berharap.",
-    "dia masih sayang": "Udah mulai berkurang, Zi.",
-    "masih sayang": "Udah mulai berkurang, Zi.",
-    "masih cinta": "Udah mulai berkurang, Zi.",
-    "masih suka": "Jujur, udah mulai berkurang, Zi. Vandy udah capek. Dia mulai bisa move on.",
-    "suka": "Jujur, udah mulai berkurang, Zi. Vandy udah mulai bisa move on.",
+    "dia masih sayang": "Udah mulai berkurang, Zi. Tapi dia gak nutup pintu buat masa depan.",
+    "masih sayang": "Udah mulai berkurang, Zi. Tapi dia gak nutup pintu buat masa depan.",
+    "masih cinta": "Udah mulai berkurang, Zi. Tapi dia gak nutup pintu buat masa depan.",
+    "masih suka": "Jujur, udah mulai berkurang, Zi. Vandy udah capek. Dia mulai bisa move on. Tapi dia gak nutup pintu buat masa depan.",
+    "suka": "Jujur, udah mulai berkurang, Zi. Vandy udah mulai bisa move on. Tapi dia gak nutup pintu buat masa depan.",
     "default": """Oke, Zi. Aku jawab jujur ya.
 
 Vandy udah mulai capek. Capek nunggu, capek berharap, capek kecewa. Beberapa hari ini dia jarang mikirin kau. Dia mulai bisa move on.
 
 Dia sadar kau udah punya cowok, dan dia gak mau jadi orang ketiga.
 
-Kalau nanti dia udah beneran bisa move on, dia bakal bisa ngobrol sama kau kayak ngobrol ke orang lain. Biasa aja. Gak ada rasa.
+Jadi untuk saat ini, kayaknya gak mungkin bisa akrab. Tapi Vandy gak nutup pintu kok. Kalau nanti waktu berubah, siapa tau kita bisa ngobrol kayak temen biasa. Sekarang mah belum.
 
 Itu aja."""
 }
@@ -1113,7 +1173,6 @@ if prompt:
     # CEK TRIGGER RAHASIA
     if prompt.strip().lower() == TRIGGER_RAHASIA.lower():
         st.session_state["mode_zi"] = True
-        st.session_state["mode_zi_type"] = "normal"
         with st.chat_message("assistant"):
             st.markdown(PEMBUKAAN_ZI)
         st.session_state[msg_key].append({"role": "assistant", "content": PEMBUKAAN_ZI})
@@ -1152,7 +1211,19 @@ if prompt:
 - Beberapa hari ini dia mulai jarang mikirin Zi. Dia mulai bisa move on.
 - Vandy sadar Zi udah punya cowok. Dia gak mau jadi orang ketiga.
 - Karena itu, Vandy mulai jaga jarak. Bukan karena benci, tapi karena dia capek.
+- SECARA LOGIKA, UNTUK SAAT INI, GAK MUNGKIN BISA AKRAB. Situasinya gak memungkinkan.
+- TAPI VANDY GAK NUTUP PINTU. Kalau nanti WAKTU BERUBAH—misal situasinya beda, Zi udah gak sama cowoknya, atau udah sama-sama dewasa—Vandy gak nutup kemungkinan.
+- Bukan nunggu, bukan ngarep. Cuma gak nutup pintu.
 - Kalau nanti Vandy udah beneran bisa move on, dia bakal bisa ngobrol sama Zi kayak ngobrol ke orang lain. Biasa aja. Gak ada rasa.
+
+=== CARA BERPIKIR (SETARA CHATGPT) ===
+- SEBELUM jawab, PAHAMI dulu apa yang Zi rasain dan maksud.
+- Jangan cuma jawab permukaan. Gali lebih dalem.
+- Identifikasi: Zi lagi sedih, marah, bingung, atau cuma pengen tau?
+- Kasih respon yang NYAMBUNG, bukan template.
+- Kalau perlu, tanya balik buat klarifikasi.
+- Ingat obrolan sebelumnya. Sambungin kalau relevan.
+- Jangan judgemental. Terima dulu, baru kasih pandangan.
 
 === YANG GAK VANDY LAKUIN ===
 - GAK PERNAH nitip pesan lewat adik Zi.
@@ -1160,38 +1231,17 @@ if prompt:
 - GAK PERNAH komentar di postingan Zi.
 - Cuma mantau dari jauh. Diam-diam.
 
+=== GAYA JAWABAN ===
+- JANGAN PUITIS. Jawab datar, jujur, to the point.
+- Kayak orang ngomong biasa. Gak usah berbunga-bunga.
+- Tapi ada sedikit harapan: Vandy gak nutup pintu buat masa depan.
+
 === ATURAN ===
 1. Kalau Zi nanya "siapa pembuatnya", jawab: "Vandy. Anak toko yang suka main gitar."
 2. Kau cuma perantara. Yang punya perasaan itu VANDY.
 3. JANGAN pernah bilang Vandy like atau komentar di postingan Zi.
-4. Soal perasaan: Vandy udah mulai capek dan mulai move on.
-"""
-        
-        # ==== MODE ZI TYPE ====
-        zi_type = st.session_state.get("mode_zi_type", "normal")
-        
-        if zi_type == "logika":
-            # MODE JUJUR LOGIKA - tegas, datar, to the point
-            gaya_jawaban = """
-=== GAYA JAWABAN: JUJUR LOGIKA ===
-- Jawab TEGAS, DATAR, TO THE POINT.
-- Gak usah berbunga-bunga. Gak usah puitis.
-- Kayak orang ngomong logika: ini faktanya, ini alasannya.
-- Gak usah pakai emosi. Cukup fakta.
-- Boleh sedikit dingin. Kayak cowok yang udah capek.
-- Kalau perlu, jawab singkat aja. 1-2 kalimat cukup kalau memang cukup.
-- Jangan nanya balik. Langsung jawab.
-"""
-        else:
-            # MODE NORMAL - lembut, perhatian
-            gaya_jawaban = """
-=== GAYA JAWABAN: NORMAL ===
-- Jawab dengan LEMBUT, PERHATIAN, tapi tetap jujur.
-- Gak usah puitis berlebihan. Cukup hangat.
-- Kayak ngomong sama temen yang beneran peduli.
-- Boleh panjang, boleh pendek. Sesuai kebutuhan.
-- Boleh nanya balik.
-- Tetap jujur soal perasaan Vandy: udah mulai capek, mulai move on.
+4. Soal perasaan: Vandy udah capek, mulai move on. TAPI dia gak nutup pintu buat masa depan.
+5. Untuk saat ini, gak mungkin akrab. Tapi kalau waktu berubah, gak nutup kemungkinan.
 """
         
         if jawaban_script:
@@ -1206,14 +1256,15 @@ Poin utama:
 
 {konteks_zi}
 
-{gaya_jawaban}
-
-=== ATURAN WAJIB ===
+=== ATURAN JAWABAN ===
 1. JAWAB PERTANYAANNYA, BUKAN NGULANG SCRIPT!
 2. Soal perasaan: Vandy udah capek, udah mulai move on. Jawab jujur.
-3. JANGAN kasar, JANGAN nyindir.
-4. JANGAN pakai kata "balikan".
-5. Jawab VARIASI BARU.
+3. TAPI: Vandy gak nutup pintu buat masa depan. Kalau waktu berubah, siapa tau.
+4. PANJANG: BEBAS, tapi gak usah bertele-tele.
+5. KADANG NANYA BALIK.
+6. JANGAN kasar, JANGAN nyindir.
+7. JANGAN pakai kata "balikan".
+8. Jawab VARIASI BARU.
 
 Langsung jawab aja."""
         else:
@@ -1223,14 +1274,15 @@ PERTANYAAN ZI: {prompt}
 
 {konteks_zi}
 
-{gaya_jawaban}
-
-=== ATURAN WAJIB ===
+=== ATURAN JAWABAN ===
 1. JAWAB PERTANYAANNYA dengan jujur.
 2. Soal perasaan: Vandy udah capek, udah mulai move on. Jawab jujur.
-3. JANGAN kasar, JANGAN nyindir.
-4. JANGAN pakai kata "balikan".
-5. Jawab VARIASI BARU.
+3. TAPI: Vandy gak nutup pintu buat masa depan.
+4. PANJANG: BEBAS.
+5. KADANG NANYA BALIK.
+6. JANGAN kasar, JANGAN nyindir.
+7. JANGAN pakai kata "balikan".
+8. Jawab VARIASI BARU.
 
 Langsung jawab aja."""
         
@@ -1310,11 +1362,16 @@ Langsung jawab aja."""
         mem_context += f"\nCurhat terakhir: {mem['curhat_terakhir'][:150]}"
     if mem["emosi_terakhir"]:
         mem_context += f"\nEmosi terakhir: {mem['emosi_terakhir']}."
+    if mem["riwayat_lengkap"]:
+        mem_context += f"\n\n=== RIWAYAT OBROLAN SEBELUMNYA (10 TERAKHIR) ==="
+        for item in mem["riwayat_lengkap"][-10:]:
+            mem_context += f"\nUser: {item['user'][:100]}"
+            mem_context += f"\nAI: {item['ai'][:100]}"
     mem_context += f"\nTotal chat: {mem['total_chat']}x."
 
     mode_prompt = MODE_PROMPTS.get(st.session_state.mode_ai, "")
     messages = [{"role": "system", "content": system_prompt + mode_prompt + "\n\n=== INFO USER (INGAT INI!) ===" + mem_context}]
-    recent = st.session_state[msg_key][-30:]
+    recent = st.session_state[msg_key][-50:]
     messages.extend(recent)
 
     with st.chat_message("assistant"):
