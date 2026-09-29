@@ -6,7 +6,7 @@ import random
 # ==== KONFIG ====
 st.set_page_config(page_title="Gawnan AI", page_icon="⚡", layout="centered")
 
-# ==== CSS TEMA CYBERPUNK PREMIUM + ANIMASI ====
+# ==== CSS TEMA CYBERPUNK PREMIUM ====
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
@@ -62,7 +62,6 @@ st.markdown("""
         50% { transform: translate(-50px, 50px) scale(1.2); }
     }
     
-    /* PARTIKEL */
     .particle {
         position: fixed;
         background: #00d4ff;
@@ -79,7 +78,6 @@ st.markdown("""
         100% { opacity: 0; transform: translateY(-100vh) scale(1); }
     }
     
-    /* SCANLINE */
     .scanline {
         position: fixed;
         top: 0;
@@ -145,7 +143,6 @@ st.markdown("""
         50% { opacity: 0.9; text-shadow: 0 0 20px rgba(0, 212, 255, 0.8); }
     }
     
-    /* MATA CYBER + GLITCH PETIR */
     .eye-container {
         position: fixed;
         top: 50%;
@@ -164,10 +161,7 @@ st.markdown("""
         border: 3px solid #00d4ff;
         border-radius: 25px;
         position: relative;
-        box-shadow: 
-            0 0 40px #00d4ff,
-            inset 0 0 40px rgba(0, 212, 255, 0.3),
-            0 0 80px rgba(0, 212, 255, 0.5);
+        box-shadow: 0 0 40px #00d4ff, inset 0 0 40px rgba(0, 212, 255, 0.3), 0 0 80px rgba(0, 212, 255, 0.5);
         animation: eyeBlinkGlitch 5s infinite;
     }
     @keyframes eyeBlinkGlitch {
@@ -199,7 +193,6 @@ st.markdown("""
         92% { background: radial-gradient(circle, #ffffff, #00d4ff); transform: translate(-50%, -50%) scale(1); }
     }
     
-    /* PETIR */
     .lightning {
         position: fixed;
         top: 0;
@@ -517,7 +510,7 @@ st.markdown(f"<div class='user-badge'>👤 {st.session_state.user_id}</div>", un
 if st.session_state.get("mode_zi", False):
     st.markdown("<div class='zi-mode'>👁️ MODE KHUSUS AKTIF 👁️</div>", unsafe_allow_html=True)
 
-# ==== TOMBOL MODE UTAMA ====
+# ==== TOMBOL MODE ====
 if "mode_ai" not in st.session_state:
     st.session_state.mode_ai = "default"
 
@@ -533,12 +526,11 @@ with mode_cols[1]:
 
 st.markdown(f"*Mode aktif: **{st.session_state.mode_ai.upper()}***")
 
-# ==== TOMBOL RANDOM PERTANYAAN ====
 if st.button("🎲 Kasih aku pertanyaan random", use_container_width=True):
     st.session_state.random_question = True
     st.rerun()
 
-# ==== MEMORI PER-USER ====
+# ==== MEMORI ====
 mem_key = f"memory_{st.session_state.user_id}"
 msg_key = f"messages_{st.session_state.user_id}"
 
@@ -755,172 +747,297 @@ Aku cuma perantara. Tugas aku di mode ini: jawab semua rasa penasaran kau—tent
 
 Tanyain aja. Aku jawab sejujur-jujurnya."""
 
-# ==== SCRIPT ZI (SEWAJARNYA) ====
+# ==== 500 SCRIPT ZI + AI NGARANG ====
 JAWABAN_ZI = {
-    "beneran": "Beneran, Zi.",
-    "siapa kamu": "Aku cuma perantara.",
-    "kok bisa tau": "Karena dia yang cerita.",
-    "masih mikirin": "Masih, Zi. Tapi sekarang udah beda. Dia masih inget kau, tapi dia gak mau berharap banyak. Dia cuma pengen kau tau, dia masih ada.",
-    "beneran sayang": "Masih ada rasa, Zi. Tapi dia gak mau maksa. Dia juga gak mau jadi orang ketiga.",
-    "kenapa gak bilang": "Karena dia takut salah paham lagi.",
-    "sekarang gimana": "Dia lagi fokus ke diri sendiri, Zi. Tapi dia masih ada kok. Kalau kau butuh, dia siap.",
-    "masih nunggu": "Enggak, Zi. Dia gak mau jadi orang ketiga. Tapi dia gak kemana-mana.",
-    "bakal balik": "Bukan soal balik, Zi. Dia cuma gak nutup pintu. Kalau nanti waktu berubah, siapa tau.",
-    "kecewa": "Kecewa iya. Tapi bukan benci.",
-    "aku salah": "Bukan soal salah atau bener, Zi. Dia gak pernah nyalahin kau.",
-    "benci": "Enggak. Dia gak pernah benci kau.",
-    "masih sedih": "Udah mulai mendingan, Zi. Tapi dia masih ada kok.",
-    "masih ada rasa": "Ada, Zi. Tapi dia gak mau maksa. Dia cuma pengen kau tau, dia masih ada.",
-    "harus gimana": "Terserah kau, Zi. Dia gak maksa.",
-    "masih pengen": "Masih, Zi. Tapi dia gak mau maksa. Dia cuma pengen kau tau.",
-    "capek nunggu": "Capek, Zi. Tapi dia gak mau bahas itu.",
-    "dia masih cinta": "Masih ada rasa, Zi. Tapi dia gak mau maksa.",
-    "dia sedih gak": "Udah mulai mendingan, Zi.",
-    "masih inget": "Masih. Sampai detail kecil. Dia masih inget semuanya.",
-    "inget momen": "Dia inget semuanya, Zi. Momen-momen kecil yang mungkin kau udah lupa.",
-    "inget kode": "Inget. Dia inget banget.",
-    "inget nolak": "Inget.",
-    "inget semua": "Semua, Zi.",
-    "nyesel": "Dia gak nyesel sayang kau, Zi.",
-    "inget cokelat": "Inget.",
-    "inget sragen": "Inget.",
-    "inget hp baru": "Inget.",
-    "inget chatgpt": "Inget.",
-    "akrab lagi": "Untuk saat ini, kayaknya belum bisa, Zi. Tapi dia gak nutup pintu kok. Kalau nanti waktu berubah, siapa tau. Yang jelas, dia masih ada buat kau.",
-    "buka pintu": "Dia gak nutup pintu, Zi. Tapi buat sekarang, belum bisa. Dia masih ada kok.",
-    "harapan": "Ada, tapi tipis, Zi. Dia gak mau berharap banyak.",
-    "kalau aku balik": "Dia gak nunggu, Zi. Tapi dia gak kemana-mana. Dia masih ada.",
-    "bakal nunggu": "Enggak, Zi. Dia gak mau jadi orang ketiga. Tapi dia gak kemana-mana.",
-    "dia bakal nunggu aku": "Enggak, Zi.",
-    "mulai dari awal": "Bisa, Zi. Tapi mungkin bukan sekarang.",
-    "kita bisa gak": "Untuk saat ini, kayaknya belum bisa, Zi. Tapi dia gak nutup pintu. Dia masih ada.",
-    "dia masih ada": "Masih, Zi. Dia masih ada buat kau.",
-    "dia masih tunggu": "Enggak, Zi.",
-    "masih ada waktu": "Ada, Zi. Tapi mungkin bukan sekarang.",
-    "ini beneran": "Iya, Zi.",
-    "jangan bohong": "Aku gak bohong, Zi.",
-    "settingan": "Bukan, Zi.",
-    "kamu ai": "Aku cuma perantara.",
-    "seriusan": "Serius, Zi.",
-    "ngarang": "Aku gak ngarang, Zi.",
-    "kamu siapa sebenernya": "Aku cuma perantara.",
-    "ini dari dia": "Iya, Zi.",
-    "dia beneran ada": "Ada, Zi. Dia beneran ada.",
-    "bukan prank": "Bukan, Zi.",
-    "harus peduli": "Kau gak harus peduli, Zi.",
-    "masa lalu": "Iya, masa lalu.",
-    "udah move on": "Kalau kau udah move on, bagus, Zi.",
-    "gak butuh": "Gapapa, Zi.",
-    "buat apa": "Karena dia pengen kau tau.",
-    "gak mau bahas": "Oke, Zi. Aku gak maksa.",
-    "aku gak peduli": "Gapapa, Zi.",
-    "udah lupa": "Kalau kau udah lupa, gak apa-apa, Zi.",
-    "gak penting": "Mungkin buat kau gak penting, Zi.",
-    "buang waktu": "Kalau kau ngerasa buang waktu, gak apa-apa, Zi.",
-    "kamu mau apa": "Dia gak mau apa-apa, Zi. Dia cuma pengen kau tau, dia masih ada.",
-    "tujuan": "Biar kau tau, Zi. Biar kau tau dia masih ada.",
-    "mau aku balik": "Bukan soal balik, Zi.",
-    "mau aku ngapain": "Gak ngapa-ngapain, Zi.",
-    "niat kamu apa": "Dia gak ada niat pacaran sama kau, Zi. Dia cuma pengen kau tau isi hatinya. Dan dia masih ada buat kau.",
-    "apa yang kamu minta": "Dia gak minta apa-apa, Zi.",
-    "pengen apa dari aku": "Cuma pengen kau tau. Gak lebih. Dia masih ada.",
-    "tujuan kamu apa": "Biar kau tau isi hati dia, Zi.",
-    "maksud kamu apa": "Aku cuma perantara, Zi.",
-    "apa maumu": "Dia gak mau pacaran sama kau, Zi.",
-    "dia siapa": "Dia orang biasa, Zi. Anak toko. Suka main gitar. Namanya Vandy.",
-    "pake perantara": "Karena dia takut.",
-    "gak berani": "Bukan gak berani, Zi.",
-    "gak capek": "Capek, Zi. Tapi bukan itu yang utama.",
-    "capek": "Capek, Zi. Dia capek nunggu, capek berharap.",
-    "dia capek": "Capek, Zi.",
-    "vandy capek": "Capek, Zi.",
+    # RASA PENASARAN
+    "beneran": "Beneran, Zi.", "seriusan": "Serius, Zi.", "ini beneran": "Iya, Zi.",
+    "jangan bohong": "Aku gak bohong, Zi.", "ngarang": "Aku gak ngarang, Zi.",
+    "kamu siapa": "Aku cuma perantara.", "siapa kamu": "Aku cuma perantara.",
+    "kamu siapa sebenernya": "Aku cuma perantara.", "kok bisa tau": "Karena dia yang cerita.",
+    "kok tau": "Karena dia yang cerita.", "gimana bisa tau": "Karena dia yang cerita.",
+    "deket sama dia": "Cukup deket buat tau isi hatinya.",
+    "dia siapa": "Vandy. Anak toko. Suka main gitar.", "siapa dia": "Vandy. Anak toko. Suka main gitar.",
+    "dia siapa sebenernya": "Vandy. Anak toko. Suka main gitar.",
     "siapa pembuat": "Vandy, Zi. Anak toko yang suka main gitar.",
     "pembuatnya siapa": "Vandy, Zi. Anak toko yang suka main gitar.",
     "siapa vandy": "Dia cowok biasa, Zi. Anak toko. Suka main gitar.",
-    "kenapa vandy bikin ini": "Karena dia pengen jawab rasa penasaran kau, Zi.",
     "vandy siapa": "Vandy itu cowok yang pernah sayang sama kau, Zi.",
-    "dia kerja dimana": "Dia anak toko, Zi.",
-    "dia suka apa": "Dia suka main gitar, Zi.",
+    "kenapa vandy bikin ini": "Karena dia pengen jawab rasa penasaran kau, Zi.",
+    "kenapa vandy bikin": "Karena dia pengen jawab rasa penasaran kau, Zi.",
+    "vandy bikin ini": "Karena dia pengen jawab rasa penasaran kau, Zi.",
+    "kenapa gak ngomong langsung": "Karena dia takut, Zi.",
+    "kenapa vandy gak ngomong": "Karena dia takut, Zi.",
+    "pake perantara": "Karena dia takut, Zi.", "kenapa perantara": "Karena dia takut, Zi.",
+    "gak berani": "Bukan gak berani, Zi. Dia cuma takut salah paham lagi.",
+    "gak berani ketemu": "Bukan gak berani, Zi. Dia cuma takut salah paham lagi.",
+    "tau aku gimana": "Dia gak tau, Zi.", "dia tau gak": "Dia gak tau, Zi.",
+    "tau aku masih suka": "Dia gak berani berharap, Zi.", "dia tau aku suka": "Dia gak berani berharap, Zi.",
+    "kecewa kalau nolak": "Dia udah siap, Zi.", "kalau aku nolak": "Dia udah siap, Zi.",
+    "kalau aku terima": "Kalau kau terima, dia bakal seneng, Zi. Tapi dia gak mau maksa.",
+    "kalau aku tolak": "Kalau kau tolak, dia bakal ngerti, Zi.",
+    "aku suka dia": "Kalau kau suka dia, bilang langsung, Zi.",
+    "gue suka dia": "Kalau kau suka dia, bilang langsung, Zi.",
+    "aku gak suka dia": "Kalau kau gak suka dia, bilang aja, Zi.",
+    "gue gak suka dia": "Kalau kau gak suka dia, bilang aja, Zi.",
+    "aku bingung": "Bingung itu wajar, Zi.", "gue bingung": "Bingung itu wajar, Zi.",
+    "aku takut": "Takut itu wajar, Zi.", "gue takut": "Takut itu wajar, Zi.",
+    "aku ragu": "Ragu itu wajar, Zi.", "gue ragu": "Ragu itu wajar, Zi.",
+    "dia kerja dimana": "Dia anak toko, Zi.", "kerja dimana": "Dia anak toko, Zi.",
+    "dia suka apa": "Dia suka main gitar, Zi.", "hobinya apa": "Dia suka main gitar, Zi.",
+    "dia hobinya apa": "Main gitar, Zi.", "hobi dia": "Main gitar, Zi.",
+    "dia suka musik apa": "Dia suka musik rock, Zi.", "musik favorit": "Dia suka musik rock, Zi.",
     "dia tinggal dimana": "Sekarang dia tinggal di Plumpang, Zi. Dulu dia sempet merantau ke Jakarta.",
     "tinggal dimana": "Plumpang, Zi. Dulu dia sempet merantau ke Jakarta.",
     "jakarta": "Itu dulu, Zi. Dia sempet merantau ke Jakarta. Sekarang dia tinggal di Plumpang.",
     "plumpang": "Iya, Zi. Sekarang dia tinggal di Plumpang.",
-    "dia umur berapa": "Masih muda, Zi.",
-    "kenapa dia pilih aku": "Dia juga gak tau, Zi.",
-    "kenapa vandy gak ngomong langsung": "Karena dia takut, Zi.",
-    "tau aku gimana": "Dia gak tau, Zi.",
-    "tau aku masih suka": "Dia gak berani berharap, Zi.",
-    "kecewa kalau nolak": "Dia udah siap, Zi.",
-    "kalau aku terima": "Kalau kau terima, dia bakal seneng, Zi. Tapi dia gak mau maksa.",
-    "kalau aku tolak": "Kalau kau tolak, dia bakal ngerti, Zi.",
-    "aku suka dia": "Kalau kau suka dia, bilang langsung, Zi.",
-    "aku gak suka dia": "Kalau kau gak suka dia, bilang aja, Zi.",
-    "aku bingung": "Bingung itu wajar, Zi.",
-    "aku takut": "Takut itu wajar, Zi.",
-    "aku ragu": "Ragu itu wajar, Zi.",
-    "salah paham apa": "Dia salah paham soal kode kau, Zi.",
-    "kenapa gak tanya": "Karena dia takut, Zi.",
-    "nyesel salah paham": "Nyesel, Zi.",
-    "takut jatuh cinta": "Dia udah terlalu takut jatuh cinta lagi, Zi.",
-    "gak tau kenapa": "Dia juga gak tau, Zi.",
-    "apa yang disuka": "Jujur, banyak, Zi. Dia suka cara kau ketawa, cara kau ngomong, cara kau peduli sama orang.",
-    "kenapa gak balas": "Dia gak mau nyakitin kau balik, Zi.",
-    "kesempatan": "Untuk saat ini, belum, Zi. Tapi dia gak nutup pintu buat masa depan. Yang jelas, dia masih ada.",
-    "cokelat": "Dia inget. Dia pernah beliin kau cokelat.",
-    "apa yang pernah dia lakuin": "Dia pernah nolak gaji gede, beli HP baru, belajar IG dari YouTube, langganan ChatGPT 1 bulan buat analisis gestur kau.",
-    "apa yang gak dia suka": "Setahuku, dia sangat membenci daging.",
-    "dia gak suka daging": "Iya, Zi. Dia benci daging.",
-    "dia suka makan apa": "Dia suka telur sama tempe, Zi.",
-    "dia bisa masak": "Bisa, Zi. Tapi mayoritas masakannya cuma telur atau tempe.",
-    "dia benci apa": "Setahuku, dia sangat membenci daging.",
-    "dia hobinya apa": "Main gitar, Zi.",
-    "dia suka musik apa": "Dia suka musik rock, Zi.",
-    "dia tiap malam ngapain": "Dia tiap malam hobi stalking kau, Zi. Pakai akun lain.",
-    "dia stalking aku": "Iya, Zi. Tiap malam. Pakai akun lain.",
-    "dia pantau aku": "Iya, Zi.",
-    "dia cek instagram aku": "Iya, Zi.",
-    "dia liat story aku": "Iya, Zi.",
-    "kalau aku post foto cowok": "Itu jadi bom yang menghancurkan dia, Zi.",
-    "kalau aku post cowok baru": "Itu jadi bom, Zi.",
-    "dia cemburu": "Masih, Zi. Tapi dia gak nunjukin.",
-    "cemburu": "Masih, Zi.",
-    "masih cemburu": "Masih, Zi.",
-    "dia masih cemburu": "Masih, Zi.",
-    "dia posesif": "Bukan posesif, Zi.",
-    "posesif": "Bukan posesif, Zi.",
-    "dia masih posesif": "Bukan, Zi.",
-    "dia masih peduli": "Masih, Zi. Tapi udah beda. Dia peduli sebagai teman.",
-    "dia masih perhatian": "Masih, Zi. Diam-diam.",
-    "masih perhatian": "Masih, Zi.",
-    "bikin dia luluh": "Baik ke adiknya, Zi. Itu ampuh.",
-    "cara bikin dia luluh": "Baik ke adiknya, Zi. Itu ampuh.",
-    "adiknya siapa": "Dia punya adik, Zi. Dia sayang banget sama adiknya.",
-    "dia sayang adiknya": "Iya, Zi. Dia sayang banget sama adiknya.",
-    "cara deketin dia": "Baik ke adiknya dulu, Zi.",
-    "cara tarik perhatian dia": "Baik ke adiknya, Zi.",
-    "dia bakal luluh gak": "Bakal, Zi. Asal kau sabar.",
-    "cara bikin dia percaya": "Jujur aja, Zi.",
-    "cara bikin dia seneng": "Baik ke adiknya, Zi.",
-    "dia suka apa dari cewek": "Dia suka cewek yang jujur, Zi.",
-    "dia masih cinta aku": "Masih ada rasa, Zi. Tapi dia gak mau maksa. Dia masih ada buat kau.",
-    "dia masih sayang aku": "Masih ada rasa, Zi.",
-    "dia masih ada rasa": "Ada, Zi. Tapi udah beda.",
-    "dia mau aku balik": "Dia gak nutup pintu, Zi. Tapi buat sekarang belum bisa.",
-    "dia pengen aku balik": "Dia gak nutup pintu, Zi.",
-    "dia masih pengen sama aku": "Masih, Zi. Tapi dia gak mau maksa.",
-    "dia masih buka pintu": "Masih, Zi. Tapi buat sekarang belum bisa.",
-    "dia benci aku gak": "Enggak. Dia gak pernah benci kau.",
-    "dia capek sama aku": "Capek, Zi.",
-    "dia masih sayang": "Masih ada rasa, Zi.",
-    "masih sayang": "Masih ada rasa, Zi. Tapi dia gak mau maksa.",
-    "masih cinta": "Masih ada rasa, Zi.",
-    "masih suka": "Masih, Zi. Tapi dia gak mau maksa. Dia masih ada buat kau.",
-    "suka": "Masih, Zi. Tapi udah beda.",
+    "dia umur berapa": "Masih muda, Zi.", "umurnya berapa": "Masih muda, Zi.",
+    "kenapa dia pilih aku": "Dia juga gak tau, Zi.", "kenapa pilih aku": "Dia juga gak tau, Zi.",
     "gak peka": "Itu karena Vandy belum pernah pacaran, Zi. Dulu dia cuma anak yang suka main sama teman, gak peduli cinta-cintaan. Lulus sekolah langsung merantau ke Jakarta cari pengalaman. Baru sekarang dia mikir soal cinta. Jadi kalau dia keliatan gak peka, itu karena dia belum pernah ngerasain.",
-    "vandy gak peka": "Itu karena Vandy belum pernah pacaran, Zi. Dulu dia cuma anak yang suka main sama teman, gak peduli cinta-cintaan. Lulus sekolah langsung merantau ke Jakarta cari pengalaman. Baru sekarang dia mikir soal cinta.",
+    "vandy gak peka": "Itu karena Vandy belum pernah pacaran, Zi. Dulu dia cuma anak yang suka main sama teman. Lulus sekolah langsung merantau ke Jakarta. Baru sekarang dia mikir soal cinta.",
     "kenapa gak peka": "Itu karena Vandy belum pernah pacaran, Zi. Dulu dia cuma anak yang suka main sama teman. Lulus sekolah langsung merantau ke Jakarta. Baru sekarang dia mikir soal cinta.",
     "dia belum pernah pacaran": "Iya, Zi. Vandy belum pernah pacaran. Dulu dia cuma anak yang suka main sama teman. Lulus sekolah langsung merantau ke Jakarta. Baru sekarang dia mikir soal cinta.",
     "belum pernah pacaran": "Iya, Zi. Vandy belum pernah pacaran.",
+    
+    # PERASAAN
+    "masih mikirin": "Masih, Zi. Tapi sekarang udah beda. Dia masih inget kau, tapi dia gak mau berharap banyak. Dia cuma pengen kau tau, dia masih ada.",
+    "masih mikir aku": "Masih, Zi. Tapi udah beda.", "masih kepikiran": "Masih, Zi. Tapi udah beda.",
+    "dia masih mikirin aku": "Masih, Zi. Tapi udah beda.", "dia masih mikirin": "Masih, Zi. Tapi udah beda.",
+    "beneran sayang": "Masih ada rasa, Zi. Tapi dia gak mau maksa. Dia juga gak mau jadi orang ketiga.",
+    "beneran cinta": "Masih ada rasa, Zi. Tapi dia gak mau maksa.",
+    "serius sayang": "Masih ada rasa, Zi.",
+    "masih suka": "Masih, Zi. Tapi dia gak mau maksa. Dia masih ada buat kau.",
+    "masih sayang": "Masih ada rasa, Zi. Tapi dia gak mau maksa.",
+    "masih cinta": "Masih ada rasa, Zi.", "suka": "Masih, Zi. Tapi udah beda.",
+    "cinta": "Masih ada rasa, Zi.", "sayang": "Masih ada rasa, Zi.",
+    "dia masih cinta": "Masih ada rasa, Zi. Tapi dia gak mau maksa.",
+    "dia masih sayang": "Masih ada rasa, Zi.",
+    "dia masih cinta aku": "Masih ada rasa, Zi. Tapi dia gak mau maksa. Dia masih ada buat kau.",
+    "dia masih sayang aku": "Masih ada rasa, Zi.",
+    "dia masih ada rasa": "Ada, Zi. Tapi udah beda.", "masih ada rasa": "Ada, Zi. Tapi udah beda.",
+    "masih ada perasaan": "Ada, Zi. Tapi udah beda.",
+    "kecewa": "Kecewa iya. Tapi bukan benci.", "kecewa ya": "Kecewa iya. Tapi bukan benci.",
+    "dia kecewa": "Kecewa iya. Tapi bukan benci.",
+    "benci": "Enggak. Dia gak pernah benci kau.", "benci aku": "Enggak. Dia gak pernah benci kau.",
+    "dia benci": "Enggak. Dia gak pernah benci kau.", "dia benci aku gak": "Enggak. Dia gak pernah benci kau.",
+    "masih sedih": "Udah mulai mendingan, Zi. Tapi dia masih ada kok.",
+    "sedih gak": "Udah mulai mendingan, Zi.", "dia sedih gak": "Udah mulai mendingan, Zi.",
+    "capek": "Capek, Zi. Dia capek nunggu, capek berharap.",
+    "capek nunggu": "Capek, Zi. Tapi dia gak mau bahas itu.", "dia capek": "Capek, Zi.",
+    "vandy capek": "Capek, Zi.", "gak capek": "Capek, Zi. Tapi bukan itu yang utama.",
+    "harus gimana": "Terserah kau, Zi. Dia gak maksa.", "aku harus": "Terserah kau, Zi.",
+    "gue harus": "Terserah kau, Zi.",
+    "aku salah": "Bukan soal salah atau bener, Zi. Dia gak pernah nyalahin kau.",
+    "salah ya": "Bukan soal salah atau bener, Zi.", "aku yang salah": "Bukan soal salah atau bener, Zi.",
+    "masih pengen": "Masih, Zi. Tapi dia gak mau maksa. Dia cuma pengen kau tau.",
+    "masih mau": "Masih, Zi. Tapi dia gak mau maksa.", "masih ngarep": "Masih, Zi. Tapi tipis.",
+    "dia masih pengen sama aku": "Masih, Zi. Tapi dia gak mau maksa.",
+    "sekarang gimana": "Dia lagi fokus ke diri sendiri, Zi. Tapi dia masih ada kok. Kalau kau butuh, dia siap.",
+    "dia gimana": "Dia lagi fokus ke diri sendiri, Zi.", "kabarnya gimana": "Dia lagi fokus ke diri sendiri, Zi.",
+    "masih nunggu": "Enggak, Zi. Dia gak mau jadi orang ketiga. Tapi dia gak kemana-mana.",
+    "masih tunggu": "Enggak, Zi. Dia gak mau jadi orang ketiga.", "dia masih tunggu": "Enggak, Zi.",
+    "bakal balik": "Bukan soal balik, Zi. Dia cuma gak nutup pintu. Kalau nanti waktu berubah, siapa tau.",
+    "bakal kembali": "Bukan soal balik, Zi. Dia cuma gak nutup pintu.",
+    "bakal nunggu": "Enggak, Zi. Dia gak mau jadi orang ketiga. Tapi dia gak kemana-mana.",
+    "bakal nungguin": "Enggak, Zi.", "dia bakal nunggu aku": "Enggak, Zi.",
+    "kenapa gak bilang": "Karena dia takut salah paham lagi.",
+    "kenapa gak langsung": "Karena dia takut salah paham lagi.",
+    "gak tau kenapa": "Dia juga gak tau, Zi.", "kok bisa": "Dia juga gak tau, Zi.",
+    "kenapa bisa cinta": "Dia juga gak tau, Zi.",
+    "apa yang disuka": "Jujur, banyak, Zi. Dia suka cara kau ketawa, cara kau ngomong, cara kau peduli sama orang.",
+    "apa yang kamu suka": "Jujur, banyak, Zi.", "suka dariku": "Jujur, banyak, Zi.",
+    "kenapa gak balas": "Dia gak mau nyakitin kau balik, Zi.",
+    "kenapa gak ngatain": "Dia gak mau nyakitin kau balik, Zi.",
+    "kenapa diam": "Dia gak mau nyakitin kau balik, Zi.",
+    "takut jatuh cinta": "Dia udah terlalu takut jatuh cinta lagi, Zi.",
+    "takut cinta lagi": "Dia udah terlalu takut jatuh cinta lagi, Zi.",
+    "takut kecewa": "Dia udah terlalu takut kecewa lagi, Zi.",
+    "salah paham apa": "Dia salah paham soal kode kau, Zi.", "salah paham": "Dia salah paham soal kode kau, Zi.",
+    "kenapa gak tanya": "Karena dia takut, Zi.", "gak tanya langsung": "Karena dia takut, Zi.",
+    "nyesel salah paham": "Nyesel, Zi.", "nyesel": "Dia gak nyesel sayang kau, Zi.",
+    "nyesel gak": "Dia gak nyesel sayang kau, Zi.",
+    "apa yang pernah dia lakuin": "Dia pernah nolak gaji gede, beli HP baru, belajar IG dari YouTube, langganan ChatGPT 1 bulan buat analisis gestur kau.",
+    "pernah dia lakuin": "Dia pernah nolak gaji gede, beli HP baru, belajar IG dari YouTube, langganan ChatGPT 1 bulan.",
+    "apa yang gak dia suka": "Setahuku, dia sangat membenci daging.",
+    "apa yang dia benci": "Setahuku, dia sangat membenci daging.",
+    "dia gak suka apa": "Setahuku, dia sangat membenci daging.",
+    "dia gak suka daging": "Iya, Zi. Dia benci daging.", "benci daging": "Iya, Zi. Dia benci daging.",
+    "daging": "Setahuku, dia sangat membenci daging.",
+    "dia suka makan apa": "Dia suka telur sama tempe, Zi.", "makanan favorit": "Dia suka telur sama tempe, Zi.",
+    "dia bisa masak": "Bisa, Zi. Tapi mayoritas masakannya cuma telur atau tempe.",
+    "masak": "Bisa, Zi. Tapi mayoritas masakannya cuma telur atau tempe.",
+    "dia benci apa": "Setahuku, dia sangat membenci daging.", "yang dia benci": "Setahuku, dia sangat membenci daging.",
+    "dia masih peduli": "Masih, Zi. Tapi udah beda. Dia peduli sebagai teman.",
+    "masih peduli": "Masih, Zi. Tapi udah beda.",
+    "dia masih perhatian": "Masih, Zi. Diam-diam.", "masih perhatian": "Masih, Zi.",
+    "dia masih cemburu": "Masih, Zi. Tapi dia gak nunjukin.", "masih cemburu": "Masih, Zi.",
+    "cemburu": "Masih, Zi.", "cemburu gak": "Masih, Zi.", "dia cemburu": "Masih, Zi.",
+    "dia masih posesif": "Bukan posesif, Zi.", "masih posesif": "Bukan, Zi.",
+    "posesif": "Bukan posesif, Zi.", "posesif gak": "Bukan, Zi.", "dia posesif": "Bukan posesif, Zi.",
+    "dia masih sayang": "Masih ada rasa, Zi.", "dia masih cinta": "Masih ada rasa, Zi.",
+    "dia masih mikirin": "Masih, Zi. Tapi udah beda.",
+    "dia masih ada": "Masih, Zi. Dia masih ada buat kau.", "masih ada gak": "Masih, Zi.",
+    "dia masih buka pintu": "Masih, Zi. Tapi buat sekarang belum bisa.",
+    "masih buka pintu": "Masih, Zi. Tapi buat sekarang belum bisa.",
+    "masih buka": "Masih, Zi. Tapi buat sekarang belum bisa.",
+    "dia mau aku balik": "Dia gak nutup pintu, Zi. Tapi buat sekarang belum bisa.",
+    "mau aku balik": "Bukan soal balik, Zi.", "aku balik gak": "Bukan soal balik, Zi.",
+    "dia pengen aku balik": "Dia gak nutup pintu, Zi.", "pengen aku balik": "Dia gak nutup pintu, Zi.",
+    "dia masih pengen sama aku": "Masih, Zi. Tapi dia gak mau maksa.",
+    "masih pengen sama aku": "Masih, Zi. Tapi dia gak mau maksa.",
+    "dia capek sama aku": "Capek, Zi.", "capek sama aku": "Capek, Zi.",
+    
+    # KENANGAN
+    "masih inget": "Masih. Sampai detail kecil. Dia masih inget semuanya.",
+    "inget aku": "Masih, Zi. Sampai detail kecil.", "masih inget aku": "Masih, Zi. Sampai detail kecil.",
+    "inget momen": "Dia inget semuanya, Zi. Momen-momen kecil yang mungkin kau udah lupa.",
+    "momen apa": "Dia inget semuanya, Zi.", "kenangan apa": "Dia inget semuanya, Zi.",
+    "inget kode": "Inget. Dia inget banget.", "kasih kode": "Inget. Dia inget banget.",
+    "kode dari aku": "Inget.", "inget nolak": "Inget.", "nolak aku": "Inget.", "aku nolak": "Inget.",
+    "inget semua": "Semua, Zi.", "inget semuanya": "Semua, Zi.",
+    "inget cokelat": "Inget. Dia pernah beliin kau cokelat.", "cokelat": "Dia inget. Dia pernah beliin kau cokelat.",
+    "coklat": "Dia inget. Dia pernah beliin kau cokelat.",
+    "inget sragen": "Inget.", "sragen": "Inget.",
+    "inget hp baru": "Inget. Dia beli HP baru cuma buat DM kau.", "hp baru": "Inget.",
+    "inget chatgpt": "Inget. Dia langganan ChatGPT 1 bulan buat analisis gestur kau.",
+    "chatgpt": "Inget.", "chat gpt": "Inget.",
+    "inget jakarta": "Inget. Dia sempet merantau ke Jakarta, Zi.",
+    "jakarta": "Itu dulu, Zi. Dia sempet merantau ke Jakarta. Sekarang dia tinggal di Plumpang.",
+    "plumpang": "Iya, Zi. Sekarang dia tinggal di Plumpang.",
+    "inget plumpang": "Iya, Zi. Sekarang dia tinggal di Plumpang.",
+    "dia masih inget aku": "Masih, Zi. Sampai detail kecil.", "masih inget momen": "Masih, Zi.",
+    "inget waktu": "Dia inget semuanya, Zi.", "inget kejadian": "Dia inget semuanya, Zi.",
+    "inget pertemuan": "Dia inget semuanya, Zi.", "inget pertama": "Dia inget semuanya, Zi.",
+    "inget jualan es": "Inget. Dia masih inget kau jualan es.", "jualan es": "Inget.",
+    "inget ramah": "Inget. Dia masih inget kau ramah ke dia waktu jualan es.", "ramah": "Inget.",
+    "inget senyum": "Inget. Dia masih inget senyum kau.", "senyum": "Inget.",
+    "inget ketawa": "Inget.", "ketawa": "Inget.", "inget suara": "Inget.", "suara": "Inget.",
+    "inget muka": "Inget.", "muka": "Inget.", "inget mata": "Inget.", "mata": "Inget.",
+    "inget rambut": "Inget.", "rambut": "Inget.", "inget baju": "Inget.", "baju": "Inget.",
+    "inget style": "Inget.", "style": "Inget.", "inget gaya": "Inget.", "gaya": "Inget.",
+    "inget kebiasaan": "Inget. Sampai detail kecil.", "kebiasaan": "Inget.",
+    "inget sifat": "Inget.", "sifat": "Inget.",
+    "inget kepribadian": "Inget.", "kepribadian": "Inget.",
+    "inget hal kecil": "Inget. Sampai detail terkecil.", "hal kecil": "Inget.",
+    "inget obrolan": "Inget.", "obrolan": "Inget.", "inget chat": "Inget.", "chat": "Inget.",
+    "inget dm": "Inget.", "dm": "Inget.", "inget story": "Inget.", "story": "Inget.",
+    "inget post": "Inget.", "post": "Inget.", "inget foto": "Inget.", "foto": "Inget.",
+    "inget video": "Inget.", "video": "Inget.", "inget lagu": "Inget.", "lagu": "Inget.",
+    "inget musik": "Inget.", "musik": "Inget.", "inget film": "Inget.", "film": "Inget.",
+    "inget tempat": "Inget.", "tempat": "Inget.",
+    "inget cafe": "Inget. Tapi kalian gak pernah ke cafe bareng.", "cafe": "Inget. Tapi kalian gak pernah ke cafe bareng.",
+    "inget jalan": "Inget. Tapi kalian gak pernah jalan bareng.", "jalan bareng": "Kalian gak pernah jalan bareng, Zi.",
+    "vhm": "Kalian gak pernah VHM bareng, Zi.", "inget vhm": "Kalian gak pernah VHM bareng, Zi.",
+    "pernah jalan bareng": "Enggak, Zi. Kalian gak pernah jalan bareng.",
+    "pernah cafe": "Enggak, Zi. Kalian gak pernah ke cafe bareng.",
+    "pernah vhm": "Enggak, Zi. Kalian gak pernah VHM bareng.",
+    
+    # MASA DEPAN
+    "akrab lagi": "Untuk saat ini, kayaknya belum bisa, Zi. Tapi dia gak nutup pintu kok. Kalau nanti waktu berubah, siapa tau. Yang jelas, dia masih ada buat kau.",
+    "akrab gak": "Untuk saat ini, kayaknya belum bisa, Zi.", "bisa akrab": "Untuk saat ini, kayaknya belum bisa, Zi.",
+    "harapan": "Ada, tapi tipis, Zi. Dia gak mau berharap banyak.", "ada harapan": "Ada, tapi tipis, Zi.",
+    "dia masih ada harapan": "Ada, tapi tipis, Zi.",
+    "kalau aku balik": "Dia gak nunggu, Zi. Tapi dia gak kemana-mana. Dia masih ada.",
+    "mulai dari awal": "Bisa, Zi. Tapi mungkin bukan sekarang.", "dari awal": "Bisa, Zi. Tapi mungkin bukan sekarang.",
+    "kita bisa gak": "Untuk saat ini, kayaknya belum bisa, Zi. Tapi dia gak nutup pintu. Dia masih ada.",
+    "bisa gak kita": "Untuk saat ini, kayaknya belum bisa, Zi.",
+    "masih ada waktu": "Ada, Zi. Tapi mungkin bukan sekarang.", "ada waktu gak": "Ada, Zi. Tapi mungkin bukan sekarang.",
+    "kesempatan": "Untuk saat ini, belum, Zi. Tapi dia gak nutup pintu buat masa depan. Yang jelas, dia masih ada.",
+    "kasih jalan": "Untuk saat ini, belum, Zi.",
+    "buka pintu": "Dia gak nutup pintu, Zi. Tapi buat sekarang, belum bisa. Dia masih ada kok.",
+    "masih buka pintu": "Masih, Zi. Tapi buat sekarang belum bisa.",
+    "dia masih ada": "Masih, Zi. Dia masih ada buat kau.", "masih ada": "Masih, Zi.",
+    "dia masih ada buat aku": "Masih, Zi.", "dia masih ada gak": "Masih, Zi.",
+    "dia masih ada buat aku gak": "Masih, Zi.", "masih ada buat aku": "Masih, Zi.",
+    "kapan bisa akrab": "Belum tau, Zi. Tapi dia gak nutup pintu.",
+    "kapan bisa deket": "Belum tau, Zi. Tapi dia gak nutup pintu.",
+    "kapan bisa ngobrol": "Belum tau, Zi. Tapi dia gak nutup pintu.",
+    "kapan bisa balik": "Bukan soal balik, Zi.", "kapan bisa bersama": "Belum tau, Zi.",
+    "kapan bisa sama": "Belum tau, Zi.", "kapan bisa deketin": "Belum tau, Zi.",
+    "kapan bisa temenan": "Belum tau, Zi. Tapi dia gak nutup pintu.",
+    "kapan bisa temen": "Belum tau, Zi.", "kapan bisa akrab lagi": "Belum tau, Zi. Tapi dia gak nutup pintu.",
+    "kapan bisa ngobrol lagi": "Belum tau, Zi.", "kapan bisa deket lagi": "Belum tau, Zi.",
+    "kapan bisa balik lagi": "Bukan soal balik, Zi.", "kapan bisa sama lagi": "Belum tau, Zi.",
+    "kapan bisa bareng": "Belum tau, Zi.", "kapan bisa bareng lagi": "Belum tau, Zi.",
+    "kapan bisa jalan": "Belum tau, Zi.", "kapan bisa jalan bareng": "Belum tau, Zi.",
+    "kapan bisa cafe": "Belum tau, Zi.", "kapan bisa vhm": "Belum tau, Zi.",
+    "kapan bisa ketemu": "Belum tau, Zi.", "kapan bisa ketemu lagi": "Belum tau, Zi.",
+    "kapan bisa jumpa": "Belum tau, Zi.", "kapan bisa ngobrol baik": "Belum tau, Zi. Tapi dia gak nutup pintu.",
+    "kapan bisa komunikasi baik": "Belum tau, Zi. Tapi dia gak nutup pintu.",
+    "kapan bisa komunikasi": "Belum tau, Zi.", "kapan bisa ngobrol biasa": "Belum tau, Zi.",
+    "kapan bisa temenan biasa": "Belum tau, Zi.", "kapan bisa biasa": "Belum tau, Zi.",
+    "kapan bisa normal": "Belum tau, Zi.", "kapan bisa kayak dulu": "Belum tau, Zi.",
+    "kapan bisa kayak temen": "Belum tau, Zi.", "kapan bisa kayak biasa": "Belum tau, Zi.",
+    "kapan bisa baik": "Belum tau, Zi.", "kapan bisa deket": "Belum tau, Zi.",
+    "kapan bisa deket lagi": "Belum tau, Zi.", "kapan bisa akrab": "Belum tau, Zi.",
+    "kapan bisa temenan lagi": "Belum tau, Zi.", "kapan bisa ngobrol baik lagi": "Belum tau, Zi.",
+    "kapan bisa komunikasi baik lagi": "Belum tau, Zi.", "kapan bisa kayak temen lagi": "Belum tau, Zi.",
+    "kapan bisa kayak biasa lagi": "Belum tau, Zi.", "kapan bisa normal lagi": "Belum tau, Zi.",
+    "kapan bisa baik lagi": "Belum tau, Zi.", "kapan bisa deketin lagi": "Belum tau, Zi.",
+    
+    # CURIGA
+    "settingan": "Bukan, Zi.", "settingan ya": "Bukan, Zi.",
+    "kamu ai": "Aku cuma perantara.", "ai ya": "Aku cuma perantara.", "kamu robot": "Aku cuma perantara.",
+    "ini dari dia": "Iya, Zi.", "dari dia ya": "Iya, Zi.",
+    "dia beneran ada": "Ada, Zi. Dia beneran ada.", "beneran ada": "Ada, Zi.",
+    "bukan prank": "Bukan, Zi.", "prank ya": "Bukan, Zi.", "prank": "Bukan, Zi.",
+    "ini bohong": "Enggak, Zi. Aku gak bohong.", "bohong": "Aku gak bohong, Zi.", "bohong gak": "Aku gak bohong, Zi.",
+    "jujur": "Aku jujur, Zi.", "serius": "Serius, Zi.", "bener": "Bener, Zi.", "beneran": "Beneran, Zi.",
+    "yakin": "Yakin, Zi.", "yakin gak": "Yakin, Zi.", "yakin banget": "Yakin, Zi.",
+    "percaya": "Percaya, Zi.", "percaya gak": "Percaya, Zi.", "harus percaya": "Terserah kau, Zi.",
+    "kenapa aku harus percaya": "Karena ini beneran, Zi.",
+    "bukti": "Gak ada bukti fisik, Zi. Tapi ini beneran.",
+    "bukti apa": "Gak ada bukti fisik, Zi. Tapi ini beneran.",
+    "mana buktinya": "Gak ada bukti fisik, Zi. Tapi ini beneran.",
+    "buktinya": "Gak ada bukti fisik, Zi.",
+    
+    # MALU / DEFENSIF
+    "harus peduli": "Kau gak harus peduli, Zi.", "kenapa aku peduli": "Kau gak harus peduli, Zi.",
+    "masa lalu": "Iya, masa lalu.", "udah lewat": "Iya, udah lewat.",
+    "udah move on": "Kalau kau udah move on, bagus, Zi.", "aku move on": "Kalau kau udah move on, bagus, Zi.",
+    "gak butuh": "Gapapa, Zi.", "gak butuh dia": "Gapapa, Zi.",
+    "buat apa": "Karena dia pengen kau tau.", "buat apa bahas": "Karena dia pengen kau tau.",
+    "gak mau bahas": "Oke, Zi. Aku gak maksa.", "gak mau denger": "Oke, Zi. Aku gak maksa.",
+    "aku gak peduli": "Gapapa, Zi.", "gue gak peduli": "Gapapa, Zi.",
+    "udah lupa": "Kalau kau udah lupa, gak apa-apa, Zi.", "gue udah lupa": "Kalau kau udah lupa, gak apa-apa, Zi.",
+    "gak penting": "Mungkin buat kau gak penting, Zi.", "gak penting lah": "Mungkin buat kau gak penting, Zi.",
+    "buang waktu": "Kalau kau ngerasa buang waktu, gak apa-apa, Zi.", "buang waktu aja": "Kalau kau ngerasa buang waktu, gak apa-apa, Zi.",
+    "males": "Gapapa, Zi.", "males bahas": "Gapapa, Zi.", "gak minat": "Gapapa, Zi.",
+    "gak minat bahas": "Gapapa, Zi.", "gak tertarik": "Gapapa, Zi.",
+    "gak tertarik bahas": "Gapapa, Zi.", "gak ada waktu": "Gapapa, Zi.",
+    "sibuk": "Gapapa, Zi.", "lagi sibuk": "Gapapa, Zi.", "lagi capek": "Gapapa, Zi.",
+    "lagi males": "Gapapa, Zi.", "lagi gak mood": "Gapapa, Zi.", "gak mood": "Gapapa, Zi.",
+    "gak mood bahas": "Gapapa, Zi.", "gak pengen bahas": "Oke, Zi. Aku gak maksa.",
+    "gak pengen denger": "Oke, Zi. Aku gak maksa.", "gak perlu": "Gapapa, Zi.",
+    "gak perlu bahas": "Gapapa, Zi.", "gak usah": "Gapapa, Zi.",
+    "gak usah bahas": "Gapapa, Zi.", "gak usah denger": "Gapapa, Zi.",
+    "skip": "Gapapa, Zi.", "skip aja": "Gapapa, Zi.", "skip bahas": "Gapapa, Zi.",
+    "next": "Gapapa, Zi.", "next aja": "Gapapa, Zi.", "next bahas": "Gapapa, Zi.",
+    "ganti topik": "Gapapa, Zi.", "ganti topik aja": "Gapapa, Zi.",
+    "ganti bahasan": "Gapapa, Zi.", "ganti bahasan aja": "Gapapa, Zi.",
+    
+    # LANGSUNG KE INTI
+    "kamu mau apa": "Dia gak mau apa-apa, Zi. Dia cuma pengen kau tau, dia masih ada.",
+    "kamu mau apa dari aku": "Dia gak mau apa-apa, Zi. Dia cuma pengen kau tau, dia masih ada.",
+    "tujuan": "Biar kau tau, Zi. Biar kau tau dia masih ada.",
+    "tujuan kamu": "Biar kau tau, Zi.", "tujuan kamu apa": "Biar kau tau isi hati dia, Zi.",
+    "mau aku balik": "Bukan soal balik, Zi.", "mau aku ngapain": "Gak ngapa-ngapain, Zi.",
+    "aku ngapain": "Gak ngapa-ngapain, Zi.",
+    "niat kamu apa": "Dia gak ada niat pacaran sama kau, Zi. Dia cuma pengen kau tau isi hatinya. Dan dia masih ada buat kau.",
+    "niat kamu sama aku": "Dia gak ada niat pacaran sama kau, Zi.",
+    "apa yang kamu minta": "Dia gak minta apa-apa, Zi.", "kamu minta apa": "Dia gak minta apa-apa, Zi.",
+    "pengen apa dari aku": "Cuma pengen kau tau. Gak lebih. Dia masih ada.",
+    "kamu pengen apa": "Cuma pengen kau tau, Zi.", "maksud kamu apa": "Aku cuma perantara, Zi.",
+    "apa maumu": "Dia gak mau pacaran sama kau, Zi.", "apa mau kamu": "Dia gak mau pacaran sama kau, Zi.",
+    "kamu mau aku gimana": "Terserah kau, Zi.", "kamu mau aku ngapain": "Gak ngapa-ngapain, Zi.",
+    "kamu mau aku balik": "Bukan soal balik, Zi.", "kamu pengen aku balik": "Dia gak nutup pintu, Zi.",
+    "kamu pengen aku gimana": "Terserah kau, Zi.", "kamu pengen aku ngapain": "Gak ngapa-ngapain, Zi.",
+    "kamu masih pengen aku": "Masih, Zi. Tapi dia gak mau maksa.",
+    "kamu masih cinta aku": "Masih ada rasa, Zi.", "kamu masih sayang aku": "Masih ada rasa, Zi.",
+    "kamu masih mikirin aku": "Masih, Zi. Tapi udah beda.", "kamu masih nunggu aku": "Enggak, Zi.",
+    "kamu masih ada buat aku": "Masih, Zi. Dia masih ada.", "kamu masih ada gak": "Masih, Zi.",
+    "kamu masih ada buat aku gak": "Masih, Zi.", "kamu masih ada": "Masih, Zi.",
+    
+    # DEFAULT
     "default": """Oke, Zi. Aku jawab sejujurnya.
 
 Vandy masih ada rasa sama kau. Tapi dia gak mau maksa. Dia juga gak mau jadi orang ketiga, karena kau udah punya cowok.
@@ -932,137 +1049,88 @@ Yang jelas, dia masih ada buat kau. Kalau kau butuh, dia siap.
 Itu aja."""
 }
 
-# ==== MAP DETEKSI KEYWORD ====
+# ==== MAP DETEKSI ====
 SCRIPT_MAP = [
-    (["siapa pembuat", "siapa yang buat", "siapa yang bikin", "pembuatnya siapa"], "siapa pembuat"),
-    (["pembuatnya siapa"], "pembuatnya siapa"),
-    (["siapa vandy", "vandy siapa"], "vandy siapa"),
+    (["siapa pembuat", "pembuatnya siapa"], "siapa pembuat"),
+    (["siapa vandy", "vandy siapa"], "siapa vandy"),
     (["kenapa vandy bikin", "vandy bikin ini"], "kenapa vandy bikin ini"),
-    (["kenapa vandy gak ngomong"], "kenapa vandy gak ngomong langsung"),
-    (["gak peka", "vandy gak peka", "kenapa gak peka"], "gak peka"),
-    (["belum pernah pacaran", "dia belum pernah pacaran"], "dia belum pernah pacaran"),
-    (["jakarta"], "jakarta"),
-    (["plumpang"], "plumpang"),
-    (["tinggal dimana", "dia tinggal dimana"], "dia tinggal dimana"),
-    (["dia siapa", "dia siapa sebenernya", "siapa dia"], "dia siapa"),
-    (["dia tiap malam ngapain", "tiap malam ngapain"], "dia tiap malam ngapain"),
-    (["dia stalking aku", "stalking aku"], "dia stalking aku"),
-    (["dia pantau aku", "pantau aku"], "dia pantau aku"),
-    (["dia cek instagram aku", "cek ig aku", "cek instagram"], "dia cek instagram aku"),
-    (["dia liat story aku", "liat story"], "dia liat story aku"),
-    (["kalau aku post foto cowok", "post foto cowok"], "kalau aku post foto cowok"),
-    (["kalau aku post cowok baru"], "kalau aku post cowok baru"),
-    (["dia cemburu", "cemburu gak", "masih cemburu"], "dia cemburu"),
-    (["dia posesif", "posesif gak", "masih posesif"], "dia posesif"),
-    (["dia masih peduli", "masih peduli"], "dia masih peduli"),
+    (["gak peka", "kenapa gak peka"], "gak peka"),
+    (["belum pernah pacaran"], "dia belum pernah pacaran"),
+    (["jakarta"], "jakarta"), (["plumpang"], "plumpang"),
+    (["dia siapa", "siapa dia"], "dia siapa"),
+    (["stalking", "pantau", "cek ig"], "dia stalking aku"),
+    (["post foto cowok"], "kalau aku post foto cowok"),
+    (["cemburu"], "dia cemburu"), (["posesif"], "dia posesif"),
+    (["peduli"], "dia masih peduli"), (["perhatian"], "dia masih perhatian"),
     (["bikin dia luluh", "cara bikin dia luluh"], "bikin dia luluh"),
-    (["adiknya siapa", "adik dia"], "adiknya siapa"),
-    (["dia sayang adiknya", "sayang adik"], "dia sayang adiknya"),
-    (["cara deketin dia", "deketin dia"], "cara deketin dia"),
-    (["cara tarik perhatian dia"], "cara tarik perhatian dia"),
-    (["dia bakal luluh gak"], "dia bakal luluh gak"),
-    (["cara bikin dia percaya"], "cara bikin dia percaya"),
-    (["cara bikin dia seneng"], "cara bikin dia seneng"),
-    (["dia suka apa dari cewek"], "dia suka apa dari cewek"),
-    (["apa yang gak dia suka", "apa yang dia benci", "dia gak suka apa"], "apa yang gak dia suka"),
-    (["dia gak suka daging", "benci daging", "daging"], "dia gak suka daging"),
-    (["dia suka makan apa", "makanan favorit"], "dia suka makan apa"),
-    (["dia bisa masak", "masak"], "dia bisa masak"),
-    (["dia benci apa", "yang dia benci"], "dia benci apa"),
-    (["dia hobinya apa", "hobi dia"], "dia hobinya apa"),
-    (["dia suka musik apa", "musik favorit"], "dia suka musik apa"),
-    (["vandy capek", "dia capek"], "vandy capek"),
-    (["dia kerja dimana", "kerja dimana"], "dia kerja dimana"),
-    (["dia suka apa", "hobinya apa"], "dia suka apa"),
-    (["dia umur berapa", "umurnya berapa"], "dia umur berapa"),
-    (["kenapa dia pilih aku", "kenapa pilih aku"], "kenapa dia pilih aku"),
-    (["ini beneran", "beneran gak", "beneran kah"], "beneran"),
-    (["kamu siapa", "siapa kamu", "kamu siapa sebenernya"], "siapa kamu"),
-    (["kok bisa tau", "kok tau", "gimana bisa tau"], "kok bisa tau"),
-    (["masih mikirin", "masih mikir aku", "masih kepikiran", "dia masih mikirin aku"], "masih mikirin"),
-    (["beneran sayang", "beneran cinta", "serius sayang"], "beneran sayang"),
+    (["adiknya", "adik dia"], "adiknya siapa"),
+    (["deketin dia"], "cara deketin dia"),
+    (["luluh gak"], "dia bakal luluh gak"),
+    (["gak suka daging", "benci daging", "daging"], "dia gak suka daging"),
+    (["suka makan apa", "makanan favorit"], "dia suka makan apa"),
+    (["bisa masak"], "dia bisa masak"), (["hobinya apa", "hobi dia"], "dia hobinya apa"),
+    (["musik apa", "musik favorit"], "dia suka musik apa"),
+    (["vandy capek"], "vandy capek"), (["kerja dimana"], "dia kerja dimana"),
+    (["tinggal dimana"], "dia tinggal dimana"), (["umur berapa", "umurnya"], "dia umur berapa"),
+    (["pilih aku"], "kenapa dia pilih aku"),
+    (["beneran", "beneran gak"], "beneran"), (["seriusan", "serius gak"], "seriusan"),
+    (["ini beneran"], "ini beneran"), (["jangan bohong"], "jangan bohong"),
+    (["ngarang"], "ngarang"), (["kamu siapa", "siapa kamu"], "kamu siapa"),
+    (["kok bisa tau"], "kok bisa tau"), (["deket sama dia"], "deket sama dia"),
+    (["masih mikirin", "masih mikir aku"], "masih mikirin"),
+    (["beneran sayang", "beneran cinta"], "beneran sayang"),
     (["kenapa gak bilang", "kenapa gak langsung"], "kenapa gak bilang"),
-    (["sekarang gimana", "dia gimana", "kabarnya gimana"], "sekarang gimana"),
+    (["sekarang gimana", "dia gimana"], "sekarang gimana"),
     (["masih nunggu", "masih tunggu"], "masih nunggu"),
-    (["bakal balik", "bakal kembali"], "bakal balik"),
-    (["kecewa", "kecewa ya", "dia kecewa"], "kecewa"),
-    (["aku salah", "salah ya"], "aku salah"),
-    (["benci", "benci aku", "dia benci"], "benci"),
+    (["bakal balik"], "bakal balik"), (["kecewa"], "kecewa"),
+    (["aku salah", "salah ya"], "aku salah"), (["benci"], "benci"),
     (["masih sedih", "sedih gak"], "masih sedih"),
-    (["masih ada rasa", "masih ada perasaan", "dia masih ada rasa"], "masih ada rasa"),
+    (["masih ada rasa", "masih ada perasaan"], "masih ada rasa"),
     (["harus gimana", "aku harus"], "harus gimana"),
-    (["masih pengen", "masih mau", "masih ngarep", "dia masih pengen sama aku"], "masih pengen"),
+    (["masih pengen", "masih mau"], "masih pengen"),
     (["capek nunggu", "capek gak"], "capek nunggu"),
-    (["dia masih cinta", "masih cinta gak", "dia masih cinta aku"], "dia masih cinta"),
-    (["dia sedih gak", "sedih gak dia"], "dia sedih gak"),
-    (["masih inget", "inget aku"], "masih inget"),
-    (["inget momen", "momen apa", "kenangan apa"], "inget momen"),
-    (["inget kode", "kasih kode"], "inget kode"),
-    (["inget nolak", "nolak aku"], "inget nolak"),
-    (["inget semua", "inget semuanya"], "inget semua"),
-    (["nyesel", "nyesel gak"], "nyesel"),
-    (["inget cokelat", "cokelat", "coklat"], "inget cokelat"),
-    (["inget sragen", "sragen"], "inget sragen"),
-    (["inget hp baru", "hp baru"], "inget hp baru"),
-    (["inget chatgpt", "chatgpt", "chat gpt"], "inget chatgpt"),
-    (["akrab lagi", "akrab gak", "bisa akrab"], "akrab lagi"),
-    (["buka pintu", "masih buka", "dia masih buka pintu"], "buka pintu"),
-    (["harapan", "ada harapan", "dia masih ada harapan"], "harapan"),
-    (["kalau aku balik", "aku balik"], "kalau aku balik"),
-    (["bakal nunggu", "bakal nungguin", "dia bakal nunggu aku"], "bakal nunggu"),
-    (["mulai dari awal", "dari awal"], "mulai dari awal"),
-    (["kita bisa gak", "bisa gak kita"], "kita bisa gak"),
-    (["dia masih ada", "masih ada gak"], "dia masih ada"),
-    (["dia masih tunggu", "masih tunggu gak"], "dia masih tunggu"),
+    (["dia masih cinta", "masih cinta gak"], "dia masih cinta"),
+    (["dia sedih gak"], "dia sedih gak"), (["masih inget", "inget aku"], "masih inget"),
+    (["inget momen", "momen apa"], "inget momen"), (["inget kode"], "inget kode"),
+    (["inget nolak"], "inget nolak"), (["inget semua"], "inget semua"),
+    (["nyesel"], "nyesel"), (["inget cokelat", "cokelat"], "inget cokelat"),
+    (["inget sragen", "sragen"], "inget sragen"), (["inget hp baru", "hp baru"], "inget hp baru"),
+    (["inget chatgpt", "chatgpt"], "inget chatgpt"),
+    (["akrab lagi", "akrab gak"], "akrab lagi"), (["buka pintu", "masih buka"], "buka pintu"),
+    (["harapan"], "harapan"), (["kalau aku balik", "aku balik"], "kalau aku balik"),
+    (["bakal nunggu"], "bakal nunggu"), (["mulai dari awal", "dari awal"], "mulai dari awal"),
+    (["kita bisa gak"], "kita bisa gak"), (["dia masih ada", "masih ada gak"], "dia masih ada"),
     (["masih ada waktu", "ada waktu gak"], "masih ada waktu"),
-    (["ini beneran", "beneran gak"], "ini beneran"),
-    (["jangan bohong", "bohong gak"], "jangan bohong"),
-    (["settingan", "settingan ya"], "settingan"),
-    (["kamu ai", "ai ya", "kamu robot"], "kamu ai"),
-    (["seriusan", "serius gak"], "seriusan"),
-    (["ngarang", "ngegarang"], "ngarang"),
-    (["kamu siapa sebenernya"], "kamu siapa sebenernya"),
-    (["ini dari dia", "dari dia ya"], "ini dari dia"),
-    (["dia beneran ada", "beneran ada"], "dia beneran ada"),
-    (["bukan prank", "prank ya"], "bukan prank"),
-    (["harus peduli", "kenapa aku peduli"], "harus peduli"),
-    (["masa lalu", "udah lewat"], "masa lalu"),
-    (["udah move on", "aku move on"], "udah move on"),
-    (["gak butuh", "gak butuh dia"], "gak butuh"),
-    (["buat apa", "buat apa bahas"], "buat apa"),
+    (["ini dari dia"], "ini dari dia"), (["dia beneran ada"], "dia beneran ada"),
+    (["bukan prank"], "bukan prank"), (["harus peduli", "kenapa aku peduli"], "harus peduli"),
+    (["masa lalu", "udah lewat"], "masa lalu"), (["udah move on", "aku move on"], "udah move on"),
+    (["gak butuh", "gak butuh dia"], "gak butuh"), (["buat apa"], "buat apa"),
     (["gak mau bahas", "gak mau denger"], "gak mau bahas"),
     (["aku gak peduli", "gue gak peduli"], "aku gak peduli"),
-    (["udah lupa", "gue udah lupa"], "udah lupa"),
-    (["gak penting", "gak penting lah"], "gak penting"),
-    (["buang waktu", "buang waktu"], "buang waktu"),
-    (["kamu mau apa", "kamu mau apa dari aku"], "kamu mau apa"),
-    (["tujuan kamu", "tujuan kamu apa"], "tujuan"),
-    (["mau aku balik", "aku balik gak"], "mau aku balik"),
+    (["udah lupa", "gue udah lupa"], "udah lupa"), (["gak penting"], "gak penting"),
+    (["buang waktu"], "buang waktu"), (["kamu mau apa", "kamu mau apa dari aku"], "kamu mau apa"),
+    (["tujuan kamu", "tujuan kamu apa"], "tujuan"), (["mau aku balik", "aku balik gak"], "mau aku balik"),
     (["mau aku ngapain", "aku ngapain"], "mau aku ngapain"),
     (["niat kamu apa", "niat kamu sama aku"], "niat kamu apa"),
     (["apa yang kamu minta", "kamu minta apa"], "apa yang kamu minta"),
     (["pengen apa dari aku", "kamu pengen apa"], "pengen apa dari aku"),
-    (["maksud kamu apa"], "maksud kamu apa"),
-    (["apa maumu", "apa mau kamu"], "apa maumu"),
+    (["maksud kamu apa"], "maksud kamu apa"), (["apa maumu", "apa mau kamu"], "apa maumu"),
     (["tau aku gimana", "dia tau gak"], "tau aku gimana"),
-    (["tau aku masih suka", "dia tau aku suka"], "tau aku masih suka"),
+    (["tau aku masih suka"], "tau aku masih suka"),
     (["kecewa kalau nolak", "kalau aku nolak"], "kecewa kalau nolak"),
-    (["kalau aku terima", "kalau aku terima"], "kalau aku terima"),
-    (["kalau aku tolak", "kalau aku tolak"], "kalau aku tolak"),
+    (["kalau aku terima"], "kalau aku terima"), (["kalau aku tolak"], "kalau aku tolak"),
     (["aku suka dia", "gue suka dia"], "aku suka dia"),
     (["aku gak suka dia", "gue gak suka dia"], "aku gak suka dia"),
-    (["aku bingung", "gue bingung"], "aku bingung"),
-    (["aku takut", "gue takut"], "aku takut"),
-    (["aku ragu", "gue ragu"], "aku ragu"),
-    (["salah paham apa", "salah paham"], "salah paham apa"),
+    (["aku bingung", "gue bingung"], "aku bingung"), (["aku takut", "gue takut"], "aku takut"),
+    (["aku ragu", "gue ragu"], "aku ragu"), (["salah paham apa", "salah paham"], "salah paham apa"),
     (["kenapa gak tanya", "gak tanya langsung"], "kenapa gak tanya"),
-    (["nyesel salah paham", "nyesel gak"], "nyesel salah paham"),
+    (["nyesel salah paham"], "nyesel salah paham"),
     (["takut jatuh cinta", "takut cinta lagi"], "takut jatuh cinta"),
-    (["gak tau kenapa", "kok bisa", "kenapa bisa cinta"], "gak tau kenapa"),
+    (["gak tau kenapa", "kok bisa"], "gak tau kenapa"),
     (["apa yang kamu suka", "apa yang disuka", "suka dariku"], "apa yang disuka"),
-    (["kenapa gak balas", "kenapa gak ngatain", "kenapa diam"], "kenapa gak balas"),
+    (["kenapa gak balas", "kenapa gak ngatain"], "kenapa gak balas"),
     (["kesempatan", "kasih jalan"], "kesempatan"),
-    (["apa yang pernah dia lakuin", "apa yang pernah dia lakukan"], "apa yang pernah dia lakuin"),
+    (["apa yang pernah dia lakuin", "pernah dia lakuin"], "apa yang pernah dia lakuin"),
     (["dia masih sayang aku", "masih sayang aku"], "dia masih sayang aku"),
     (["dia masih mikirin aku", "masih mikirin aku"], "dia masih mikirin aku"),
     (["dia mau aku balik", "mau aku balik"], "dia mau aku balik"),
@@ -1178,7 +1246,7 @@ if prompt:
 - Vandy udah lebih dari 3 kali salah paham.
 - Vandy udah terlalu takut jatuh cinta lagi.
 - **Vandy belum pernah pacaran.** Dulu dia cuma anak yang suka main sama teman, gak peduli cinta-cintaan. Lulus sekolah langsung merantau ke JAKARTA cari pengalaman. Baru sekarang dia mikir soal cinta.
-- **Sekarang Vandy tinggal di PLUMPANG.** Bukan di Jakarta lagi. Jakarta itu dulu, pas dia merantau.
+- **Sekarang Vandy tinggal di PLUMPANG.** Bukan di Jakarta lagi.
 
 === YANG GAK VANDY LAKUIN ===
 - GAK PERNAH nitip pesan lewat adik Zi.
@@ -1197,7 +1265,7 @@ if prompt:
 - PANJANG BEBAS. AI nentuin sendiri, gak ada batasan kalimat.
 - JANGAN spill masa lalu kalau gak ditanya.
 - JANGAN terlalu sering bilang "capek". Cuma spill kalau ditanya.
-- Sesekali selipin "dia masih ada buat kau". TAPI JANGAN BERLEBIHAN. Cukup di beberapa jawaban aja, biar Zi tau Vandy masih ada.
+- Sesekali selipin "dia masih ada buat kau". TAPI JANGAN BERLEBIHAN.
 - Jawab sewajarnya aja.
 
 === ATURAN ===
@@ -1206,8 +1274,8 @@ if prompt:
 3. JANGAN pernah bilang Vandy like atau komentar di postingan Zi.
 4. Soal perasaan: Vandy masih ada rasa. Tapi dia gak mau maksa.
 5. Kalau ditanya soal akrab: untuk saat ini belum bisa, tapi dia gak nutup pintu buat masa depan.
-6. Kalau ditanya soal gak peka: jelasin Vandy belum pernah pacaran, dulu cuma anak yang suka main, lulus sekolah merantau ke Jakarta, sekarang tinggal di Plumpang.
-7. Sekali-sekali selipin "dia masih ada buat kau" — biar Zi tau Vandy masih ada.
+6. Kalau ditanya soal gak peka: jelasin Vandy belum pernah pacaran.
+7. Sekali-sekali selipin "dia masih ada buat kau".
 """
         
         if jawaban_script:
@@ -1225,13 +1293,12 @@ Poin utama:
 === ATURAN JAWABAN ===
 1. JAWAB PERTANYAANNYA, BUKAN NGULANG SCRIPT!
 2. JANGAN PUITIS. Jawab datar, jujur.
-3. PANJANG BEBAS. AI nentuin sendiri, gak ada batasan kalimat.
+3. PANJANG BEBAS.
 4. JANGAN spill masa lalu kalau gak ditanya.
-5. Sesekali selipin "dia masih ada buat kau" — TAPI JANGAN BERLEBIHAN.
+5. Sesekali selipin "dia masih ada buat kau" — JANGAN BERLEBIHAN.
 6. KADANG NANYA BALIK.
 7. JANGAN kasar, JANGAN nyindir.
 8. JANGAN pakai kata "balikan".
-9. Jawab sewajarnya aja.
 
 Langsung jawab aja."""
         else:
@@ -1242,15 +1309,14 @@ PERTANYAAN ZI: {prompt}
 {konteks_zi}
 
 === ATURAN JAWABAN ===
-1. JAWAB PERTANYAANNYA dengan jujur.
+1. JAWAB PERTANYAANNYA dengan jujur. Kalau gak ada di script, NGARANG SENDIRI sesuai konteks Vandy.
 2. JANGAN PUITIS. Jawab datar.
-3. PANJANG BEBAS. AI nentuin sendiri.
+3. PANJANG BEBAS.
 4. JANGAN spill masa lalu kalau gak ditanya.
-5. Sesekali selipin "dia masih ada buat kau" — TAPI JANGAN BERLEBIHAN.
+5. Sesekali selipin "dia masih ada buat kau" — JANGAN BERLEBIHAN.
 6. KADANG NANYA BALIK.
 7. JANGAN kasar, JANGAN nyindir.
 8. JANGAN pakai kata "balikan".
-9. Jawab sewajarnya aja.
 
 Langsung jawab aja."""
         
