@@ -1,6 +1,5 @@
 import streamlit as st
-from google import genai
-from google.genai import types
+from openai import OpenAI
 import time
 import random
 
@@ -422,9 +421,12 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ==== GEMINI CLIENT ====
-client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
-MODEL_UTAMA = "gemini-2.5-flash"
+# ==== OPENROUTER CLIENT ====
+client = OpenAI(
+    api_key=st.secrets["OPENROUTER_API_KEY"],
+    base_url="https://openrouter.ai/api/v1"
+)
+MODEL_UTAMA = "meta-llama/llama-3.3-70b-instruct:free"
 
 # ==== LOGIN ====
 if "user_id" not in st.session_state:
@@ -1238,17 +1240,13 @@ if st.session_state.get("random_question", False):
         
         response_random = None
         try:
-            # Menggunakan Gemini Client
-            response = client.models.generate_content(
+            response = client.chat.completions.create(
                 model=MODEL_UTAMA,
-                contents=prompt_random,
-                config=types.GenerateContentConfig(
-                    system_instruction=messages_random[0]["content"],
-                    temperature=1.2,
-                    max_output_tokens=500
-                )
+                messages=messages_random,
+                temperature=1.2,
+                max_tokens=500,
             )
-            response_random = response.text
+            response_random = response.choices[0].message.content
             typing_placeholder.empty()
             st.markdown(response_random)
         except Exception as e:
@@ -1419,6 +1417,11 @@ PERTANYAAN ZI: {prompt}
 
 Langsung jawab aja."""
         
+        messages_zi = [
+            {"role": "system", "content": prompt_zi},
+            {"role": "user", "content": prompt}
+        ]
+        
         with st.chat_message("assistant"):
             typing_placeholder = st.empty()
             typing_placeholder.markdown("<span class='typing-indicator typing-dots'>sedang mengetik</span>", unsafe_allow_html=True)
@@ -1428,17 +1431,13 @@ Langsung jawab aja."""
             
             for attempt in range(3):
                 try:
-                    # Menggunakan Gemini Client
-                    response = client.models.generate_content(
+                    response = client.chat.completions.create(
                         model=MODEL_UTAMA,
-                        contents=prompt,
-                        config=types.GenerateContentConfig(
-                            system_instruction=prompt_zi,
-                            temperature=1.0,
-                            max_output_tokens=4096
-                        )
+                        messages=messages_zi,
+                        temperature=1.0,
+                        max_tokens=4096,
                     )
-                    response_zi = response.text
+                    response_zi = response.choices[0].message.content
                     typing_placeholder.empty()
                     st.markdown(response_zi)
                     break
@@ -1496,6 +1495,10 @@ Langsung jawab aja."""
     mode_prompt = MODE_PROMPTS.get(st.session_state.mode_ai, "")
     system_prompt_full = system_prompt + mode_prompt + "\n\n=== INFO USER (INGAT INI!) ===" + mem_context
 
+    messages = [{"role": "system", "content": system_prompt_full}]
+    recent = st.session_state[msg_key][-50:]
+    messages.extend(recent)
+
     with st.chat_message("assistant"):
         typing_placeholder = st.empty()
         typing_placeholder.markdown("<span class='typing-indicator typing-dots'>sedang mengetik</span>", unsafe_allow_html=True)
@@ -1505,17 +1508,13 @@ Langsung jawab aja."""
         
         for attempt in range(3):
             try:
-                # Menggunakan Gemini Client
-                response_gen = client.models.generate_content(
+                response_gen = client.chat.completions.create(
                     model=MODEL_UTAMA,
-                    contents=prompt,
-                    config=types.GenerateContentConfig(
-                        system_instruction=system_prompt_full,
-                        temperature=1.0,
-                        max_output_tokens=4096
-                    )
+                    messages=messages,
+                    temperature=1.0,
+                    max_tokens=4096,
                 )
-                response = response_gen.text
+                response = response_gen.choices[0].message.content
                 typing_placeholder.empty()
                 st.markdown(response)
                 break
