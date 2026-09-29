@@ -1,6 +1,5 @@
 import streamlit as st
-from google import genai
-from google.genai import types
+from groq import Groq
 import time
 import random
 
@@ -422,10 +421,9 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ==== GEMINI CLIENT ====
-# Pastikan API Key diambil dari st.secrets
-client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
-MODEL_UTAMA = "gemini-2.5-flash"
+# ==== GROQ CLIENT ====
+client = Groq(api_key=st.secrets["GROQ_API_KEY"])
+MODEL_UTAMA = "llama-3.3-70b-versatile"
 
 # ==== LOGIN ====
 if "user_id" not in st.session_state:
@@ -1239,19 +1237,23 @@ if st.session_state.get("random_question", False):
         
         response_random = None
         try:
-            # Menggunakan Gemini Client
-            response = client.models.generate_content(
+            stream = client.chat.completions.create(
                 model=MODEL_UTAMA,
-                contents=prompt_random, # Gemini API menggunakan contents
-                config=types.GenerateContentConfig(
-                    system_instruction=messages_random[0]["content"],
-                    temperature=1.2,
-                    max_output_tokens=500
-                )
+                messages=messages_random,
+                stream=True,
+                temperature=1.2,
+                max_tokens=500,
             )
-            response_random = response.text
+            response_random = ""
+            response_placeholder = st.empty()
+            for chunk in stream:
+                if chunk.choices and chunk.choices[0].delta.content is not None:
+                    text_chunk = chunk.choices[0].delta.content
+                    if text_chunk:
+                        response_random += text_chunk
+                        response_placeholder.markdown(response_random + "▌")
+            response_placeholder.markdown(response_random)
             typing_placeholder.empty()
-            st.markdown(response_random)
         except Exception as e:
             typing_placeholder.empty()
             st.error(f"⚠️ error: {e}")
@@ -1420,6 +1422,11 @@ PERTANYAAN ZI: {prompt}
 
 Langsung jawab aja."""
         
+        messages_zi = [
+            {"role": "system", "content": prompt_zi},
+            {"role": "user", "content": prompt}
+        ]
+        
         with st.chat_message("assistant"):
             typing_placeholder = st.empty()
             typing_placeholder.markdown("<span class='typing-indicator typing-dots'>sedang mengetik</span>", unsafe_allow_html=True)
@@ -1429,19 +1436,23 @@ Langsung jawab aja."""
             
             for attempt in range(3):
                 try:
-                    # Menggunakan Gemini Client
-                    response = client.models.generate_content(
+                    stream = client.chat.completions.create(
                         model=MODEL_UTAMA,
-                        contents=prompt, # Menggunakan input user langsung
-                        config=types.GenerateContentConfig(
-                            system_instruction=prompt_zi,
-                            temperature=1.0,
-                            max_output_tokens=4096
-                        )
+                        messages=messages_zi,
+                        stream=True,
+                        temperature=1.0,
+                        max_tokens=4096,
                     )
-                    response_zi = response.text
+                    response_zi = ""
+                    response_placeholder = st.empty()
+                    for chunk in stream:
+                        if chunk.choices and chunk.choices[0].delta.content is not None:
+                            text_chunk = chunk.choices[0].delta.content
+                            if text_chunk:
+                                response_zi += text_chunk
+                                response_placeholder.markdown(response_zi + "▌")
+                    response_placeholder.markdown(response_zi)
                     typing_placeholder.empty()
-                    st.markdown(response_zi)
                     break
                 except Exception as e:
                     last_error_zi = str(e)
@@ -1459,7 +1470,6 @@ Langsung jawab aja."""
                     st.error("⚠️ Error: Respons dari AI kosong. Coba lagi.")
         st.stop()
     
-    # ==== PROSES NORMAL ====
     mem_context = ""
     if mem["nama"]:
         mem_context += f"\nNama user: {mem['nama']}."
@@ -1495,7 +1505,9 @@ Langsung jawab aja."""
     mem_context += f"\nTotal chat: {mem['total_chat']}x."
 
     mode_prompt = MODE_PROMPTS.get(st.session_state.mode_ai, "")
-    system_prompt_full = system_prompt + mode_prompt + "\n\n=== INFO USER (INGAT INI!) ===" + mem_context
+    messages = [{"role": "system", "content": system_prompt + mode_prompt + "\n\n=== INFO USER (INGAT INI!) ===" + mem_context}]
+    recent = st.session_state[msg_key][-50:]
+    messages.extend(recent)
 
     with st.chat_message("assistant"):
         typing_placeholder = st.empty()
@@ -1506,19 +1518,23 @@ Langsung jawab aja."""
         
         for attempt in range(3):
             try:
-                # Menggunakan Gemini Client
-                response_gen = client.models.generate_content(
+                stream = client.chat.completions.create(
                     model=MODEL_UTAMA,
-                    contents=prompt,
-                    config=types.GenerateContentConfig(
-                        system_instruction=system_prompt_full,
-                        temperature=1.0,
-                        max_output_tokens=4096
-                    )
+                    messages=messages,
+                    stream=True,
+                    temperature=1.0,
+                    max_tokens=4096,
                 )
-                response = response_gen.text
+                response = ""
+                response_placeholder = st.empty()
+                for chunk in stream:
+                    if chunk.choices and chunk.choices[0].delta.content is not None:
+                        text_chunk = chunk.choices[0].delta.content
+                        if text_chunk:
+                            response += text_chunk
+                            response_placeholder.markdown(response + "▌")
+                response_placeholder.markdown(response)
                 typing_placeholder.empty()
-                st.markdown(response)
                 break
             except Exception as e:
                 last_error = str(e)
