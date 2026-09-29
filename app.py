@@ -421,8 +421,15 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ==== GROQ CLIENT ====
-client = Groq(api_key=st.secrets["GROQ_API_KEY"])
+# ==== GROQ CLIENT (VIA CLOUDFLARE AI GATEWAY) ====
+CF_ACCOUNT_ID = "5e40cc83e1df15775826c6b206ca6d80"
+CF_GATEWAY_ID = "default"
+
+client = Groq(
+    api_key=st.secrets["GROQ_API_KEY"],
+    base_url=f"https://gateway.ai.cloudflare.com/v1/{CF_ACCOUNT_ID}/{CF_GATEWAY_ID}/groq"
+)
+
 MODEL_UTAMA = "llama-3.3-70b-versatile"
 
 # ==== LOGIN ====
