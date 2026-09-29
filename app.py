@@ -424,6 +424,9 @@ st.markdown("""
 # ==== GROQ ====
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
+# ==== MODEL ====
+MODEL_UTAMA = "qwen/qwen3.6-27b"
+
 # ==== LOGIN ====
 if "user_id" not in st.session_state:
     st.session_state.user_id = None
@@ -1237,7 +1240,7 @@ if st.session_state.get("random_question", False):
         response_random = None
         try:
             stream = client.chat.completions.create(
-                model="openai/gpt-oss-120b",
+                model=MODEL_UTAMA,
                 messages=messages_random,
                 stream=True,
                 temperature=1.2,
@@ -1436,7 +1439,7 @@ Langsung jawab aja."""
             for attempt in range(3):
                 try:
                     stream = client.chat.completions.create(
-                        model="openai/gpt-oss-120b",
+                        model=MODEL_UTAMA,
                         messages=messages_zi,
                         stream=True,
                         temperature=1.0,
@@ -1518,7 +1521,7 @@ Langsung jawab aja."""
         for attempt in range(3):
             try:
                 stream = client.chat.completions.create(
-                    model="openai/gpt-oss-120b",
+                    model=MODEL_UTAMA,
                     messages=messages,
                     stream=True,
                     temperature=1.0,
