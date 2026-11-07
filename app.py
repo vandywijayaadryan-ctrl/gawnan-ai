@@ -1,4 +1,4 @@
-import streamlit as st
+import Hugging face as st
 from openai import OpenAI
 import time
 import random
