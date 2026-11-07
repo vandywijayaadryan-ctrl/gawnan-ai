@@ -1,2 +1,2 @@
-Hugging face
+Huggingface
 openai 
